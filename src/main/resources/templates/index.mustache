@@ -2,34 +2,46 @@
 
 <h1>스프링 부트로 시작하는 웹 서비스</h1>
 <div class="col-md-12">
+    <!--로그인 기능 영역-->
     <div class="row">
         <div class="col-md-6">
             <a href="/posts/save" role="button"
                class="btn btn-primary">글 등록</a>
+            {{#userName}} <!-- 머스테치는 true/false 여부만 판단하므로 항상 최종값을 넘겨줘야 함 userName이 있다면 userName 노출 -->
+                Logged in as: <spen id="user">{{userName}}</spen>
+                <a href="/logout" class="btn btn-info active" role="button">Logout</a>
+                <!-- 스프링 시큐리티에서 기본적으로 제공하는 로그아웃 URL -->
+            {{/userName}}
+            {{^userName}} <!-- 머스테치에서 해당 값이 존재하지 않는 경우에는 ^를 사용, userName이 없다면 로그인 버튼을 노출 -->
+                <a href="/oauth2/authorization/google" class="btn btn-success active" role="button">Google Login</a>
+                <a href="/oauth2/authorization/naver" class="btn btn-secondary active" role="button">Naver Login</a>
+                <!-- 네이버 로그인 URL은 application-oauth.properties에 등록한 redirect-uri 값에 맞춰 자동으로 등록됨
+                     /oauth2/authorization/ 까지는 고정이고 마지막 Path만 각 소셜 로그인 코드를 사용 (여기서는 naver가 마지막 Path)-->
+            {{/userName}}
         </div>
     </div>
-<br>
-<!-- 목록 출력 영역 -->
-<table class="table table-horizontal table-bordered">
-    <thead class="thead-strong">
-    <tr>
-        <th>게시글번호</th>
-        <th>제목</th>
-        <th>작성자</th>
-        <th>최종수정일</th>
-    </tr>
-    </thead>
-    <tbody id="tbody">
-    {{#posts}}
+    <br>
+    <!-- 목록 출력 영역 -->
+    <table class="table table-horizontal table-bordered">
+        <thead class="thead-strong">
         <tr>
-            <td>{{id}}</td>
-            <td><a href="/posts/update/{{id}}">{{title}}</a></td>
-            <td>{{author}}</td>
-            <td>{{modifiedDate}}</td>
+            <th>게시글번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>최종수정일</th>
         </tr>
-    {{/posts}}
-    </tbody>
-</table>
+        </thead>
+        <tbody id="tbody">
+        {{#posts}}
+            <tr>
+                <td>{{id}}</td>
+                <td><a href="/posts/update/{{id}}">{{title}}</a></td>
+                <td>{{author}}</td>
+                <td>{{modifiedDate}}</td>
+            </tr>
+        {{/posts}}
+        </tbody>
+    </table>
 </div>
 
 {{>layout/footer}}
