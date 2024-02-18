@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Posts extends BaseTimeEntity { // Entity 클래스 에서는 절대 Setter 만들면 안됨
+public class Posts extends BaseTimeEntity {
+    // Entity 클래스 에서는 절대 Setter 만들면 안됨
+    // 대신 Builder 패턴으로 값을 채운 후 update 메소드를 호출하여 변경한다.
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
