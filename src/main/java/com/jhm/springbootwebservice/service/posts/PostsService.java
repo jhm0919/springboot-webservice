@@ -40,11 +40,14 @@ public class PostsService {
         return new PostsResponseDto(entity);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // 트랜잭션 범위는 유지, 조회만 가능하여 속도 개선
     public List<PostsListResponseDto> findAllDesc() {
         return postsRepository.findAllDesc().stream()
-                .map(PostsListResponseDto::new)
+            .map(PostsListResponseDto::new)
+//                .map(posts -> new PostsListResponseDto(posts))
                 .collect(Collectors.toList());
+        // postsRepository 결과로 넘어온 Posts의 Stream을 map을 통해
+        // PostsListResponseDto 변환 -> List로 반환하는 메소드
     }
 
     @Transactional

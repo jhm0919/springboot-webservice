@@ -12,11 +12,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
+@Configuration
 /**
  * @EnableWebSecurity
  * Spring Security 설정들을 활성화 시켜줌
  */
-@Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -26,9 +26,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) /** h2-console 화면을 사용하기 위해 해당 옵션들을 disable */
-
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-
                 .authorizeHttpRequests(auth -> auth /** URL별 권한 관리를 설정하는 옵션 */
                         .requestMatchers(
                                 new AntPathRequestMatcher("/"),

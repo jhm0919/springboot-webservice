@@ -16,19 +16,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class IndexController {
 
     private final PostsService postsService;
-    private final HttpSession httpSession;
+//    private final HttpSession httpSession;
 
     @GetMapping("/")
     public String index(Model model, @LoginUser SessionUser user) { // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
         model.addAttribute("posts", postsService.findAllDesc());
-
         /**
          * (SessionUser) httpSession.getAttribute("user");
          * CustomOAuth2UserService에서 로그인 성공 시 세션에 SessionUser를 저장하도록 구성
          * 즉, 로그인 성공 시 httpSession.getAttribute("user")에서 값을 가져올 수 있음
          */
 //        SessionUser user = (SessionUser) httpSession.getAttribute("user"); @LoginUser 어노테이션으로 인해 필요없어짐
-
         /**
          * if (user != null)
          * 세션에 저장된 값이 있을 때만 model에 userName으로 등록
