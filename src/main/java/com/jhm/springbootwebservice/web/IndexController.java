@@ -33,7 +33,7 @@ public class IndexController {
          * 현재 사용자가 선택한 페이지 앞 뒤로 3페이지씩만 보여준다.
          * ex : 현재 사용자가 4페이지라면 2, 3, (4), 5, 6
          */
-        int blockLimit = 3;
+        int blockLimit = 5;
         int startPage = (((int) Math.ceil(((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
         int endPage = Math.min((startPage + blockLimit - 1), posts.getTotalPages());
 
