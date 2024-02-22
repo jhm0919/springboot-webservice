@@ -6,6 +6,10 @@ import com.jhm.springbootwebservice.service.posts.PostsServiceImpl;
 import com.jhm.springbootwebservice.web.dto.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.PostsResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,19 +25,22 @@ public class IndexController {
 //    private final HttpSession httpSession;
 
     @GetMapping("/")
-    public String index(Model model, @LoginUser SessionUser user) { // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
-        model.addAttribute("posts", postsService.findAllDesc());
+    public String index(Model model, @LoginUser SessionUser user, @PageableDefault(page = 1) Pageable pageable) { // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
+        Page<PostsListResponseDto> posts = postsService.findAll(pageable);
+
         /**
-         * (SessionUser) httpSession.getAttribute("user");
-         * CustomOAuth2UserService에서 로그인 성공 시 세션에 SessionUser를 저장하도록 구성
-         * 즉, 로그인 성공 시 httpSession.getAttribute("user")에서 값을 가져올 수 있음
+         * blockLimit : page 개수 설정
+         * 현재 사용자가 선택한 페이지 앞 뒤로 3페이지씩만 보여준다.
+         * ex : 현재 사용자가 4페이지라면 2, 3, (4), 5, 6
          */
-//        SessionUser user = (SessionUser) httpSession.getAttribute("user"); @LoginUser 어노테이션으로 인해 필요없어짐
-        /**
-         * if (user != null)
-         * 세션에 저장된 값이 있을 때만 model에 userName으로 등록
-         * 세션에 저장된 값이 없으면 model엔 아무런 값이 없는 상태이니 로그인 버튼이 보이게 됨
-         */
+        int blockLimit = 3;
+        int startPage = (((int) Math.ceil(((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
+        int endPage = Math.min((startPage + blockLimit - 1), posts.getTotalPages());
+
+        model.addAttribute("postsPages", posts);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
         if (user != null) {
             model.addAttribute("userName", user.getName());
         }
