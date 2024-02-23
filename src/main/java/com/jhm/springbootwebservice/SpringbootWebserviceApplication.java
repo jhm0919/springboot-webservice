@@ -13,9 +13,10 @@ public class SpringbootWebserviceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootWebserviceApplication.class, args);
 	}
+//
+//	@Bean
+//	public TestDataInit testDataInit(PostsRepository postsRepository) {
+//		return new TestDataInit(postsRepository);
+//	}
 
-	@Bean
-	public TestDataInit testDataInit(PostsRepository postsRepository) {
-		return new TestDataInit(postsRepository);
-	}
 }

@@ -23,16 +23,14 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(Model model, @LoginUser SessionUser user, // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
-                        @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                        @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                         String searchKeyword) {
 
         Page<PostsListResponseDto> posts;
 
         if (searchKeyword == null) {
-            System.out.println("no");
             posts = postsService.findAll(pageable);
         } else {
-            System.out.println("yes");
             posts = postsService.postsSearch(searchKeyword, pageable);
         }
 

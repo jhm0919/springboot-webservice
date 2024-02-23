@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
 @Configuration
@@ -29,7 +28,7 @@ public class SecurityConfig {
                                                                                                 (개발 환경에서만)*/
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(auth -> auth /** URL별 권한 관리를 설정하는 옵션 */
-                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**"
+                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/posts/update/**"
                         ).permitAll()
                         /** 권한 관리 대상을 지정하는 옵션
                          * URL, HTTP 메소드별로 관리가 가능

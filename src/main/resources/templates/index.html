@@ -22,7 +22,8 @@
     <!--검색 영역-->
     <div class="d-flex justify-content-end">
         <form action="/" method="GET" class="form-inline" role="search">
-            <input type="text" name="searchKeyword" class="form-control" id="search" placeholder="검색어를 입력하세요.">
+            <input type="text" name="searchKeyword" class="form-control" id="search" placeholder="검색어를 입력하세요."
+            th:value="${param.searchKeyword}">
             <button class="btn btn-success">검색</button>
         </form>
     </div>
