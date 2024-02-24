@@ -1,5 +1,8 @@
 package com.jhm.springbootwebservice.web;
 
+import com.jhm.springbootwebservice.config.auth.LoginUser;
+import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
+import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.service.posts.PostsService;
 import com.jhm.springbootwebservice.web.dto.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.PostsSaveRequestDto;
@@ -14,8 +17,8 @@ public class PostsApiController {
     private final PostsService postsService;
 
     @PostMapping("/api/v1/posts")
-    public Long save(@RequestBody PostsSaveRequestDto requestDto) {
-        return postsService.save(requestDto);
+    public Long save(@RequestBody PostsSaveRequestDto requestDto, @LoginUser SessionUser user) {
+        return postsService.save(user.getId(), requestDto);
     }
 
     @GetMapping("/api/v1/posts/{id}")

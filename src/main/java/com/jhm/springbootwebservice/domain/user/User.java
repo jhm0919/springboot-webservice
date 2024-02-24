@@ -2,12 +2,15 @@ package com.jhm.springbootwebservice.domain.user;
 
 import com.jhm.springbootwebservice.domain.posts.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users") // 테이블 이름을 "users"로 변경
 public class User extends BaseTimeEntity {
@@ -28,14 +31,6 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-
-    @Builder
-    public User(String name, String email, String picture, Role role) {
-        this.name = name;
-        this.email = email;
-        this.picture = picture;
-        this.role = role;
-    }
 
     public User update(String name, String picture) {
         this.name = name;

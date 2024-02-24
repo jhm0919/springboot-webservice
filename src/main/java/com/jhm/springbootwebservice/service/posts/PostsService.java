@@ -1,5 +1,6 @@
 package com.jhm.springbootwebservice.service.posts;
 
+import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.web.dto.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.PostsSaveRequestDto;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public interface PostsService {
 
-    Long save(PostsSaveRequestDto requestDto);
+    Long save(Long id, PostsSaveRequestDto requestDto);
 
     Long update(Long id, PostsUpdateRequestDto requestDto);
 

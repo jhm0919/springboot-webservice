@@ -2,32 +2,32 @@ package com.jhm.springbootwebservice.service.posts;
 
 import com.jhm.springbootwebservice.domain.posts.Posts;
 import com.jhm.springbootwebservice.domain.posts.PostsRepository;
+import com.jhm.springbootwebservice.domain.user.User;
+import com.jhm.springbootwebservice.domain.user.UserRepository;
 import com.jhm.springbootwebservice.web.dto.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.PostsSaveRequestDto;
 import com.jhm.springbootwebservice.web.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class PostsServiceImpl implements PostsService{
 
     private final PostsRepository postsRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
-    public Long save(PostsSaveRequestDto requestDto) {
+    public Long save(Long id, PostsSaveRequestDto requestDto) {
+        User user = userRepository.findById(id).get();
+        requestDto.setUser(user);
         return postsRepository.save(requestDto.toEntity()).getId();
     }
 

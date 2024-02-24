@@ -5,6 +5,7 @@ import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.service.posts.PostsServiceImpl;
 import com.jhm.springbootwebservice.web.dto.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.PostsResponseDto;
+import com.jhm.springbootwebservice.web.dto.CommentResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Controller
 public class IndexController {
@@ -23,7 +26,7 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(Model model, @LoginUser SessionUser user, // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
-                        @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                        @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                         String searchKeyword) {
 
         Page<PostsListResponseDto> posts;
@@ -58,9 +61,24 @@ public class IndexController {
     }
 
     @GetMapping("/posts/update/{id}")
-    public String postsUpdate(@PathVariable Long id, Model model) {
+    public String postsUpdate(@PathVariable Long id, @LoginUser SessionUser user, Model model) {
         PostsResponseDto dto = postsService.findById(id);
+        List<CommentResponseDto> comments = dto.getComments();
+
+        if (comments != null && !comments.isEmpty()) {
+            model.addAttribute("comments", comments);
+        }
+
+        if (user != null) {
+            model.addAttribute("user", user.getName());
+
+            if (dto.getUserId().equals(user.getId())) {
+                model.addAttribute("author", true);
+            }
+        }
+
         model.addAttribute("post", dto);
+        // 조회수 올라가는 로직
         return "posts-update";
     }
 

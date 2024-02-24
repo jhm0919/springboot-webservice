@@ -1,29 +1,28 @@
 package com.jhm.springbootwebservice.web.dto;
 
 import com.jhm.springbootwebservice.domain.posts.Posts;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.jhm.springbootwebservice.domain.user.User;
+import lombok.*;
 
+@Data
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class PostsSaveRequestDto {
     private String title;
     private String content;
     private String author;
-
-    @Builder
-    public PostsSaveRequestDto(String title, String content, String author) {
-        this.title = title;
-        this.content = content;
-        this.author = author;
-    }
+    private int view;
+    private User user;
 
     public Posts toEntity() {
         return Posts.builder()
                 .title(title)
                 .content(content)
                 .author(author)
+                .view(0)
+                .user(user)
                 .build();
     }
 }

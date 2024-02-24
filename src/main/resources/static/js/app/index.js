@@ -17,7 +17,8 @@ var main = {
         var data = {
             title: $('#title').val(),
             author: $('#author').val(),
-            content: $('#content').val()
+            content: $('#content').val(),
+            userId: '<%= session.getAttribute("userId") %>'
         };
 
         if (!data.title) {

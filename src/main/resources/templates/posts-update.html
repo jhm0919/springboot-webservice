@@ -22,9 +22,40 @@
                 <textarea class="form-control" id="content" th:text="${post.content}"></textarea>
             </div>
         </form>
-        <a href="/" role="button" class="btn btn-secondary">취소</a>
-        <button type="button" class="btn btn-primary" id="btn-update">수정 완료</button>
-        <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
+        <a href="/" role="button" class="btn btn-secondary">목록으로</a>
+        <th:block th:if="${author}">
+            <button type="button" class="btn btn-primary" id="btn-update">수정 완료</button>
+            <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
+        </th:block>
+
+        <!-- 댓글 부분 -->
+        <th:block th:if="${comments != null}">
+            <div class="card">
+                <div class="card-header bi bi-chat-dots">
+                <span th:if="${comments.size()}">
+                    <span th:text="${comments.size()}"></span> Comments
+                </span>
+                    <span th:unless="${comments.size()}">0 Comments</span>
+                </div>
+                <!-- 댓글내용 부분 -->
+                <ul class="list-group-flush">
+                    <li th:each="comment : ${comments}" class="list-group-item">
+                <span>
+                    <span style="font-size: small" th:text="${comment.name}"></span>
+                    <span style="font-size: xx-small" th:text="${comments.createdDate}"></span>&nbsp;
+                    <button class="badge bi bi-pencil-square"> 수정</button>
+                    <button class="badge bi bi-trash"> 삭제</button>
+                </span>
+                        <div th:text="${comment.comment}"></div>
+                    </li>
+                    <!-- comments가 비어있을 때 표시할 내용 -->
+                </ul>
+            </div>
+        </th:block>
+        <th:block th:unless="${comments != null}">
+            <li class="list-group-item">No comments available</li>
+        </th:block>
+
     </div>
 </div>
 
