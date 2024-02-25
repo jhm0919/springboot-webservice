@@ -63,15 +63,13 @@
                     <span aria-hidden="true">이전</span>
                 </a>
             </li>
-            <th:block th:if="${totalPosts > 0}">
-                <th:block th:each="page: ${#numbers.sequence(startPage, endPage)}">
-                    <a class="page-link"
-                       th:if="${page != nowPage}"
-                       th:href="@{/(page = ${page - 1}, searchKeyword = ${param.searchKeyword})}"
-                       th:text="${page}">
-                    </a>
-                    <strong class="page-link" th:if="${page == nowPage}" th:text="${page}"></strong>
-                </th:block>
+            <th:block th:each="page: ${#numbers.sequence(startPage, endPage)}">
+                <a class="page-link"
+                   th:if="${page != nowPage}"
+                   th:href="@{/(page = ${page - 1}, searchKeyword = ${param.searchKeyword})}"
+                   th:text="${page}">
+                </a>
+                <strong class="page-link" th:if="${page == nowPage}" th:text="${page}"></strong>
             </th:block>
             <!-- 다음 링크 활성화 비활성화 -->
             <li class="page-item">

@@ -33,16 +33,16 @@
             <div class="card">
                 <div class="card-header bi bi-chat-dots">
                 <span th:if="${comments.size()}">
-                    <span th:text="${comments.size()}"></span> Comments
+                    댓글 <span th:text="${comments.size()}"></span> 개
                 </span>
-                    <span th:unless="${comments.size()}">0 Comments</span>
+                    <span th:unless="${comments.size()}">댓글 0 개</span>
                 </div>
                 <!-- 댓글내용 부분 -->
                 <ul class="list-group-flush">
                     <li th:each="comment : ${comments}" class="list-group-item">
                 <span>
-                    <span style="font-size: small" th:text="${comment.name}"></span>
-                    <span style="font-size: xx-small" th:text="${comments.createdDate}"></span>&nbsp;
+                    <span style="font-size: small" th:text="${comment.author}"></span>
+                    <span style="font-size: xx-small" th:text="${comment.createdDate}"></span>&nbsp;
                     <button class="badge bi bi-pencil-square"> 수정</button>
                     <button class="badge bi bi-trash"> 삭제</button>
                 </span>
@@ -53,8 +53,28 @@
             </div>
         </th:block>
         <th:block th:unless="${comments != null}">
-            <li class="list-group-item">No comments available</li>
+            <li class="list-group-item">댓글이 없습니다.</li>
         </th:block>
+        <div class="card">
+            <div class="card-header bi bi-chat-right-dots">댓글 쓰기</div>
+
+<!--            {{! 댓글작성 부분}}-->
+            <form>
+                <input type="hidden" id="postsId" th:value="${post.id}">
+
+                <div class="card-body" th:if="${user}">
+                    <textarea id="comment" class="form-control" rows="4" placeholder="댓글을 입력하세요"></textarea>
+                </div>
+
+                <div class="card-footer" th:if="${user}">
+                    <button type="button" id="btn-comment-save" class="btn btn-outline-primary bi bi-pencil-square"> 등록</button>
+                </div>
+
+                <div class="card-body" style="font-size: small" th:unless="${user}">
+                    <a href="/auth/login">로그인</a>을 하시면 댓글을 등록할 수 있습니다.
+                </div>
+            </form>
+        </div>
 
     </div>
 </div>

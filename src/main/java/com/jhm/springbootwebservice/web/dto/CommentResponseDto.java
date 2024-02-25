@@ -10,7 +10,7 @@ public class CommentResponseDto {
     private Long id;
     private String comment;
     private String author;
-    private LocalDateTime modifiedDate;
+    private String createdDate;
     private Long postId;
 
     /** Entity -> DTO */
@@ -19,6 +19,6 @@ public class CommentResponseDto {
         this.comment = entity.getComment();
         this.author = entity.getUser().getName();
         this.postId = entity.getPosts().getId();
-        this.modifiedDate = entity.getModifiedDate();
+        this.createdDate = entity.getCreatedDate();
     }
 }

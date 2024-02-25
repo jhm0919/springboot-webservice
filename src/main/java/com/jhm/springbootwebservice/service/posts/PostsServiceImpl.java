@@ -26,7 +26,8 @@ public class PostsServiceImpl implements PostsService{
     @Override
     @Transactional
     public Long save(Long id, PostsSaveRequestDto requestDto) {
-        User user = userRepository.findById(id).get();
+        User user = userRepository.findById(id).orElseThrow(() ->
+            new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
         requestDto.setUser(user);
         return postsRepository.save(requestDto.toEntity()).getId();
     }
