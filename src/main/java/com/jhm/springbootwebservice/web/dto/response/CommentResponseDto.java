@@ -1,9 +1,7 @@
-package com.jhm.springbootwebservice.web.dto;
+package com.jhm.springbootwebservice.web.dto.response;
 
 import com.jhm.springbootwebservice.domain.comments.Comment;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Getter
 public class CommentResponseDto {
@@ -11,14 +9,16 @@ public class CommentResponseDto {
     private String comment;
     private String author;
     private String createdDate;
-    private Long postId;
+    private Long userId;
+    private Long postsId;
 
     /** Entity -> DTO */
     public CommentResponseDto(Comment entity) {
         this.id = entity.getId();
         this.comment = entity.getComment();
         this.author = entity.getUser().getName();
-        this.postId = entity.getPosts().getId();
+        this.userId = entity.getUser().getId();
+        this.postsId = entity.getPosts().getId();
         this.createdDate = entity.getCreatedDate();
     }
 }

@@ -1,4 +1,4 @@
-package com.jhm.springbootwebservice.web.dto;
+package com.jhm.springbootwebservice.web.dto.response;
 
 import com.jhm.springbootwebservice.domain.posts.Posts;
 import lombok.Getter;

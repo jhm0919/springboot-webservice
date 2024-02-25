@@ -2,11 +2,10 @@ package com.jhm.springbootwebservice.web;
 
 import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
-import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.service.posts.PostsService;
-import com.jhm.springbootwebservice.web.dto.PostsResponseDto;
-import com.jhm.springbootwebservice.web.dto.PostsSaveRequestDto;
-import com.jhm.springbootwebservice.web.dto.PostsUpdateRequestDto;
+import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
+import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
+import com.jhm.springbootwebservice.web.dto.request.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

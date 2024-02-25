@@ -32,7 +32,7 @@ public class Comment extends BaseTimeEntity {
     private User user;
 
 
-    public void update(String content) {
+    public void update(String comment) {
         this.comment = comment;
     }
 }

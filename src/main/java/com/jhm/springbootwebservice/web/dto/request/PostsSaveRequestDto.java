@@ -1,4 +1,4 @@
-package com.jhm.springbootwebservice.web.dto;
+package com.jhm.springbootwebservice.web.dto.request;
 
 import com.jhm.springbootwebservice.domain.posts.Posts;
 import com.jhm.springbootwebservice.domain.user.User;

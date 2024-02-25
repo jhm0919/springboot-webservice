@@ -1,13 +1,10 @@
 package com.jhm.springbootwebservice.domain.posts;
 
-import com.jhm.springbootwebservice.domain.user.User;
-import com.jhm.springbootwebservice.web.dto.PostsListResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-
-import java.util.List;
 
 /**
  * SQL Mapper 에서의 Dao라고 불리는 DB Layer 접근자
@@ -18,6 +15,10 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
 
 //    @Query("SELECT p FROM Posts p ORDER BY p.id DESC")
 //    List<Posts> findAllDesc();
+
+    @Modifying
+    @Query("update Posts p set p.view = p.view + 1 where p.id = :id")
+    int updateView(Long id);
 
     Page<Posts> findByTitleContaining(String searchKeyword, Pageable pageable);
 }

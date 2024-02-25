@@ -36,14 +36,16 @@
             <th>제목</th>
             <th>작성자</th>
             <th>최종수정일</th>
+            <th>조회수</th>
         </tr>
         </thead>
         <tbody id="tbody">
         <tr th:each="post : ${postsPages}">
             <td th:text="${post.id}"></td>
-            <td><a th:href="@{'/posts/update/' + ${post.id}}" th:text="${post.title}"></a></td>
+            <td><a th:href="@{'/posts/read/' + ${post.id}}" th:text="${post.title}"></a></td>
             <td th:text="${post.author}"></td>
             <td th:text="${post.modifiedDate}"></td>
+            <td th:text="${post.view}"></td>
         </tr>
         </tbody>
     </table>

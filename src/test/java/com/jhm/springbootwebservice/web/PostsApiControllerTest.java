@@ -1,12 +1,10 @@
 package com.jhm.springbootwebservice.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jhm.springbootwebservice.domain.posts.Posts;
 import com.jhm.springbootwebservice.domain.posts.PostsRepository;
-import com.jhm.springbootwebservice.web.dto.PostsSaveRequestDto;
-import com.jhm.springbootwebservice.web.dto.PostsUpdateRequestDto;
-import org.assertj.core.api.Assertions;
+import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
+import com.jhm.springbootwebservice.web.dto.request.PostsUpdateRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +23,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;

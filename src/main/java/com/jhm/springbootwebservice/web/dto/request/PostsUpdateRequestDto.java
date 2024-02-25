@@ -1,4 +1,4 @@
-package com.jhm.springbootwebservice.web.dto;
+package com.jhm.springbootwebservice.web.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;

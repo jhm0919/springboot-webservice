@@ -2,10 +2,11 @@ package com.jhm.springbootwebservice.web;
 
 import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
+import com.jhm.springbootwebservice.service.posts.PostsService;
 import com.jhm.springbootwebservice.service.posts.PostsServiceImpl;
-import com.jhm.springbootwebservice.web.dto.PostsListResponseDto;
-import com.jhm.springbootwebservice.web.dto.PostsResponseDto;
-import com.jhm.springbootwebservice.web.dto.CommentResponseDto;
+import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
+import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
+import com.jhm.springbootwebservice.web.dto.response.CommentResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ import java.util.List;
 @Controller
 public class IndexController {
 
-    private final PostsServiceImpl postsService;
+    private final PostsService postsService;
 
     @GetMapping("/")
     public String index(Model model, @LoginUser SessionUser user, // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
@@ -60,8 +61,8 @@ public class IndexController {
         return "posts-save";
     }
 
-    @GetMapping("/posts/update/{id}")
-    public String postsUpdate(@PathVariable Long id, @LoginUser SessionUser user, Model model) {
+    @GetMapping("/posts/read/{id}")
+    public String postsRead(@PathVariable Long id, @LoginUser SessionUser user, Model model) {
         PostsResponseDto dto = postsService.findById(id);
         List<CommentResponseDto> comments = dto.getComments();
 
@@ -70,15 +71,25 @@ public class IndexController {
         }
 
         if (user != null) {
-            model.addAttribute("user", user.getName());
+            model.addAttribute("user", user);
 
+            /** 게시글 작성자 본인인지 확인 */
             if (dto.getUserId().equals(user.getId())) {
                 model.addAttribute("author", true);
             }
         }
 
+        postsService.updateView(id); // view++
+
         model.addAttribute("post", dto);
-        // 조회수 올라가는 로직
+
+        return "posts-read";
+    }
+
+    @GetMapping("/posts/update/{id}")
+    public String postsUpdate(@PathVariable Long id, @LoginUser SessionUser user, Model model) {
+        PostsResponseDto dto = postsService.findById(id);
+        model.addAttribute("post", dto);
         return "posts-update";
     }
 
