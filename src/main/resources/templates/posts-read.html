@@ -1,40 +1,37 @@
 <th:block th:replace="~{fragments/header :: headerFragment}"></th:block>
 
-<h1>게시글 수정</h1>
-
-<div class="col-md-12">
-    <div class="col-md-4">
+<div class="col-md-9 mx-auto">
+    <div class="col-md-12">
         <form>
             <div class="form-group">
-                <label for="id">글 번호</label>
-                <input type="text" class="form-control" id="id" th:value="${post.id}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="title">제목</label>
-                <input type="text" class="form-control" id="title" th:value="${post.title}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="author">작성자</label>
-                <input type="text" class="form-control" id="author" th:value="${post.author}" readonly>
+                <label for="content">제목</label>
+                <div style="display: flex;">
+    <!--                <input style="width: 20%" type="text" class="form-control" id="id" th:value="${post.id}" readonly>-->
+                    <input style="width: 80%" type="text" class="form-control" id="title" th:value="${post.title}" readonly>
+                    <input style="width: 20%; margin-left: 10px" type="text" class="form-control" id="author" th:value="${post.author}" readonly>
+                </div>
             </div>
             <div class="form-group">
                 <label for="content">내용</label>
-                <textarea class="form-control" id="content" th:text="${post.content}" readonly></textarea>
+                <textarea class="form-control h-75" id="content" th:text="${post.content}" readonly></textarea>
             </div>
         </form>
-        <a href="/" role="button" class="btn btn-secondary">목록으로</a>
-        <th:block th:if="${author}">
-            <a th:href="@{'/posts/update/' + ${post.id}}" role="button" class="btn btn-primary">수정하기</a>
-            <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
-        </th:block>
-
+        <div class="text-right">
+            <a href="/" role="button" class="btn btn-secondary">목록으로</a>
+            <th:block th:if="${author}">
+                <a th:href="@{'/posts/update/' + ${post.id}}" role="button" class="btn btn-primary">수정하기</a>
+                <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
+            </th:block>
+        </div>
+        <br/>
+        <br/>
         <!-- 댓글 부분 -->
         <th:block th:if="${comments != null}">
             <div class="card">
                 <!-- 댓글 개수 -->
                 <div class="card-header bi bi-chat-dots">
-                    <span th:if="${comments.size() > 0}" th:text="${comments.size() + ' Comments'}"></span>
-                    <span th:unless="${comments.size() > 0}">0 Comments</span>
+                    <span th:if="${comments.size() > 0}" th:text="'댓글 ' + ${comments.size() + '개'}"></span>
+                    <span th:unless="${comments.size() > 0}">댓글 0개</span>
                 </div>
 
                 <!-- 댓글 리스트 -->
@@ -60,10 +57,14 @@
                         <form th:class="'collapse multi-collapse-' + ${comment.id}" method="post">
                             <input type="hidden" th:id="'id'" th:value="${comment.id}">
                             <input type="hidden" th:id="'postsId'" th:value="${comment.postsId}">
-                            <div class="form-group">
-                                <textarea class="form-control" th:id="'comment-content'" rows="3" th:text="${comment.comment}"></textarea>
+                            <div class="row">
+                                <div class="form-group col-10">
+                                    <textarea class="form-control" th:id="'comment-content'" rows="3" th:text="${comment.comment}"></textarea>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" th:id="'btn-comment-update'" class="btn btn-primary"> 수정</button>
+                                </div>
                             </div>
-                            <button type="button" th:id="'btn-comment-update'" class="btn btn-outline-primary bi bi-pencil-square"> 수정</button>
                         </form>
                     </li>
                 </ul>
@@ -81,11 +82,14 @@
                 <input type="hidden" id="postsId" th:value="${post.id}">
 
                 <div class="card-body" th:if="${user}">
-                    <textarea id="comment" class="form-control" rows="4" placeholder="댓글을 입력하세요"></textarea>
-                </div>
-
-                <div class="card-footer" th:if="${user}">
-                    <button type="button" id="btn-comment-save" class="btn btn-outline-primary bi bi-pencil-square"> 등록</button>
+                    <div class="row">
+                        <div class="col-10">
+                            <textarea id="comment" class="form-control" rows="3" placeholder="댓글을 입력하세요"></textarea>
+                        </div>
+                        <div class="col-2 ">
+                            <button type="button" id="btn-comment-save" class="btn btn-primary btn"> 등록</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card-body" style="font-size: small" th:unless="${user}">

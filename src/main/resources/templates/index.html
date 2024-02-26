@@ -1,22 +1,23 @@
 <th:block th:replace="~{fragments/header :: headerFragment}"></th:block>
 
-<h1><a href="/">게시판</a></h1>
-<div class="col-md-12">
+<h1 style="text-align: center;"><a href="/">게시판</a></h1>
+<div class="col-md-9 mx-auto">
     <!--로그인 기능 영역-->
     <div class="row">
         <div class="col-md-12">
-            <a href="/posts/save" role="button"
-               class="btn btn-primary float-right">글 등록</a>
-            <div th:if="${userName}">
-                안녕하세요! <span id="user" th:text="${userName}"></span> 님
-                <a href="/logout" class="btn btn-info active" role="button">Logout</a>
-            </div>
-            <div th:unless="${userName}">
-                <a href="/oauth2/authorization/google" class="btn btn-success active" role="button">Google Login</a>
-                <a href="/oauth2/authorization/naver" class="btn btn-secondary active" role="button">Naver Login</a>
+            <div class="text-md-right"> <!-- 이 부분을 추가합니다. -->
+                <div th:if="${userName}">
+                    안녕하세요! <span id="user" th:text="${userName}"></span> 님
+                    <a href="/logout" class="btn btn-info active" role="button">Logout</a>
+                </div>
+                <div th:unless="${userName}">
+                    <a href="/oauth2/authorization/google" class="btn btn-success active" role="button">Google Login</a>
+                    <a href="/oauth2/authorization/naver" class="btn btn-secondary active" role="button">Naver Login</a>
+                </div>
             </div>
         </div>
     </div>
+
     <br>
 
     <!--검색 영역-->
@@ -31,22 +32,22 @@
     <!-- 목록 출력 영역 -->
     <table class="table table-horizontal table-bordered">
         <thead class="thead-strong">
-        <tr>
-            <th>게시글번호</th>
-            <th>제목</th>
-            <th>작성자</th>
-            <th>최종수정일</th>
-            <th>조회수</th>
-        </tr>
+            <tr>
+                <th style="width: 10%; text-align: center">번호</th>
+                <th style="width: 60%; text-align: center">제목</th>
+                <th style="width: 10%; text-align: center">작성자</th>
+                <th style="width: 10%; text-align: center">최종수정일</th>
+                <th style="width: 10%; text-align: center">조회수</th>
+            </tr>
         </thead>
         <tbody id="tbody">
-        <tr th:each="post : ${postsPages}">
-            <td th:text="${post.id}"></td>
-            <td><a th:href="@{'/posts/read/' + ${post.id}}" th:text="${post.title}"></a></td>
-            <td th:text="${post.author}"></td>
-            <td th:text="${post.modifiedDate}"></td>
-            <td th:text="${post.view}"></td>
-        </tr>
+            <tr th:each="post : ${postsPages}">
+                <td style="text-align: center" th:text="${post.id}"></td>
+                <td><a th:href="@{'/posts/read/' + ${post.id}}" th:text="${post.title}"></a></td>
+                <td style="text-align: center" th:text="${post.author}"></td>
+                <td style="text-align: center" th:text="${post.modifiedDate}"></td>
+                <td style="text-align: center" th:text="${post.view}"></td>
+            </tr>
         </tbody>
     </table>
 
@@ -86,6 +87,8 @@
                 </a>
             </li>
         </ul>
+        <a href="/posts/save" role="button"
+           class="btn btn-primary float-right">글 등록</a>
     </nav>
 
 </div>
