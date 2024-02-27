@@ -7,13 +7,14 @@ import com.jhm.springbootwebservice.web.dto.request.CommentRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @RestController
 public class CommentApiController {
 
     private final CommentsService commentsService;
 
-    @PostMapping("/api/posts/{id}/comments")
+    @PostMapping("/posts/{id}/comments")
     public Long save(@PathVariable Long id,
                      @RequestBody CommentRequestDto commentRequestDto,
                      @LoginUser SessionUser user) {
@@ -21,7 +22,7 @@ public class CommentApiController {
         return commentsService.save(user.getId(), id, commentRequestDto);
     }
 
-    @PutMapping("/api/posts/{postsId}/comments/{id}")
+    @PutMapping("/posts/{postsId}/comments/{id}")
     public Long update(@PathVariable Long postsId,
                        @PathVariable Long id,
                        @RequestBody CommentRequestDto dto) {
@@ -29,7 +30,7 @@ public class CommentApiController {
         return commentsService.update(postsId, id, dto);
     }
 
-    @DeleteMapping("/api/posts/{postsId}/comments/{id}")
+    @DeleteMapping("/posts/{postsId}/comments/{id}")
     public Long delete(@PathVariable Long postsId,
                        @PathVariable Long id) {
 

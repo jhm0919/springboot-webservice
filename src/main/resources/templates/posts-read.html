@@ -6,7 +6,7 @@
             <div class="form-group">
                 <label for="content">제목</label>
                 <div style="display: flex;">
-    <!--                <input style="width: 20%" type="text" class="form-control" id="id" th:value="${post.id}" readonly>-->
+                    <input type="hidden" th:id="'id'" th:value="${post.id}">
                     <input style="width: 80%" type="text" class="form-control" id="title" th:value="${post.title}" readonly>
                     <input style="width: 20%; margin-left: 10px" type="text" class="form-control" id="author" th:value="${post.author}" readonly>
                 </div>
