@@ -1,6 +1,7 @@
 package com.jhm.springbootwebservice.domain.posts;
 
 import com.jhm.springbootwebservice.domain.comments.Comment;
+import com.jhm.springbootwebservice.domain.postimage.PostsImage;
 import com.jhm.springbootwebservice.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,7 +42,13 @@ public class Posts extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "posts", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @OrderBy("id asc") // 댓글 정렬
-    private List<Comment> replies;
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "posts", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OrderBy("id asc")
+    private List<PostsImage> PostsImages;
+
+
 
     public void update(String title, String content) {
         this.title = title;

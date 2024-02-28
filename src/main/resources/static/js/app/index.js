@@ -29,6 +29,7 @@ var main = {
             title: $('#title').val(),
             author: $('#author').val(),
             content: $('#content').val(),
+            file : $('#files').val(),
             userId: '<%= session.getAttribute("userId") %>'
         };
 

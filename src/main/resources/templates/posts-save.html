@@ -11,6 +11,10 @@
         <div class="form-group">
             <textarea class="form-control h-75" id="content" placeholder="내용을 입력하세요" th:text="${content}"></textarea>
         </div>
+        <div class="form-floating mb-3">
+            <input type="file" name="files" class="form-control" id="files" multiple>
+            <label for="files">이미지 업로드</label>
+        </div>
     </form>
     <div class="text-right">
         <a href="/" role="button" class="btn btn-secondary">취소</a>

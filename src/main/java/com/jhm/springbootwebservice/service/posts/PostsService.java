@@ -1,5 +1,6 @@
 package com.jhm.springbootwebservice.service.posts;
 
+import com.jhm.springbootwebservice.web.dto.request.PostsImageRequestDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
@@ -9,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface PostsService {
 
-    Long save(Long id, PostsSaveRequestDto requestDto);
+    Long save(Long id, PostsSaveRequestDto postsSaveRequestDto, PostsImageRequestDto postsImageRequestDto);
 
     Long update(Long id, PostsUpdateRequestDto requestDto);
 

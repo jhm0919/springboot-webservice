@@ -1,6 +1,7 @@
 package com.jhm.springbootwebservice.web.dto.response;
 
 import com.jhm.springbootwebservice.domain.posts.Posts;
+import com.jhm.springbootwebservice.domain.postimage.PostsImage;
 import lombok.Getter;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class PostsResponseDto {
     private int view;
     private Long userId;
     private List<CommentResponseDto> comments;
+    private List<String> imageUrls;
 
     public PostsResponseDto(Posts entity) {
         this.id = entity.getId();
@@ -24,6 +26,7 @@ public class PostsResponseDto {
         this.author = entity.getAuthor();
         this.view = entity.getView();
         this.userId = entity.getUser().getId();
-        this.comments = entity.getReplies().stream().map(CommentResponseDto::new).collect(Collectors.toList());
+        this.comments = entity.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
+        this.imageUrls = entity.getPostsImages().stream().map(PostsImage::getUrl).collect(Collectors.toList());
     }
 }

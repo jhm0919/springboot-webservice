@@ -1,9 +1,12 @@
 package com.jhm.springbootwebservice.service.posts;
 
+import com.jhm.springbootwebservice.domain.postimage.PostsImageRepository;
 import com.jhm.springbootwebservice.domain.posts.Posts;
+import com.jhm.springbootwebservice.domain.postimage.PostsImage;
 import com.jhm.springbootwebservice.domain.posts.PostsRepository;
 import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
+import com.jhm.springbootwebservice.web.dto.request.PostsImageRequestDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
@@ -13,21 +16,53 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
 public class PostsServiceImpl implements PostsService{
 
     private final PostsRepository postsRepository;
+    private final PostsImageRepository postsImageRepository;
     private final UserRepository userRepository;
 
     @Override
     @Transactional
-    public Long save(Long id, PostsSaveRequestDto requestDto) {
+    public Long save(Long id, PostsSaveRequestDto postsSaveRequestDto, PostsImageRequestDto postsImageRequestDto) {
         User user = userRepository.findById(id).orElseThrow(() ->
             new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
-        requestDto.setUser(user);
-        return postsRepository.save(requestDto.toEntity()).getId();
+
+        postsSaveRequestDto.setUser(user);
+
+        Posts result = postsSaveRequestDto.toEntity();
+
+        if (postsImageRequestDto.getFiles() != null && !postsImageRequestDto.getFiles().isEmpty()) {
+            for (MultipartFile file : postsImageRequestDto.getFiles()) {
+                UUID uuid = UUID.randomUUID();
+                String imageFileName = uuid + "_" + file.getOriginalFilename();
+
+
+                File destinationFile = new File("uploadFolder", imageFileName);
+                try {
+                    file.transferTo(destinationFile);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                PostsImage image = PostsImage.builder()
+                        .url("/postsImages/" + imageFileName)
+                        .posts(result)
+                        .build();
+
+                postsImageRepository.save(image);
+            }
+        }
+
+        return postsRepository.save(result).getId();
     }
 
     @Override
