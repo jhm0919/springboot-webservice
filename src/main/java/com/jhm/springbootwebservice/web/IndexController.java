@@ -64,6 +64,12 @@ public class IndexController {
     public String postsRead(@PathVariable Long id, @LoginUser SessionUser user, Model model) {
         PostsResponseDto dto = postsService.findById(id);
         List<CommentResponseDto> comments = dto.getComments();
+        List<String> imageUrls = dto.getImageUrls();
+        for (String imageUrl : imageUrls) {
+            String modifiedImageUrl = imageUrl.replace("[", "").replace("]", "");
+            model.addAttribute("imageUrl", modifiedImageUrl);
+        }
+
 
         if (comments != null && !comments.isEmpty()) {
             model.addAttribute("comments", comments);

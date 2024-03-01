@@ -48,8 +48,6 @@ public class Posts extends BaseTimeEntity {
     @OrderBy("id asc")
     private List<PostsImage> PostsImages;
 
-
-
     public void update(String title, String content) {
         this.title = title;
         this.content = content;

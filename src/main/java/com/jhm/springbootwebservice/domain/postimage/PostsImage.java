@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Builder
 @Getter
@@ -25,7 +28,4 @@ public class PostsImage {
     @JoinColumn(name = "posts_id")
     private Posts posts;
 
-    public PostsImage(PostsImage postsImage) {
-
-    }
 }

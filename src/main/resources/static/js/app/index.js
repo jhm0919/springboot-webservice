@@ -12,6 +12,7 @@ var main = {
         $('#btn-delete').on('click', function () {
             _this.delete();
         });
+
         $('#btn-comment-save').on('click', function () {
             _this.commentSave();
         });
@@ -25,30 +26,41 @@ var main = {
         });
     },
     save : function () {
+        var formData = new FormData();
         var data = {
             title: $('#title').val(),
             author: $('#author').val(),
             content: $('#content').val(),
-            file : $('#files').val(),
             userId: '<%= session.getAttribute("userId") %>'
         };
+        const inputFile = $("input[type='file']");
+        const files = inputFile[0].files;
 
-        if (!data.title) {
-            alert("제목을 입력해주세요.")
-            return
+        formData.append('json_data', new Blob([JSON.stringify(data)],
+            {type: 'application/json; charset=UTF-8;'}));
+        for(let i = 0; i < files.length; i++) {
+            console.log(files[i]);
+            formData.append("files", files[i]);
         }
 
-        if (!data.content) {
-            alert("내용을 입력해주세요.")
-            return
-        }
+        // if (!formData.get('json_data').title) {
+        //     alert("제목을 입력해주세요.")
+        //     return
+        // }
+        //
+        // if (!formData.get('json_data').content) {
+        //     alert("내용을 입력해주세요.")
+        //     return
+        // }
 
         $.ajax({
             type: 'POST',
             url: '/api/posts',
+            data: formData,
+            contentType:false,
+            processData: false,
+            cache: false,
             dataType: 'json',
-            contentType:'application/json; charset=utf-8',
-            data: JSON.stringify(data)
         }).done(function() {
             alert('게시글이 등록되었습니다.');
             window.location.href = '/';

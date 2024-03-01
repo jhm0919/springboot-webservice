@@ -8,20 +8,26 @@ import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Slf4j
 @RestController
 public class PostsApiController {
 
     private final PostsService postsService;
 
-    @PostMapping("/posts")
-    public Long save(@RequestBody PostsSaveRequestDto postsSaveRequestDto,
-                     @RequestBody PostsImageRequestDto postsImageRequestDto,
+    @PostMapping(value = "/posts", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Long save(@RequestPart("json_data") PostsSaveRequestDto postsSaveRequestDto,
+                     @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles,
                      @LoginUser SessionUser user) {
-        return postsService.save(user.getId(), postsSaveRequestDto, postsImageRequestDto);
+        return postsService.save(user.getId(), postsSaveRequestDto, multipartFiles);
     }
 
     @GetMapping("/posts/{id}")

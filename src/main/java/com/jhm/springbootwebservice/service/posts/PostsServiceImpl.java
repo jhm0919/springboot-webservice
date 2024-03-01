@@ -12,6 +12,7 @@ import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class PostsServiceImpl implements PostsService{
@@ -32,21 +35,24 @@ public class PostsServiceImpl implements PostsService{
 
     @Override
     @Transactional
-    public Long save(Long id, PostsSaveRequestDto postsSaveRequestDto, PostsImageRequestDto postsImageRequestDto) {
+    public Long save(Long id, PostsSaveRequestDto postsSaveRequestDto, List<MultipartFile> multipartFiles) {
         User user = userRepository.findById(id).orElseThrow(() ->
             new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+
+        log.info("multipartFiles = {}", multipartFiles);
 
         postsSaveRequestDto.setUser(user);
 
         Posts result = postsSaveRequestDto.toEntity();
 
-        if (postsImageRequestDto.getFiles() != null && !postsImageRequestDto.getFiles().isEmpty()) {
-            for (MultipartFile file : postsImageRequestDto.getFiles()) {
+        if (multipartFiles != null && !multipartFiles.isEmpty()) {
+            for (MultipartFile file : multipartFiles) {
                 UUID uuid = UUID.randomUUID();
                 String imageFileName = uuid + "_" + file.getOriginalFilename();
 
+                File uploadFolder = new File("C:/springboot-webservice/src/main/resources/static/files/");
+                File destinationFile = new File(uploadFolder, imageFileName);
 
-                File destinationFile = new File("uploadFolder", imageFileName);
                 try {
                     file.transferTo(destinationFile);
                 } catch (IOException e) {
@@ -54,7 +60,7 @@ public class PostsServiceImpl implements PostsService{
                 }
 
                 PostsImage image = PostsImage.builder()
-                        .url("/postsImages/" + imageFileName)
+                        .url(imageFileName)
                         .posts(result)
                         .build();
 

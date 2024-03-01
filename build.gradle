@@ -25,6 +25,12 @@ dependencies {
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.session:spring-session-jdbc'
+
+  implementation 'com.fasterxml.jackson.core:jackson-databind'
+  implementation 'commons-fileupload:commons-fileupload:1.4'
+  implementation 'commons-io:commons-io:2.6'
+  implementation 'org.apache.tika:tika-core:2.4.1'
+
   runtimeOnly 'com.mysql:mysql-connector-j'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test:'
