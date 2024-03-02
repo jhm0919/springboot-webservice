@@ -11,4 +11,22 @@
     <body>
     <br/>
     <br/>
+    <h1 style="text-align: center;"><a href="/">게시판</a></h1>
+    <div class="col-md-9 mx-auto">
+        <!--로그인 기능 영역-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="text-md-right">
+                    <div th:if="${user}">
+                        안녕하세요! <span id="user" th:text="${user.getName()}"></span> 님
+                        <a href="/logout" class="btn btn-info active" role="button">Logout</a>
+                    </div>
+                    <div th:unless="${user.getName()}">
+                        <a href="/auth/login" class="btn btn-secondary" role="button">로그인</a>
+                        <!--                    <a href="/oauth2/authorization/google" class="btn btn-success active" role="button">Google Login</a>-->
+                        <!--                    <a href="/oauth2/authorization/naver" class="btn btn-secondary active" role="button">Naver Login</a>-->
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>

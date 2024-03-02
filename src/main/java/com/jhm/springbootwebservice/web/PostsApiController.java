@@ -35,9 +35,11 @@ public class PostsApiController {
         return postsService.findById(id);
     }
 
-    @PutMapping("/posts/{id}")
-    public Long update(@PathVariable Long id, @RequestBody PostsUpdateRequestDto requestDto) {
-        return postsService.update(id, requestDto);
+    @PutMapping(value = "/posts/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Long update(@PathVariable Long id,
+                       @RequestPart("json_data") PostsUpdateRequestDto requestDto,
+                       @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
+        return postsService.update(id, requestDto, multipartFiles);
     }
 
     @DeleteMapping("/posts/{id}")

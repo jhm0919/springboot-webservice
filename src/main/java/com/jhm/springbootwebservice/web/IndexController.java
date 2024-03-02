@@ -46,17 +46,14 @@ public class IndexController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
-        if (user != null) {
-            model.addAttribute("userName", user.getName());
-        }
+        getUser(user, model);
+
         return "index";
     }
 
     @GetMapping("/posts/save")
     public String postsSave(Model model, @LoginUser SessionUser user) {
-        if (user != null) {
-            model.addAttribute("userName", user.getName());
-        }
+        getUser(user, model);
         return "posts-save";
     }
 
@@ -65,11 +62,7 @@ public class IndexController {
         PostsResponseDto dto = postsService.findById(id);
         List<CommentResponseDto> comments = dto.getComments();
         List<String> imageUrls = dto.getImageUrls();
-        for (String imageUrl : imageUrls) {
-            String modifiedImageUrl = imageUrl.replace("[", "").replace("]", "");
-            model.addAttribute("imageUrl", modifiedImageUrl);
-        }
-
+        model.addAttribute("imageUrls", imageUrls);
 
         if (comments != null && !comments.isEmpty()) {
             model.addAttribute("comments", comments);
@@ -93,9 +86,18 @@ public class IndexController {
 
     @GetMapping("/posts/update/{id}")
     public String postsUpdate(@PathVariable Long id, @LoginUser SessionUser user, Model model) {
+        getUser(user, model);
         PostsResponseDto dto = postsService.findById(id);
+        List<String> imageUrls = dto.getImageUrls();
+        model.addAttribute("imageUrls", imageUrls);
         model.addAttribute("post", dto);
         return "posts-update";
+    }
+
+    private void getUser(SessionUser user, Model model) {
+        if (user != null) {
+            model.addAttribute("user", user);
+        }
     }
 
 }

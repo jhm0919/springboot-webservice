@@ -35,16 +35,22 @@ public class PostsServiceImpl implements PostsService{
 
     @Override
     @Transactional
-    public Long save(Long id, PostsSaveRequestDto postsSaveRequestDto, List<MultipartFile> multipartFiles) {
+    public Long save(Long id, PostsSaveRequestDto requestDto, List<MultipartFile> multipartFiles) {
         User user = userRepository.findById(id).orElseThrow(() ->
             new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
         log.info("multipartFiles = {}", multipartFiles);
 
-        postsSaveRequestDto.setUser(user);
+        requestDto.setUser(user);
 
-        Posts result = postsSaveRequestDto.toEntity();
+        Posts result = requestDto.toEntity();
 
+        saveImages(multipartFiles, result);
+
+        return postsRepository.save(result).getId();
+    }
+
+    private void saveImages(List<MultipartFile> multipartFiles, Posts result) {
         if (multipartFiles != null && !multipartFiles.isEmpty()) {
             for (MultipartFile file : multipartFiles) {
                 UUID uuid = UUID.randomUUID();
@@ -67,18 +73,16 @@ public class PostsServiceImpl implements PostsService{
                 postsImageRepository.save(image);
             }
         }
-
-        return postsRepository.save(result).getId();
     }
+
 
     @Override
     @Transactional
-    public Long update(Long id, PostsUpdateRequestDto requestDto) {
+    public Long update(Long id, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles) {
         Posts posts = postsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-
+        saveImages(multipartFiles, posts);
         posts.update(requestDto.getTitle(), requestDto.getContent());
-
         return id;
     }
 

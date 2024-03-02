@@ -33,25 +33,24 @@ var main = {
             content: $('#content').val(),
             userId: '<%= session.getAttribute("userId") %>'
         };
-        const inputFile = $("input[type='file']");
-        const files = inputFile[0].files;
+        var inputFile = $("input[type='file']");
+        var files = inputFile[0].files;
 
         formData.append('json_data', new Blob([JSON.stringify(data)],
             {type: 'application/json; charset=UTF-8;'}));
         for(let i = 0; i < files.length; i++) {
-            console.log(files[i]);
             formData.append("files", files[i]);
         }
 
-        // if (!formData.get('json_data').title) {
-        //     alert("제목을 입력해주세요.")
-        //     return
-        // }
-        //
-        // if (!formData.get('json_data').content) {
-        //     alert("내용을 입력해주세요.")
-        //     return
-        // }
+        if (!data.title) {
+            alert("제목을 입력해주세요.")
+            return
+        }
+
+        if (!data.content) {
+            alert("내용을 입력해주세요.")
+            return
+        }
 
         $.ajax({
             type: 'POST',
@@ -69,19 +68,46 @@ var main = {
         });
     },
     update : function () {
+        var formData = new FormData();
         var data = {
             title: $('#title').val(),
-            content: $('#content').val()
+            content: $('#content').val(),
         };
-
         var id = $('#id').val();
+        var inputFile = $("input[type='file']");
+        var files = inputFile[0].files;
+
+        formData.append('json_data', new Blob([JSON.stringify(data)],
+            {type: 'application/json; charset=UTF-8;'}));
+        for(let i = 0; i < files.length; i++) {
+            formData.append("files", files[i]);
+        }
+
+        if (!data.title) {
+            alert("제목을 입력해주세요.")
+            return
+        }
+
+        if (!data.content) {
+            alert("내용을 입력해주세요.")
+            return
+        }
+
+        // var data = {
+        //     title: $('#title').val(),
+        //     content: $('#content').val()
+        // };
+        //
+        // var id = $('#id').val();
 
         $.ajax({
             type: 'PUT',
             url: '/api/posts/'+id,
+            data: formData,
+            contentType:false,
+            processData: false,
+            cache: false,
             dataType: 'json',
-            contentType:'application/json; charset=utf-8',
-            data: JSON.stringify(data)
         }).done(function() {
             alert('글이 수정되었습니다.');
             window.location.href = '/';
