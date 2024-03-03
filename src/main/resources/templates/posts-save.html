@@ -6,7 +6,7 @@
     <form enctype="multipart/form-data">
         <div style="display: flex;" class="form-group">
             <input style="width: 80%" type="text" class="form-control" id="title" placeholder="제목을 입력하세요" th:value="${title}">
-            <input style="width: 20%; margin-left: 10px;" type="text" class="form-control" id="author" th:value="${userName}" readonly>
+            <input style="width: 20%; margin-left: 10px;" type="text" class="form-control" id="author" th:value="${user.getName()}" readonly>
         </div>
         <div class="form-group">
             <textarea class="form-control h-75" id="content" placeholder="내용을 입력하세요" th:text="${content}"></textarea>

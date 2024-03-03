@@ -47,4 +47,11 @@ public class PostsApiController {
         postsService.delete(id);
         return id;
     }
+
+    @DeleteMapping("/posts/{postsId}/images/{id}")
+    public Long deleteImage(@PathVariable Long postsId,
+                            @PathVariable Long id) {
+        postsService.deleteImage(postsId, id);
+        return id;
+    }
 }

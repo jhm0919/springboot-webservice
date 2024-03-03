@@ -23,6 +23,11 @@
             <div class="form-floating mb-3">
                 <label>이미지 업로드</label>
                 <input type="file" name="files" accept="image/*,.txt" class="form-control" id="files" multiple>
+                <th:block th:each="image : ${postsImages}">
+                    <div th:text="${image.name}"/>
+                    <img width="100" th:src="'/files/' + ${image.url}"/>
+                    <button th:onclick="'main.imageDelete(' + ${image.postId} + ',' + ${image.id} + ')'" class="badge bi bi-x-square">삭제</button>
+                </th:block>
             </div>
         </form>
         <div class="text-right">

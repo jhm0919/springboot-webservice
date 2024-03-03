@@ -17,7 +17,7 @@ public class PostsResponseDto {
     private int view;
     private Long userId;
     private List<CommentResponseDto> comments;
-    private List<String> imageUrls;
+    private List<PostsImageResponseDto> postsImages;
 
     public PostsResponseDto(Posts entity) {
         this.id = entity.getId();
@@ -27,6 +27,7 @@ public class PostsResponseDto {
         this.view = entity.getView();
         this.userId = entity.getUser().getId();
         this.comments = entity.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
-        this.imageUrls = entity.getPostsImages().stream().map(PostsImage::getUrl).collect(Collectors.toList());
+//        this.imageUrls = entity.getPostsImages().stream().map(PostsImage::getUrl).collect(Collectors.toList());
+        this.postsImages = entity.getPostsImages().stream().map(PostsImageResponseDto::new).collect(Collectors.toList());
     }
 }

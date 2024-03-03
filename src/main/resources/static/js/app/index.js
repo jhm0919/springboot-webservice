@@ -93,13 +93,6 @@ var main = {
             return
         }
 
-        // var data = {
-        //     title: $('#title').val(),
-        //     content: $('#content').val()
-        // };
-        //
-        // var id = $('#id').val();
-
         $.ajax({
             type: 'PUT',
             url: '/api/posts/'+id,
@@ -118,7 +111,7 @@ var main = {
     delete : function () {
         var id = $('#id').val();
 
-        if (confirm('정말로 삭제하시겠습니까?')) {
+        if (confirm('정말 삭제하시겠습니까?')) {
             $.ajax({
                 type: 'DELETE',
                 url: '/api/posts/'+id,
@@ -198,6 +191,20 @@ var main = {
                 alert(JSON.stringify(error));
             });
         }
+    },
+    /** 이미지 삭제 */
+    imageDelete : function (postsId, imageId) {
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/posts/' + postsId + '/images/' + imageId,
+            dataType: 'JSON',
+        }).done(function () {
+            // alert('이미지가 삭제되었습니다.');
+            window.location.reload();
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+
     }
 };
 

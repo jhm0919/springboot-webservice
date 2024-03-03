@@ -32,6 +32,7 @@ public class PostsServiceImpl implements PostsService{
     private final PostsRepository postsRepository;
     private final PostsImageRepository postsImageRepository;
     private final UserRepository userRepository;
+    private final String PREV_IMAGE_URL = "C:/springboot-webservice/src/main/resources/static/files/";
 
     @Override
     @Transactional
@@ -54,9 +55,10 @@ public class PostsServiceImpl implements PostsService{
         if (multipartFiles != null && !multipartFiles.isEmpty()) {
             for (MultipartFile file : multipartFiles) {
                 UUID uuid = UUID.randomUUID();
-                String imageFileName = uuid + "_" + file.getOriginalFilename();
+                String originalName = file.getOriginalFilename();
+                String imageFileName = uuid + "_" + originalName;
 
-                File uploadFolder = new File("C:/springboot-webservice/src/main/resources/static/files/");
+                File uploadFolder = new File(PREV_IMAGE_URL);
                 File destinationFile = new File(uploadFolder, imageFileName);
 
                 try {
@@ -67,6 +69,7 @@ public class PostsServiceImpl implements PostsService{
 
                 PostsImage image = PostsImage.builder()
                         .url(imageFileName)
+                        .name(originalName)
                         .posts(result)
                         .build();
 
@@ -123,7 +126,18 @@ public class PostsServiceImpl implements PostsService{
     public void delete(Long id) {
         Posts posts = postsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-
         postsRepository.delete(posts);
+    }
+
+    @Override
+    public Long deleteImage(Long postsId, Long id) {
+        PostsImage postsImage = postsImageRepository.findByPostsIdAndId(postsId, id);
+        String imageFileName = PREV_IMAGE_URL + postsImage.getUrl();
+        File imageFileUrl = new File(imageFileName);
+
+        if (imageFileUrl.delete()) {
+            postsImageRepository.delete(postsImage);
+        }
+        return id;
     }
 }

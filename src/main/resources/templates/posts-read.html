@@ -14,8 +14,8 @@
             <div class="form-group">
                 <label for="content">내용</label>
                 <div id="content" th:text="${post.content}"></div>
-                <th:block th:each="image : ${imageUrls}">
-                    <img width="500" th:src="'/files/' + ${image}"/>
+                <th:block th:each="image : ${postsImages}">
+                    <img width="500" th:src="'/files/' + ${image.url}"/>
                 </th:block>
             </div>
         </form>

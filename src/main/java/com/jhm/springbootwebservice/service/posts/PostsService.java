@@ -7,6 +7,7 @@ import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsUpdateRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -27,4 +28,5 @@ public interface PostsService {
 
     void delete(Long id);
 
+    public Long deleteImage(Long postsId, Long id);
 }

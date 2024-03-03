@@ -3,6 +3,7 @@ package com.jhm.springbootwebservice.web;
 import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.service.posts.PostsService;
+import com.jhm.springbootwebservice.web.dto.response.PostsImageResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.CommentResponseDto;
@@ -61,8 +62,9 @@ public class IndexController {
     public String postsRead(@PathVariable Long id, @LoginUser SessionUser user, Model model) {
         PostsResponseDto dto = postsService.findById(id);
         List<CommentResponseDto> comments = dto.getComments();
-        List<String> imageUrls = dto.getImageUrls();
-        model.addAttribute("imageUrls", imageUrls);
+        List<PostsImageResponseDto> postsImages = dto.getPostsImages();
+//        List<String> imageUrls = dto.getImageUrls();
+        model.addAttribute("postsImages", postsImages);
 
         if (comments != null && !comments.isEmpty()) {
             model.addAttribute("comments", comments);
@@ -88,8 +90,8 @@ public class IndexController {
     public String postsUpdate(@PathVariable Long id, @LoginUser SessionUser user, Model model) {
         getUser(user, model);
         PostsResponseDto dto = postsService.findById(id);
-        List<String> imageUrls = dto.getImageUrls();
-        model.addAttribute("imageUrls", imageUrls);
+        List<PostsImageResponseDto> postsImages = dto.getPostsImages();
+        model.addAttribute("postsImages", postsImages);
         model.addAttribute("post", dto);
         return "posts-update";
     }
