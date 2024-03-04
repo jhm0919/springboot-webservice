@@ -1,4 +1,4 @@
-package com.jhm.springbootwebservice.domain.posts;
+package com.jhm.springbootwebservice.domain;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

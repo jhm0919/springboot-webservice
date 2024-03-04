@@ -1,5 +1,6 @@
 package com.jhm.springbootwebservice.domain.posts;
 
+import com.jhm.springbootwebservice.domain.BaseTimeEntity;
 import com.jhm.springbootwebservice.domain.comments.Comment;
 import com.jhm.springbootwebservice.domain.postimage.PostsImage;
 import com.jhm.springbootwebservice.domain.user.User;
@@ -39,6 +40,11 @@ public class Posts extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY) // @ManyToOne의 기본 Fetch 전략은 EAGER(즉시 로딩)이다.
     @JoinColumn(name = "user_id")
     private User user;
+
+//    /** 게시판 타입 추가중 */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PostType postType;
 
     @OneToMany(mappedBy = "posts", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @OrderBy("id asc") // 댓글 정렬

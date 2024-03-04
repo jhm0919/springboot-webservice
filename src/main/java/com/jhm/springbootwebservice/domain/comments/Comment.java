@@ -1,6 +1,6 @@
 package com.jhm.springbootwebservice.domain.comments;
 
-import com.jhm.springbootwebservice.domain.posts.BaseTimeEntity;
+import com.jhm.springbootwebservice.domain.BaseTimeEntity;
 import com.jhm.springbootwebservice.domain.posts.Posts;
 import com.jhm.springbootwebservice.domain.user.User;
 import jakarta.persistence.*;

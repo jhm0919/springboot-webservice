@@ -1,15 +1,27 @@
 <th:block th:replace="~{fragments/header :: headerFragment}"></th:block>
 
 <div class="col-md-9 mx-auto">
-    <br>
-    <!--검색 영역-->
-    <div class="d-flex justify-content-end">
-        <form action="/" method="GET" class="form-inline" role="search">
-            <input type="text" name="searchKeyword" class="form-control" id="search" placeholder="검색어를 입력하세요."
-            th:value="${param.searchKeyword}">
-            <button class="btn btn-success">검색</button>
-        </form>
-    </div>
+
+    <br/>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+            </ul>
+            <!--검색 영역-->
+            <form class="form-inline my-2 my-lg-0" action="/" method="GET" role="search">
+                <input class="form-control mr-sm-2" type="text" name="searchKeyword" id="search" placeholder="검색어를 입력하세요."
+                       th:value="${param.searchKeyword}">
+                <button class="btn btn-light">검색</button>
+            </form>
+        </div>
+    </nav>
 
     <!-- 목록 출력 영역 -->
     <table class="table table-horizontal table-bordered">

@@ -1,6 +1,6 @@
 package com.jhm.springbootwebservice.domain.user;
 
-import com.jhm.springbootwebservice.domain.posts.BaseTimeEntity;
+import com.jhm.springbootwebservice.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
