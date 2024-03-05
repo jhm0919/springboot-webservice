@@ -2,6 +2,7 @@ package com.jhm.springbootwebservice.web;
 
 import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
+import com.jhm.springbootwebservice.domain.posts.PostType;
 import com.jhm.springbootwebservice.service.posts.PostsService;
 import com.jhm.springbootwebservice.web.dto.response.PostsImageResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
@@ -42,7 +43,8 @@ public class IndexController {
         int startPage = Math.max(nowPage - 4, 1); //매개변수로 들어온 두 값을 비교해서 큰값을 반환
         int endPage = Math.min(nowPage + 5, posts.getTotalPages());
 
-        model.addAttribute("postsPages", posts);
+        model.addAttribute("postTypes", PostType.values());
+        model.addAttribute("posts", posts);
         model.addAttribute("nowPage", nowPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
@@ -63,7 +65,6 @@ public class IndexController {
         PostsResponseDto dto = postsService.findById(id);
         List<CommentResponseDto> comments = dto.getComments();
         List<PostsImageResponseDto> postsImages = dto.getPostsImages();
-//        List<String> imageUrls = dto.getImageUrls();
         model.addAttribute("postsImages", postsImages);
 
         if (comments != null && !comments.isEmpty()) {

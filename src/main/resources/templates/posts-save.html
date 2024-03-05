@@ -5,11 +5,13 @@
 <div class="col-md-9 mx-auto">
     <form enctype="multipart/form-data">
         <label for="postType">게시판</label>
-        <select name="postType" id="postType">
-            <option value="notice">공지사항</option>
-            <option value="free">자유게시판</option>
-            <option value="qna">Q&A</option>
-        </select>
+        <div>
+            <select name="postType" id="postType">
+                <option value="ALL">전체게시판</option>
+                <option value="NOTICE">공지사항</option>
+                <option value="FREE">자유게시판</option>
+            </select>
+        </div>
         <label for="content">제목</label>
         <div style="display: flex;" class="form-group">
             <input style="width: 80%" type="text" class="form-control" id="title" placeholder="제목을 입력하세요" th:value="${title}">

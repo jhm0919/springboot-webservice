@@ -20,5 +20,7 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
     @Query("update Posts p set p.view = p.view + 1 where p.id = :id")
     int updateView(Long id);
 
+    Page<Posts> findAllByPostType(Pageable pageable, String postType);
+
     Page<Posts> findByTitleContaining(String searchKeyword, Pageable pageable);
 }

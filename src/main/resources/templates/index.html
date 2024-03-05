@@ -7,12 +7,16 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
+                <th:block th:each="postType : ${postTypes}">
+<!--                    <li class="nav-item active">-->
+                    <li class="nav-item">
+                        <a class="nav-link" id="filterPost" th:text="${postType.title}" th:href="@{/(postType.title)}"><span class="sr-only">(current)</span></a>
+                    </li>
+                </th:block>
+
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="#">공지사항</a>-->
+<!--                </li>-->
             </ul>
             <!--검색 영역-->
             <form class="form-inline my-2 my-lg-0" action="/" method="GET" role="search">
@@ -28,15 +32,17 @@
         <thead class="thead-strong">
             <tr>
                 <th style="width: 10%; text-align: center">번호</th>
-                <th style="width: 50%; text-align: center">제목</th>
+                <th style="width: 10%; text-align: center">탭</th>
+                <th style="width: 40%; text-align: center">제목</th>
                 <th style="width: 10%; text-align: center">작성자</th>
                 <th style="width: 20%; text-align: center">최종수정일</th>
                 <th style="width: 10%; text-align: center">조회수</th>
             </tr>
         </thead>
         <tbody id="tbody">
-            <tr th:each="post : ${postsPages}">
+            <tr th:each="post : ${posts}">
                 <td style="text-align: center" th:text="${post.id}"></td>
+                <td style="text-align: center" th:text="${post.postType}"></td>
                 <td><a th:href="@{'/posts/read/' + ${post.id}}" th:text="${post.title}"></a></td>
                 <td style="text-align: center" th:text="${post.author}"></td>
                 <td style="text-align: center" th:text="${post.modifiedDate}"></td>
@@ -50,13 +56,13 @@
         <ul class="pagination justify-content-center">
             <!-- 첫번째 페이지로 이동 -->
             <li class="page-item">
-                <a class="page-link" th:href="${postsPages.first} ? '#' : @{/(page=0)}" aria-label="Previous">
+                <a class="page-link" th:href="${posts.first} ? '#' : @{/(page=0)}" aria-label="Previous">
                     <span aria-hidden="true">처음</span>
                 </a>
             </li>
             <!-- 이전 링크 활성화 비활성화 -->
             <li class="page-item">
-                <a class="page-link" th:href="${postsPages.first} ? '#' : @{/(page=${postsPages.number - 1})}" aria-label="Previous">
+                <a class="page-link" th:href="${posts.first} ? '#' : @{/(page=${posts.number - 1})}" aria-label="Previous">
                     <span aria-hidden="true">이전</span>
                 </a>
             </li>
@@ -70,13 +76,13 @@
             </th:block>
             <!-- 다음 링크 활성화 비활성화 -->
             <li class="page-item">
-                <a class="page-link" th:href="${postsPages.last} ? '#' : @{/(page=${postsPages.number + 1})}" aria-label="Next">
+                <a class="page-link" th:href="${posts.last} ? '#' : @{/(page=${posts.number + 1})}" aria-label="Next">
                     <span aria-hidden="true">다음</span>
                 </a>
             </li>
             <!-- 마지막 페이지로 이동 -->
             <li class="page-item">
-                <a class="page-link" th:href="${postsPages.last} ? '#' : @{/(page=${postsPages.totalPages - 1})}" aria-label="Previous">
+                <a class="page-link" th:href="${posts.last} ? '#' : @{/(page=${posts.totalPages - 1})}" aria-label="Previous">
                     <span aria-hidden="true">끝</span>
                 </a>
             </li>

@@ -24,10 +24,17 @@ var main = {
                 _this.commentUpdate(form); // 해당 form으로 업데이트 수행
             });
         });
+
+        // document.querySelectorAll('#filterPost').forEach(function (item) {
+        //     item.addEventListener('click', function () {
+        //         _this.filterPost(item.val());
+        //     })
+        // });
     },
     save : function () {
         var formData = new FormData();
         var data = {
+            postType: $('#postType').val(),
             title: $('#title').val(),
             author: $('#author').val(),
             content: $('#content').val(),
@@ -199,13 +206,24 @@ var main = {
             url: '/api/posts/' + postsId + '/images/' + imageId,
             dataType: 'JSON',
         }).done(function () {
-            // alert('이미지가 삭제되었습니다.');
+            alert('이미지가 삭제되었습니다.');
             window.location.reload();
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
+    },
 
-    }
+    // filterPost: function (value) {
+    //     $.ajax({
+    //         type: 'GET',
+    //         url: '',
+    //         dataType: 'JSON',
+    //     }).done(function () {
+    //         window.location.reload();
+    //     }).fail(function (error) {
+    //         alert(JSON.stringify(error));
+    //     });
+    // },
 };
 
 main.init();
