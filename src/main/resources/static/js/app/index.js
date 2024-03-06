@@ -59,6 +59,11 @@ var main = {
             return
         }
 
+        if (!data.postType) {
+            alert("게시판을 선택해주세요.")
+            return;
+        }
+
         $.ajax({
             type: 'POST',
             url: '/api/posts',

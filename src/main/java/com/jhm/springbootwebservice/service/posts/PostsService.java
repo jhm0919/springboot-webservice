@@ -29,4 +29,6 @@ public interface PostsService {
     void delete(Long id);
 
     public Long deleteImage(Long postsId, Long id);
+
+    Page<PostsListResponseDto> findAllByPostType(Pageable pageable, String postType);
 }

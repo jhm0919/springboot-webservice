@@ -9,6 +9,7 @@ import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.CommentResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 public class IndexController {
@@ -29,15 +31,19 @@ public class IndexController {
     @GetMapping("/")
     public String index(Model model, @LoginUser SessionUser user, // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
                         @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                        String searchKeyword) {
+                        String searchKeyword,
+                        String postType) {
 
         Page<PostsListResponseDto> posts;
 
-        if (searchKeyword == null) {
-            posts = postsService.findAll(pageable);
-        } else {
+        if (postType != null) {
+            posts = postsService.findAllByPostType(pageable, postType);
+        } else if (searchKeyword != null) {
             posts = postsService.postsSearch(searchKeyword, pageable);
+        } else {
+            posts = postsService.findAll(pageable);
         }
+
 
         int nowPage = posts.getPageable().getPageNumber() + 1; //pageable에서 넘어온 현재페이지를 가지고올수있다 * 0부터시작하니까 +1
         int startPage = Math.max(nowPage - 4, 1); //매개변수로 들어온 두 값을 비교해서 큰값을 반환

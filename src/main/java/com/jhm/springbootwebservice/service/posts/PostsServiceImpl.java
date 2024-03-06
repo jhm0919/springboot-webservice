@@ -1,6 +1,7 @@
 package com.jhm.springbootwebservice.service.posts;
 
 import com.jhm.springbootwebservice.domain.postimage.PostsImageRepository;
+import com.jhm.springbootwebservice.domain.posts.PostType;
 import com.jhm.springbootwebservice.domain.posts.Posts;
 import com.jhm.springbootwebservice.domain.postimage.PostsImage;
 import com.jhm.springbootwebservice.domain.posts.PostsRepository;
@@ -112,6 +113,12 @@ public class PostsServiceImpl implements PostsService{
         return postsListResponseDto;
     }
 
+    @Override
+    public Page<PostsListResponseDto> findAllByPostType(Pageable pageable, String postType) {
+        PostType type = PostType.valueOf(postType.toUpperCase());
+        Page<Posts> posts = postsRepository.findAllByPostType(type, pageable);
+        return posts.map(PostsListResponseDto::new);
+    }
 
     @Override
     @Transactional
