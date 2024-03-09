@@ -8,6 +8,7 @@ import com.jhm.springbootwebservice.web.dto.response.PostsImageResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.CommentResponseDto;
+import com.nimbusds.oauth2.sdk.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,14 +37,10 @@ public class IndexController {
 
         Page<PostsListResponseDto> posts;
 
-        if (postType != null) {
-            posts = postsService.findAllByPostType(pageable, postType);
-        } else if (searchKeyword != null) {
-            posts = postsService.postsSearch(searchKeyword, pageable);
-        } else {
-            posts = postsService.findAll(pageable);
+        if (StringUtils.isBlank(postType)) {
+            postType = null;
         }
-
+        posts = postsService.findAll(pageable, postType, searchKeyword);
 
         int nowPage = posts.getPageable().getPageNumber() + 1; //pageable에서 넘어온 현재페이지를 가지고올수있다 * 0부터시작하니까 +1
         int startPage = Math.max(nowPage - 4, 1); //매개변수로 들어온 두 값을 비교해서 큰값을 반환

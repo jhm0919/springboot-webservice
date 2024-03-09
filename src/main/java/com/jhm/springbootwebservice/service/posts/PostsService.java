@@ -1,13 +1,11 @@
 package com.jhm.springbootwebservice.service.posts;
 
-import com.jhm.springbootwebservice.web.dto.request.PostsImageRequestDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsUpdateRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -22,13 +20,9 @@ public interface PostsService {
 
     PostsResponseDto findById(Long id);
 
-    Page<PostsListResponseDto> findAll(Pageable pageable);
-
-    Page<PostsListResponseDto> postsSearch(String searchKeyword, Pageable pageable);
+    Page<PostsListResponseDto> findAll(Pageable pageable, String postType, String searchKeyword);
 
     void delete(Long id);
 
     public Long deleteImage(Long postsId, Long id);
-
-    Page<PostsListResponseDto> findAllByPostType(Pageable pageable, String postType);
 }

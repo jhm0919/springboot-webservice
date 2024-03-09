@@ -101,31 +101,37 @@ public class PostsServiceImpl implements PostsService{
     public PostsResponseDto findById(Long id) {
         Posts entity = postsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-
         return new PostsResponseDto(entity);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PostsListResponseDto> findAll(Pageable pageable) {
-        Page<Posts> postsPages = postsRepository.findAll(pageable);
-        Page<PostsListResponseDto> postsListResponseDto = postsPages.map(PostsListResponseDto::new);
+    public Page<PostsListResponseDto> findAll(Pageable pageable, String postType, String searchKeyword) {
+        Page<PostsListResponseDto> postsListResponseDto;
+
+        if (postType != null) { // 카테고리 선택 했을 때
+            PostType type = PostType.valueOf(postType.toUpperCase());
+            if (searchKeyword != null) {
+                // 카테고리와 검색어 모두 존재하는 경우
+                postsListResponseDto = mapToDto(postsRepository.findByPostTypeAndTitleContaining(type, searchKeyword, pageable));
+            } else {
+                // postType만 존재하는 경우
+                postsListResponseDto = mapToDto(postsRepository.findAllByPostType(type, pageable));
+            }
+        } else { // 카테고리 선택 안한 경우
+            if (searchKeyword != null) {
+                // 검색어만 있는 경우
+                postsListResponseDto = mapToDto(postsRepository.findByTitleContaining(searchKeyword, pageable));
+            } else {
+                // 카테고리와 검색어 모두 없는 경우
+                postsListResponseDto = mapToDto(postsRepository.findAll(pageable));
+            }
+        }
         return postsListResponseDto;
     }
 
-    @Override
-    public Page<PostsListResponseDto> findAllByPostType(Pageable pageable, String postType) {
-        PostType type = PostType.valueOf(postType.toUpperCase());
-        Page<Posts> posts = postsRepository.findAllByPostType(type, pageable);
-        return posts.map(PostsListResponseDto::new);
-    }
-
-    @Override
-    @Transactional
-    public Page<PostsListResponseDto> postsSearch(String searchKeyword, Pageable pageable) {
-        Page<Posts> posts = postsRepository.findByTitleContaining(searchKeyword, pageable);
-        Page<PostsListResponseDto> postsListResponseDto = posts.map(PostsListResponseDto::new);
-        return postsListResponseDto;
+    private Page<PostsListResponseDto> mapToDto(Page<Posts> postsPage) {
+        return postsPage.map(PostsListResponseDto::new);
     }
 
     @Override
