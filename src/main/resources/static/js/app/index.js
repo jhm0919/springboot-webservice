@@ -24,12 +24,6 @@ var main = {
                 _this.commentUpdate(form); // 해당 form으로 업데이트 수행
             });
         });
-
-        // document.querySelectorAll('#filterPost').forEach(function (item) {
-        //     item.addEventListener('click', function () {
-        //         _this.filterPost(item.val());
-        //     })
-        // });
     },
     save : function () {
         var formData = new FormData();
@@ -217,18 +211,6 @@ var main = {
             alert(JSON.stringify(error));
         });
     },
-
-    // filterPost: function (value) {
-    //     $.ajax({
-    //         type: 'GET',
-    //         url: '',
-    //         dataType: 'JSON',
-    //     }).done(function () {
-    //         window.location.reload();
-    //     }).fail(function (error) {
-    //         alert(JSON.stringify(error));
-    //     });
-    // },
 };
 
 main.init();
