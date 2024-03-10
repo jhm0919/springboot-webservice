@@ -20,7 +20,7 @@ public interface PostsService {
 
     PostsResponseDto findById(Long id);
 
-    Page<PostsListResponseDto> findAll(Pageable pageable, String postType, String searchKeyword);
+    Page<PostsListResponseDto> findAll(Pageable pageable, String postType, String searchType, String searchKeyword);
 
     void delete(Long id);
 

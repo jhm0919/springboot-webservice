@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 /**
  * SQL Mapper 에서의 Dao라고 불리는 DB Layer 접근자
@@ -22,7 +23,15 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
 
     Page<Posts> findAllByPostType(PostType postType, Pageable pageable);
 
+    Page<Posts> findByTitleContainingOrContentContaining(String title, String content, Pageable pageable);
     Page<Posts> findByTitleContaining(String searchKeyword, Pageable pageable);
+    Page<Posts> findByContentContaining(String searchKeyword, Pageable pageable);
+    Page<Posts> findByAuthorContaining(String searchKeyword, Pageable pageable);
 
+    Page<Posts> findByPostTypeAndTitleContainingOrPostTypeAndContentContaining(PostType type1, String title, PostType type2, String content, Pageable pageable);
     Page<Posts> findByPostTypeAndTitleContaining(PostType type, String searchKeyword, Pageable pageable);
+    Page<Posts> findByPostTypeAndContentContaining(PostType type, String searchKeyword, Pageable pageable);
+    Page<Posts> findByPostTypeAndAuthorContaining(PostType type, String searchKeyword, Pageable pageable);
+
+
 }

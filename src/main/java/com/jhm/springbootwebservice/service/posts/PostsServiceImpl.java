@@ -106,26 +106,64 @@ public class PostsServiceImpl implements PostsService{
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PostsListResponseDto> findAll(Pageable pageable, String postType, String searchKeyword) {
+    public Page<PostsListResponseDto> findAll(Pageable pageable, String postType, String searchType, String searchKeyword) {
         Page<PostsListResponseDto> postsListResponseDto;
 
         if (postType != null) { // 카테고리 선택 했을 때
             PostType type = PostType.valueOf(postType.toUpperCase());
-            if (searchKeyword != null) {
-                // 카테고리와 검색어 모두 존재하는 경우
-                postsListResponseDto = mapToDto(postsRepository.findByPostTypeAndTitleContaining(type, searchKeyword, pageable));
-            } else {
-                // postType만 존재하는 경우
+            if (searchKeyword != null) { // 카테고리와 검색어 모두 존재하는 경우
+                postsListResponseDto = getPostsListPostTypeResponseDtos(pageable, searchType, searchKeyword, type);
+            } else { // postType만 존재하는 경우
                 postsListResponseDto = mapToDto(postsRepository.findAllByPostType(type, pageable));
             }
         } else { // 카테고리 선택 안한 경우
-            if (searchKeyword != null) {
-                // 검색어만 있는 경우
-                postsListResponseDto = mapToDto(postsRepository.findByTitleContaining(searchKeyword, pageable));
-            } else {
-                // 카테고리와 검색어 모두 없는 경우
+            if (searchKeyword != null) { // 검색어만 있는 경우
+                postsListResponseDto = getPostsListResponseDtos(pageable, searchType, searchKeyword);
+            } else { // 카테고리와 검색어 모두 없는 경우
                 postsListResponseDto = mapToDto(postsRepository.findAll(pageable));
             }
+        }
+        return postsListResponseDto;
+    }
+
+    private Page<PostsListResponseDto> getPostsListResponseDtos(Pageable pageable, String searchType, String searchKeyword) {
+        Page<PostsListResponseDto> postsListResponseDto;
+        switch (searchType) {
+            default:
+                postsListResponseDto = mapToDto(postsRepository.findByTitleContainingOrContentContaining(searchKeyword, searchKeyword, pageable));
+                break;
+            case "title":
+                postsListResponseDto = mapToDto(postsRepository.findByTitleContaining(searchKeyword, pageable));
+                break;
+            case "content":
+                postsListResponseDto = mapToDto(postsRepository.findByContentContaining(searchKeyword, pageable));
+                break;
+            case "author":
+                postsListResponseDto = mapToDto(postsRepository.findByAuthorContaining(searchKeyword, pageable));
+                break;
+        }
+        return postsListResponseDto;
+    }
+
+    private Page<PostsListResponseDto> getPostsListPostTypeResponseDtos(Pageable pageable, String searchType, String searchKeyword, PostType type) {
+        Page<PostsListResponseDto> postsListResponseDto;
+        switch (searchType) {
+            default:
+                postsListResponseDto = mapToDto(
+                    postsRepository.findByPostTypeAndTitleContainingOrPostTypeAndContentContaining(type, searchKeyword, type, searchKeyword, pageable));
+                break;
+            case "title":
+                postsListResponseDto = mapToDto(
+                    postsRepository.findByPostTypeAndTitleContaining(type, searchKeyword, pageable));
+                break;
+            case "content":
+                postsListResponseDto = mapToDto(
+                    postsRepository.findByPostTypeAndContentContaining(type, searchKeyword, pageable));
+                break;
+            case "author":
+                postsListResponseDto = mapToDto(
+                    postsRepository.findByPostTypeAndAuthorContaining(type, searchKeyword, pageable));
+                break;
         }
         return postsListResponseDto;
     }

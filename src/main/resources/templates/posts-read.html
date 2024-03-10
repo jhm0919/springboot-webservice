@@ -18,6 +18,9 @@
                     <img width="500" th:src="'/files/' + ${image.url}"/>
                 </th:block>
             </div>
+            <div class="form-group">
+                <label for="content" th:text="'조회수 : ' + ${post.view}"></label>
+            </div>
         </form>
         <div class="text-right">
             <a href="/" role="button" class="btn btn-secondary">목록으로</a>
