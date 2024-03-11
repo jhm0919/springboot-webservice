@@ -12,6 +12,7 @@ public class PostsListResponseDto {
     private String title;
     private String author;
     private String postType;
+    private int commentsSize;
     private int view;
     private String modifiedDate;
 
@@ -20,6 +21,7 @@ public class PostsListResponseDto {
         this.title = entity.getTitle();
         this.author = entity.getAuthor();
         this.postType = entity.getPostType().getTitle();
+        this.commentsSize = entity.getComments().size();
         this.view = entity.getView();
         this.modifiedDate = entity.getModifiedDate();
 

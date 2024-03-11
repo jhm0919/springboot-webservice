@@ -54,4 +54,9 @@ public class PostsApiController {
         postsService.deleteImage(postsId, id);
         return id;
     }
+
+    @PutMapping("/posts/{id}/recommend")
+    public Long recommend(@PathVariable Long id) {
+        return postsService.recommend(id);
+    }
 }

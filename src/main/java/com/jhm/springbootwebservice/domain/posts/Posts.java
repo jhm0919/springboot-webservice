@@ -37,11 +37,13 @@ public class Posts extends BaseTimeEntity {
     @Column(columnDefinition = "integer default 0")
     private int view;
 
+    @Column(columnDefinition = "integer default 0")
+    private int recommend;
+
     @ManyToOne(fetch = FetchType.LAZY) // @ManyToOne의 기본 Fetch 전략은 EAGER(즉시 로딩)이다.
     @JoinColumn(name = "user_id")
     private User user;
 
-//    /** 게시판 타입 추가중 */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PostType postType;

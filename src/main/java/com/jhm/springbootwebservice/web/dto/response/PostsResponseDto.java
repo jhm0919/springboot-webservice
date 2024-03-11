@@ -15,6 +15,7 @@ public class PostsResponseDto {
     private String content;
     private String author;
     private int view;
+    private int recommend;
     private Long userId;
     private List<CommentResponseDto> comments;
     private List<PostsImageResponseDto> postsImages;
@@ -25,6 +26,7 @@ public class PostsResponseDto {
         this.content = entity.getContent();
         this.author = entity.getAuthor();
         this.view = entity.getView();
+        this.recommend = entity.getRecommend();
         this.userId = entity.getUser().getId();
         this.comments = entity.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
 //        this.imageUrls = entity.getPostsImages().stream().map(PostsImage::getUrl).collect(Collectors.toList());

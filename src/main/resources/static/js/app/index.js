@@ -65,7 +65,7 @@ var main = {
             contentType:false,
             processData: false,
             cache: false,
-            dataType: 'json',
+            dataType: 'JSON',
         }).done(function() {
             alert('게시글이 등록되었습니다.');
             window.location.href = '/';
@@ -106,7 +106,7 @@ var main = {
             contentType:false,
             processData: false,
             cache: false,
-            dataType: 'json',
+            dataType: 'JSON',
         }).done(function() {
             alert('글이 수정되었습니다.');
             window.location.href = '/';
@@ -121,7 +121,7 @@ var main = {
             $.ajax({
                 type: 'DELETE',
                 url: '/api/posts/'+id,
-                dataType: 'json',
+                dataType: 'JSON',
                 contentType:'application/json; charset=utf-8'
             }).done(function() {
                 alert('게시글이 삭제되었습니다.');
@@ -145,7 +145,7 @@ var main = {
             $.ajax({
                 type: 'POST',
                 url: '/api/posts/' + data.postsId + '/comments',
-                dataType: 'json',
+                dataType: 'JSON',
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify(data)
             }).done(function () {
@@ -207,6 +207,18 @@ var main = {
         }).done(function () {
             alert('이미지가 삭제되었습니다.');
             window.location.reload();
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+    },
+    recommend: function (id) {
+        $.ajax({
+            type: 'PUT',
+            url: '/api/posts/' + id + '/recommend',
+            dataType: 'JSON',
+            contentType: 'application/json'
+        }).done(function () {
+            $("#recommendCount").load(window.location.href + " #recommendCount");
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });

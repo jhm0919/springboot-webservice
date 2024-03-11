@@ -21,6 +21,10 @@
             <div class="form-group">
                 <label for="content" th:text="'조회수 : ' + ${post.view}"></label>
             </div>
+            <div class="text-center" id="recommendCount">
+                <button type="button" th:onclick="'main.recommend(' + ${post.id} + ')'">추천</button>
+                <span th:text="${post.recommend}"></span>
+            </div>
         </form>
         <div class="text-right">
             <a href="/" role="button" class="btn btn-secondary">목록으로</a>
@@ -48,10 +52,9 @@
                         <span style="font-size: small" th:text="${comment.author}"></span>
                         <span style="font-size: xx-small" th:text="${comment.createdDate}"></span>
                     </span>
-                        <th:block th:if="${comment.userId == user.getId()}">
+                        <th:block th:if="${user != null && comment.userId == user.getId()}">
                             <!-- 댓글 수정 버튼 -->
                             <button data-toggle="collapse" th:data-target="'.multi-collapse-' + ${comment.id}" class="badge bi bi-pencil-square">수정</button>
-
                             <!-- 댓글 삭제 버튼 -->
                             <button th:onclick="'main.commentDelete(' + ${comment.postsId} + ',' + ${comment.id} + ')'" class="badge bi bi-x-square">삭제</button>
                         </th:block>

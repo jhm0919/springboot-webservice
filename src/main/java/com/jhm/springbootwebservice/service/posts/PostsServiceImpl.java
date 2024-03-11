@@ -181,6 +181,7 @@ public class PostsServiceImpl implements PostsService{
     }
 
     @Override
+    @Transactional
     public Long deleteImage(Long postsId, Long id) {
         PostsImage postsImage = postsImageRepository.findByPostsIdAndId(postsId, id);
         String imageFileName = PREV_IMAGE_URL + postsImage.getUrl();
@@ -189,6 +190,13 @@ public class PostsServiceImpl implements PostsService{
         if (imageFileUrl.delete()) {
             postsImageRepository.delete(postsImage);
         }
+        return id;
+    }
+
+    @Override
+    @Transactional
+    public Long recommend(Long id) {
+        postsRepository.updateRecommend(id);
         return id;
     }
 }
