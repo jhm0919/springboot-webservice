@@ -21,9 +21,9 @@
             <div class="form-group">
                 <label for="content" th:text="'조회수 : ' + ${post.view}"></label>
             </div>
-            <div class="text-center" id="recommendCount">
-                <button type="button" th:onclick="'main.recommend(' + ${post.id} + ')'">추천</button>
-                <span th:text="${post.recommend}"></span>
+            <div class="text-center">
+                <button id="recommend" type="button">추천</button>
+                <span id="recommendCount" th:text="${post.recommend}"></span>
             </div>
         </form>
         <div class="text-right">

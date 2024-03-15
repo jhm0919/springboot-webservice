@@ -17,6 +17,10 @@ var main = {
             _this.commentSave();
         });
 
+        $('#recommend').on('click', function(e) {
+            _this.recommend();
+        });
+
         // 댓글 수정
         document.querySelectorAll('#btn-comment-update').forEach(function (item) {
             item.addEventListener('click', function () { // 버튼 클릭 이벤트 발생시
@@ -211,14 +215,19 @@ var main = {
             alert(JSON.stringify(error));
         });
     },
-    recommend: function (id) {
+
+    recommend: function () {
+        var id = $('#id').val();
         $.ajax({
             type: 'PUT',
             url: '/api/posts/' + id + '/recommend',
             dataType: 'JSON',
             contentType: 'application/json'
         }).done(function () {
-            $("#recommendCount").load(window.location.href + " #recommendCount");
+            // 추천이 성공적으로 처리될 때마다 추천 수를 1만큼 증가시킴
+            var recommendCountElement = $("#recommendCount");
+            var currentCount = parseInt(recommendCountElement.text());
+            recommendCountElement.text(currentCount + 1);
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
