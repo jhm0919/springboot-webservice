@@ -193,10 +193,5 @@ public class PostsServiceImpl implements PostsService{
         return id;
     }
 
-    @Override
-    @Transactional
-    public Long recommend(Long id) {
-        postsRepository.updateRecommend(id);
-        return id;
-    }
+
 }

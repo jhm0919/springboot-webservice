@@ -20,7 +20,6 @@ var main = {
         $('#recommend').on('click', function(e) {
             _this.recommend();
         });
-
         // 댓글 수정
         document.querySelectorAll('#btn-comment-update').forEach(function (item) {
             item.addEventListener('click', function () { // 버튼 클릭 이벤트 발생시
@@ -223,15 +222,58 @@ var main = {
             url: '/api/posts/' + id + '/recommend',
             dataType: 'JSON',
             contentType: 'application/json'
-        }).done(function () {
-            // 추천이 성공적으로 처리될 때마다 추천 수를 1만큼 증가시킴
-            var recommendCountElement = $("#recommendCount");
-            var currentCount = parseInt(recommendCountElement.text());
-            recommendCountElement.text(currentCount + 1);
+        }).done(function (response) {
+            var isRecommend = response.isRecommend;
+            var recommendCount = response.recommendCount;
+
+            if (isRecommend) {
+                $('#recommend').text('추천 취소');
+            } else {
+                $('#recommend').text('추천');
+            }
+            $('#recommendCount').text(recommendCount);
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
-    },
+    }
+
+    // recommend: function () {
+    //     var id = $('#id').val();
+    //     var url = '/api/posts/' + id + '/recommend';
+    //     var isRecommended = false; // 변수 추가
+    //     $('#recommend').text('추천 취소');
+    //
+    //     // 현재 추천 상태를 확인하여 적절한 URL을 결정
+    //     if ($('#recommend').hasClass('recommended')) {
+    //         url += '/cancel'; // 이미 추천된 경우 취소 URL로 변경
+    //         isRecommended = true; // 추천된 상태임을 표시
+    //         $('#recommend').text('추천');
+    //     }
+    //
+    //     $.ajax({
+    //         type: 'PUT',
+    //         url: url,
+    //         dataType: 'JSON',
+    //         contentType: 'application/json'
+    //     }).done(function () {
+    //         var recommendCountElement = $("#recommendCount");
+    //         var currentCount = parseInt(recommendCountElement.text());
+    //
+    //         if (isRecommended) {
+    //             // 추천이 취소된 경우 추천 수를 감소
+    //             recommendCountElement.text(currentCount - 1);
+    //             $('#recommend').removeClass('recommended'); // 버튼 스타일 변경
+    //         } else {
+    //             // 추천이 성공적으로 처리될 때마다 추천 수를 1만큼 증가
+    //             recommendCountElement.text(currentCount + 1);
+    //             $('#recommend').addClass('recommended'); // 버튼 스타일 변경
+    //         }
+    //     }).fail(function (error) {
+    //         alert(JSON.stringify(error));
+    //     });
+    // }
+
+
 };
 
 main.init();

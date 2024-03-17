@@ -25,6 +25,4 @@ public interface PostsService {
     void delete(Long id);
 
     Long deleteImage(Long postsId, Long id);
-
-    Long recommend(Long id);
 }

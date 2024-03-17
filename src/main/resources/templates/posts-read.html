@@ -22,7 +22,11 @@
                 <label for="content" th:text="'조회수 : ' + ${post.view}"></label>
             </div>
             <div class="text-center">
-                <button id="recommend" type="button">추천</button>
+                <button id="recommend" type="button">
+                    <span th:text="추천">
+
+                    </span>
+                </button>
                 <span id="recommendCount" th:text="${post.recommend}"></span>
             </div>
         </form>

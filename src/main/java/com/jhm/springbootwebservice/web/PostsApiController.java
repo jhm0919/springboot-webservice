@@ -3,10 +3,12 @@ package com.jhm.springbootwebservice.web;
 import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.service.posts.PostsService;
+import com.jhm.springbootwebservice.service.recommend.RecommendService;
 import com.jhm.springbootwebservice.web.dto.request.PostsImageRequestDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsUpdateRequestDto;
+import com.jhm.springbootwebservice.web.dto.response.RecommendResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -22,6 +24,7 @@ import java.util.List;
 public class PostsApiController {
 
     private final PostsService postsService;
+    private final RecommendService recommendService;
 
     @PostMapping(value = "/posts", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public Long save(@RequestPart("json_data") PostsSaveRequestDto postsSaveRequestDto,
@@ -55,8 +58,16 @@ public class PostsApiController {
         return id;
     }
 
-    @PutMapping("/posts/{id}/recommend")
-    public Long recommend(@PathVariable Long id) {
-        return postsService.recommend(id);
+    @PutMapping("/posts/{postId}/recommend")
+    public RecommendResponseDto recommend(@PathVariable Long postId, @LoginUser SessionUser user) {
+        Long userId = user.getId();
+        return recommendService.recommend(postId, userId);
     }
+
+//    @PutMapping("/posts/{id}/recommend/cancel")
+//    public Long cancel(@PathVariable Long id) {
+//        return recommendService.cancel(id);
+//    }
+//
+
 }

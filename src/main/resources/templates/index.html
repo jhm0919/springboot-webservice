@@ -42,23 +42,23 @@
     <table class="table table-horizontal table-bordered">
         <thead class="thead-strong">
             <tr>
-                <th style="width: 10%; text-align: center">번호</th>
                 <th style="width: 15%; text-align: center">탭</th>
                 <th style="width: 40%; text-align: center">제목</th>
                 <th style="width: 10%; text-align: center">작성자</th>
                 <th style="width: 15%; text-align: center">최종수정일</th>
+                <th style="width: 10%; text-align: center">추천</th>
                 <th style="width: 10%; text-align: center">조회수</th>
             </tr>
         </thead>
         <tbody id="tbody">
             <tr th:each="post : ${posts}">
-                <td style="text-align: center" th:text="${post.id}"></td>
                 <td style="text-align: center" th:text="${post.postType}"></td>
                 <td><a th:href="@{'/posts/read/' + ${post.id}}" th:text="${post.title}"></a>
                     <span th:if="${post.commentsSize > 0}" th:text="'[' + ${post.commentsSize} + ']'"></span>
                 </td>
                 <td style="text-align: center" th:text="${post.author}"></td>
                 <td style="text-align: center" th:text="${post.modifiedDate}"></td>
+                <td style="text-align: center" th:text="${post.recommend}"></td>
                 <td style="text-align: center" th:text="${post.view}"></td>
             </tr>
         </tbody>

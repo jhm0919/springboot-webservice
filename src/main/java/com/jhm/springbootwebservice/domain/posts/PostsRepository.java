@@ -14,9 +14,6 @@ import org.springframework.stereotype.Repository;
  */
 public interface PostsRepository extends JpaRepository<Posts, Long> {
 
-//    @Query("SELECT p FROM Posts p ORDER BY p.id DESC")
-//    List<Posts> findAllDesc();
-
     @Modifying
     @Query("update Posts p set p.view = p.view + 1 where p.id = :id")
     int updateView(Long id);
@@ -24,6 +21,10 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
     @Modifying
     @Query("update Posts p set p.recommend = p.recommend + 1 where p.id = :id")
     int updateRecommend(Long id);
+
+    @Modifying
+    @Query("update Posts p set p.recommend = p.recommend - 1 where p.id = :id")
+    int recommendCancel(Long id);
 
     Page<Posts> findAllByPostType(PostType postType, Pageable pageable);
 

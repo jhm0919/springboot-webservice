@@ -60,4 +60,12 @@ public class Posts extends BaseTimeEntity {
         this.title = title;
         this.content = content;
     }
+
+    public void recommendCount(){
+        this.recommend++;
+    }
+
+    public void disRecommend(){
+        this.recommend--;
+    }
 }
