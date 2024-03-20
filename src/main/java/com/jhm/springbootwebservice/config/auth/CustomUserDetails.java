@@ -16,11 +16,16 @@ public class CustomUserDetails implements UserDetails {
     /* 유저의 권한 목록 */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collectors = new ArrayList<>();
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-        collectors.add(() -> "ROLE_" + user.getRole());
+        authorities.add(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                return user.getRoleKey();
+            }
+        });
 
-        return collectors;
+        return authorities;
     }
 
     @Override

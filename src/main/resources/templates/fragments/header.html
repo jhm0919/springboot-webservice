@@ -7,14 +7,14 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-<!--        &lt;!&ndash; Custom fonts for this template&ndash;&gt;-->
-<!--        <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">-->
-<!--        <link-->
-<!--            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"-->
-<!--            rel="stylesheet">-->
+        <!-- Custom fonts for this template-->
+        <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+        <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
 
-<!--        &lt;!&ndash; Custom styles for this template&ndash;&gt;-->
-<!--        <link href="/css/sb-admin-2.min.css" rel="stylesheet">-->
+        <!-- Custom styles for this template-->
+        <link href="/css/sb-admin-2.min.css" rel="stylesheet">
     </head>
     <body>
     <br/>
@@ -27,10 +27,11 @@
                 <div class="text-md-right">
                     <div th:if="${user}">
                         안녕하세요! <span id="user" th:text="${user.getName()}"></span> 님
-                        <a href="/logout" class="btn btn-info active" role="button">Logout</a>
+                        <a href="/logout" class="btn btn-info active" role="button">로그아웃</a>
                     </div>
                     <div th:unless="${user}">
                         <a href="/auth/login" class="btn btn-secondary" role="button">로그인</a>
+                        <a href="/auth/join" class="btn btn-secondary" role="button">회원가입</a>
                     </div>
                 </div>
             </div>

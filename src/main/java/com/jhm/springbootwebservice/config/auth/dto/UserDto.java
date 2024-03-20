@@ -26,7 +26,7 @@ public class UserDto {
             .email(email)
             .password(password)
             .picture(picture)
-            .role(role.USER)
+            .role(Role.USER)
             .build();
     }
 }
