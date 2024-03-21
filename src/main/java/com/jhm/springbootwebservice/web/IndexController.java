@@ -4,7 +4,6 @@ import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.domain.posts.PostType;
 import com.jhm.springbootwebservice.service.posts.PostsService;
-import com.jhm.springbootwebservice.service.recommend.RecommendService;
 import com.jhm.springbootwebservice.web.dto.response.PostsImageResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;

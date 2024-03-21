@@ -21,10 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email).orElseThrow(() ->
             new UsernameNotFoundException("해당 사용자가 존재하지 않습니다. : " + email));
-        System.out.println("아이디" + user.getId());
-        System.out.println(user.getEmail());
-        System.out.println(user.getName());
-        System.out.println(user.getRole());
+
         httpSession.setAttribute("user", new SessionUser(user));
 
         return new CustomUserDetails(user);
