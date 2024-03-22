@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserRequestDto {
 
+    private Long id;
+
     @NotBlank(message = "아이디는 필수 입력값입니다.")
 //    @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")
     @Email(message = "이메일 형식이 올바르지 않습니다.")
@@ -39,6 +41,7 @@ public class UserRequestDto {
     /* DTO -> Entity */
     public User toEntity() {
         return User.builder()
+            .id(id)
             .name(name)
             .email(email)
             .password(password)

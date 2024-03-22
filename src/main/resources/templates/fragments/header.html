@@ -26,8 +26,9 @@
             <div class="col-md-12">
                 <div class="text-md-right">
                     <div th:if="${user}">
-                        안녕하세요! <span id="user" th:text="${user.getName()}"></span> 님
-                        <a href="/logout" class="btn btn-info active" role="button">로그아웃</a>
+                        <span id="user" th:text="${user.getName()}"></span> 님 안녕하세요!
+                        <a href="/logout" class="btn btn-outline-primary active" role="button">로그아웃</a>
+                        <a href="/update" class="btn btn-outline-primary active">수정</a>
                     </div>
                     <div th:unless="${user}">
                         <a href="/auth/login" class="btn btn-secondary" role="button">로그인</a>

@@ -35,16 +35,14 @@ public class RecommendServiceImpl implements RecommendService{
         if (recommendRepository.findById(recommendPK).isPresent()) {
             recommendRepository.deleteById(recommendPK);
             post.disRecommend();
-            isRecommend = false;
             postsRepository.save(post);
-            return new RecommendResponseDto(isRecommend, post.getRecommend());
+            return new RecommendResponseDto(false, post.getRecommend());
         }
 
         recommendRepository.save(new Recommend(recommendPK, post, user));
         post.recommendCount();
-        isRecommend = true;
         postsRepository.save(post);
-        return new RecommendResponseDto(isRecommend, post.getRecommend());
+        return new RecommendResponseDto(true, post.getRecommend());
     }
 
     @Override

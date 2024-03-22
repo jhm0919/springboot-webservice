@@ -33,7 +33,7 @@
                 <input class="form-control mr-sm-2" type="text" name="searchKeyword" id="search" placeholder="검색어를 입력하세요."
                        th:value="${param.searchKeyword}"/>
                 <input type="hidden" name="postType" th:value="${param.postType}" />
-                <button class="btn btn-light">검색</button>
+                <button class="btn btn-primary">검색</button>
             </form>
         </div>
     </nav>
@@ -53,8 +53,9 @@
         <tbody id="tbody">
             <tr th:each="post : ${posts}">
                 <td style="text-align: center" th:text="${post.postType}"></td>
-                <td><a th:href="@{'/posts/read/' + ${post.id}}" th:text="${post.title}"></a>
-                    <span th:if="${post.commentsSize > 0}" th:text="'[' + ${post.commentsSize} + ']'"></span>
+                <td>
+                    <a th:href="@{'/posts/read/' + ${post.id}}" th:text="${post.title}"></a>
+                    <i class="fas fa-comments fa-1x text-black-50" th:if="${post.commentsSize > 0}" th:text="${post.commentsSize}" style="margin-left: 5px;"></i>
                 </td>
                 <td style="text-align: center" th:text="${post.author}"></td>
                 <td style="text-align: center" th:text="${post.modifiedDate}"></td>

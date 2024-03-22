@@ -20,6 +20,9 @@ var main = {
         $('#recommend').on('click', function(e) {
             _this.recommend();
         });
+        $('#btn-modify').on('click', function() {
+            _this.modify();
+        });
         // 댓글 수정
         document.querySelectorAll('#btn-comment-update').forEach(function (item) {
             item.addEventListener('click', function () { // 버튼 클릭 이벤트 발생시
@@ -235,7 +238,7 @@ var main = {
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
-    }
+    },
 
     // recommend: function () {
     //     var id = $('#id').val();
@@ -272,7 +275,54 @@ var main = {
     //         alert(JSON.stringify(error));
     //     });
     // }
-
+    modify: function () {
+        const data = {
+            id: $('#id').val(),
+            modifiedDate: $('#modifiedDate').val(),
+            email: $('#email').val(),
+            name: $('#name').val(),
+            password: $('#password').val()
+        }
+        const passwordConfirm = $('#passwordConfirm').val()
+        if (!data.name || data.name.trim() === ""
+            || !data.password || data.password.trim() === ""
+            || !passwordConfirm || passwordConfirm.trim() === "") {
+            alert("공백 또는 입력하지 않은 부분이 있습니다.");
+            return false;
+        } else if (!/(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}/.test(data.password)) {
+            alert("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.");
+            $('#password').focus();
+            return false;
+        } else if(!/^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$/.test(data.name)) {
+            alert("닉네임은 특수문자를 제외한 2~10자리여야 합니다.");
+            $('#name').focus();
+            return false;
+        } else if (data.password !== passwordConfirm) {
+            alert("비밀번호가 일치하지 않습니다.");
+            $('#passwordConfirm').focus();
+            return false;
+        }
+        const con_check = confirm("수정하시겠습니까?");
+        if (con_check === true) {
+            $.ajax({
+                type: 'PUT',
+                url: '/api/user',
+                dataType: 'JSON',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(data)
+            }).done(function () {
+                alert("회원정보가 수정되었습니다.")
+                window.location.href = "/";
+            }).fail(function (error) {
+                if (error.status == 500) {
+                    alert("이미 사용중인 닉네임 입니다.");
+                    $('#name').focus();
+                } else {
+                    alert(JSON.stringify(error));
+                }
+            });
+        }
+    }
 
 };
 

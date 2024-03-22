@@ -37,11 +37,15 @@ public class User extends BaseTimeEntity implements Serializable {
     @Column(nullable = false)
     private Role role;
 
-    public User update(String name, String picture) {
+    public User socialUpdate(String name, String picture) {
         this.name = name;
         this.picture = picture;
-
         return this;
+    }
+
+    public void update(String name, String password) {
+        this.name = name;
+        this.password = password;
     }
 
     public String getRoleKey() {

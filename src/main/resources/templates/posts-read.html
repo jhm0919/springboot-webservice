@@ -58,9 +58,9 @@
                     </span>
                         <th:block th:if="${user != null && comment.userId == user.getId()}">
                             <!-- 댓글 수정 버튼 -->
-                            <button data-toggle="collapse" th:data-target="'.multi-collapse-' + ${comment.id}" class="badge bi bi-pencil-square">수정</button>
+                            <button style="font-size: small" data-toggle="collapse" th:data-target="'.multi-collapse-' + ${comment.id}" class="badge bi bi-pencil-square">수정</button>
                             <!-- 댓글 삭제 버튼 -->
-                            <button th:onclick="'main.commentDelete(' + ${comment.postsId} + ',' + ${comment.id} + ')'" class="badge bi bi-x-square">삭제</button>
+                            <button style="font-size: small" th:onclick="'main.commentDelete(' + ${comment.postsId} + ',' + ${comment.id} + ')'" class="badge bi bi-x-square">삭제</button>
                         </th:block>
 
                         <!-- 댓글 내용 -->
@@ -79,6 +79,7 @@
                                 </div>
                             </div>
                         </form>
+                        <hr>
                     </li>
                 </ul>
             </div>

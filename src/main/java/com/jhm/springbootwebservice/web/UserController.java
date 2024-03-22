@@ -1,5 +1,7 @@
 package com.jhm.springbootwebservice.web;
 
+import com.jhm.springbootwebservice.config.auth.LoginUser;
+import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.config.auth.dto.UserRequestDto;
 import com.jhm.springbootwebservice.service.user.UserService;
 import com.jhm.springbootwebservice.validation.CheckEmailValidator;
@@ -66,8 +68,14 @@ public class UserController {
         return "login";
     }
 
-//    @GetMapping("/auth/join/{email}/exists")
-//    public boolean checkEmailDuplicate(@PathVariable String email) {
-//        userService.checkEmailDuplication(email);
-//    }
+    @GetMapping("/update")
+    public String update(@LoginUser SessionUser sessionUser, Model model) {
+
+        if (sessionUser != null) {
+            model.addAttribute("name", sessionUser.getName());
+            model.addAttribute("sessionUserDto", sessionUser);
+        }
+
+        return "user-update";
+    }
 }

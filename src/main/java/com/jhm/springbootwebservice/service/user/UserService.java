@@ -1,6 +1,7 @@
 package com.jhm.springbootwebservice.service.user;
 
 import com.jhm.springbootwebservice.config.auth.dto.UserRequestDto;
+import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,19 +40,14 @@ public class UserService {
         return validatorResult;
     }
 
-//    @Transactional(readOnly = true)
-//    public void checkEmailDuplication(UserRequestDto dto) {
-//        boolean emailDuplicate = userRepository.existsByEmail(dto.toEntity().getEmail());
-//        if (emailDuplicate) {
-//            throw new IllegalStateException("이미 존재하는 계정입니다.");
-//        }
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public void checkNameDuplication(UserRequestDto dto) {
-//        boolean nameDuplicate = userRepository.existsByName(dto.toEntity().getName());
-//        if (nameDuplicate) {
-//            throw new IllegalStateException("이미 존재하는 닉네임입니다.");
-//        }
-//    }
+    // 회원 수정 (Dirty checking)
+    @Transactional
+    public void modify(UserRequestDto dto) {
+        User user = userRepository.findById(dto.toEntity().getId()).orElseThrow(
+                () -> new IllegalArgumentException("해당하는 회원이 존재하지 않습니다."));
+
+        String password = encoder.encode(dto.getPassword());
+
+        user.update(dto.getName(), password);
+    }
 }
