@@ -17,9 +17,12 @@ var main = {
             _this.commentSave();
         });
 
-        $('#recommend').on('click', function(e) {
-            _this.recommend();
-        });
+        // $('#recommend').on('click', function() {
+        //     _this.recommend();
+        // });
+        // $('#disRecommend').on('click', function() {
+        //     _this.disRecommend();
+        // });
         $('#btn-modify').on('click', function() {
             _this.modify();
         });
@@ -218,21 +221,49 @@ var main = {
         });
     },
 
-    recommend: function () {
+    recommend: function (isRecommend) {
         var id = $('#id').val();
+        if (isRecommend) {
+            alert("이미 추천 또는 비추천한 게시물입니다.");
+            return false;
+        }
         $.ajax({
             type: 'PUT',
             url: '/api/posts/' + id + '/recommend',
             dataType: 'JSON',
             contentType: 'application/json'
         }).done(function (response) {
-            var isRecommend = response.isRecommend;
-            var recommendCount = response.recommendCount;
-
+            var recommendedCount = response.recommendCount;
+            var isRecommend = response.recommend;
+            $('#recommendCount').text(recommendedCount);
             if (isRecommend) {
-                $('#recommend').text('추천 취소');
+                alert("이미 추천 또는 비추천한 게시물입니다.");
             } else {
-                $('#recommend').text('추천');
+                alert("추천 하였습니다.");
+            }
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+    },
+
+    disRecommend: function (isRecommend) {
+        var id = $('#id').val();
+        if (isRecommend) {
+            alert("이미 추천 또는 비추천한 게시물입니다.");
+            return false;
+        }
+        $.ajax({
+            type: 'PUT',
+            url: '/api/posts/' + id + '/disRecommend',
+            dataType: 'JSON',
+            contentType: 'application/json'
+        }).done(function (response) {
+            var isRecommend = response.recommend;
+            var recommendCount = response.recommendCount;
+            if (isRecommend) {
+                alert("이미 추천 또는 비추천한 게시물입니다.");
+            } else {
+                alert("비추천 하였습니다.");
             }
             $('#recommendCount').text(recommendCount);
         }).fail(function (error) {
@@ -240,41 +271,6 @@ var main = {
         });
     },
 
-    // recommend: function () {
-    //     var id = $('#id').val();
-    //     var url = '/api/posts/' + id + '/recommend';
-    //     var isRecommended = false; // 변수 추가
-    //     $('#recommend').text('추천 취소');
-    //
-    //     // 현재 추천 상태를 확인하여 적절한 URL을 결정
-    //     if ($('#recommend').hasClass('recommended')) {
-    //         url += '/cancel'; // 이미 추천된 경우 취소 URL로 변경
-    //         isRecommended = true; // 추천된 상태임을 표시
-    //         $('#recommend').text('추천');
-    //     }
-    //
-    //     $.ajax({
-    //         type: 'PUT',
-    //         url: url,
-    //         dataType: 'JSON',
-    //         contentType: 'application/json'
-    //     }).done(function () {
-    //         var recommendCountElement = $("#recommendCount");
-    //         var currentCount = parseInt(recommendCountElement.text());
-    //
-    //         if (isRecommended) {
-    //             // 추천이 취소된 경우 추천 수를 감소
-    //             recommendCountElement.text(currentCount - 1);
-    //             $('#recommend').removeClass('recommended'); // 버튼 스타일 변경
-    //         } else {
-    //             // 추천이 성공적으로 처리될 때마다 추천 수를 1만큼 증가
-    //             recommendCountElement.text(currentCount + 1);
-    //             $('#recommend').addClass('recommended'); // 버튼 스타일 변경
-    //         }
-    //     }).fail(function (error) {
-    //         alert(JSON.stringify(error));
-    //     });
-    // }
     modify: function () {
         const data = {
             id: $('#id').val(),
@@ -322,7 +318,15 @@ var main = {
                 }
             });
         }
-    }
+    },
+
+    redirectToLoginPage: function () {
+        if (confirm("로그인 하시길 바랍니다.")) {
+            if (confirm("로그인 하시겠습니까?")) {
+                window.location.href = '/auth/login';
+            }
+        }
+    },
 
 };
 

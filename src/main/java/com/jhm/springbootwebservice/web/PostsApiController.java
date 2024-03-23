@@ -5,6 +5,7 @@ import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.service.posts.PostsService;
 import com.jhm.springbootwebservice.service.recommend.RecommendService;
 import com.jhm.springbootwebservice.web.dto.request.PostsImageRequestDto;
+import com.jhm.springbootwebservice.web.dto.request.RecommendRequestDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsUpdateRequestDto;
@@ -60,14 +61,21 @@ public class PostsApiController {
 
     @PutMapping("/posts/{postId}/recommend")
     public RecommendResponseDto recommend(@PathVariable Long postId, @LoginUser SessionUser user) {
-        Long userId = user.getId();
-        return recommendService.recommend(postId, userId);
+        RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId());
+
+        RecommendResponseDto recommendResponseDto =
+            new RecommendResponseDto(recommendService.findById(requestDto).isRecommend(),
+                recommendService.recommend(requestDto).getRecommendCount());
+        return recommendResponseDto;
     }
 
-//    @PutMapping("/posts/{id}/recommend/cancel")
-//    public Long cancel(@PathVariable Long id) {
-//        return recommendService.cancel(id);
-//    }
-//
+    @PutMapping("/posts/{postId}/disRecommend")
+    public RecommendResponseDto disRecommend(@PathVariable Long postId, @LoginUser SessionUser user) {
+        RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId());
 
+        RecommendResponseDto recommendResponseDto =
+            new RecommendResponseDto(recommendService.findById(requestDto).isRecommend(),
+                recommendService.recommend(requestDto).getRecommendCount());
+        return recommendResponseDto;
+    }
 }

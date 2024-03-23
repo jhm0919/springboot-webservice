@@ -3,11 +3,11 @@ package com.jhm.springbootwebservice.web;
 import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.domain.posts.PostType;
+import com.jhm.springbootwebservice.domain.recommend.RecommendRepository;
 import com.jhm.springbootwebservice.service.posts.PostsService;
-import com.jhm.springbootwebservice.web.dto.response.PostsImageResponseDto;
-import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
-import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
-import com.jhm.springbootwebservice.web.dto.response.CommentResponseDto;
+import com.jhm.springbootwebservice.service.recommend.RecommendService;
+import com.jhm.springbootwebservice.web.dto.request.RecommendRequestDto;
+import com.jhm.springbootwebservice.web.dto.response.*;
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +28,7 @@ import java.util.List;
 public class IndexController {
 
     private final PostsService postsService;
+    private final RecommendService recommendService;
 
     @GetMapping("/")
     public String index(Model model, @LoginUser SessionUser user, // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
@@ -64,37 +65,39 @@ public class IndexController {
         return "posts-save";
     }
 
-    @GetMapping("/posts/read/{id}")
-    public String postsRead(@PathVariable Long id, @LoginUser SessionUser user, Model model) {
-        PostsResponseDto dto = postsService.findById(id);
-        List<CommentResponseDto> comments = dto.getComments();
-        List<PostsImageResponseDto> postsImages = dto.getPostsImages();
-        model.addAttribute("postsImages", postsImages);
+    @GetMapping("/posts/read/{postId}")
+    public String postsRead(@PathVariable Long postId, @LoginUser SessionUser user, Model model) {
+        PostsResponseDto postsResponseDto = postsService.findById(postId);
+        List<CommentResponseDto> comments = postsResponseDto.getComments();
+        List<PostsImageResponseDto> postsImages = postsResponseDto.getPostsImages();
 
         if (comments != null && !comments.isEmpty()) {
             model.addAttribute("comments", comments);
         }
 
         if (user != null) {
+            RecommendResponseDto recommendResponseDto = recommendService.findById(new RecommendRequestDto(postId, user.getId()));
             model.addAttribute("user", user);
+            model.addAttribute("recommend", recommendResponseDto);
 
             /** 게시글 작성자 본인인지 확인 */
-            if (dto.getUserId().equals(user.getId())) {
+            if (postsResponseDto.getUserId().equals(user.getId())) {
                 model.addAttribute("author", true);
             }
         }
 
-        postsService.updateView(id); // view++
+        postsService.updateView(postId); // view++
 
-        model.addAttribute("post", dto);
+        model.addAttribute("postsImages", postsImages);
+        model.addAttribute("post", postsResponseDto);
 
         return "posts-read";
     }
 
-    @GetMapping("/posts/update/{id}")
-    public String postsUpdate(@PathVariable Long id, @LoginUser SessionUser user, Model model) {
+    @GetMapping("/posts/update/{postId}")
+    public String postsUpdate(@PathVariable Long postId, @LoginUser SessionUser user, Model model) {
         getUser(user, model);
-        PostsResponseDto dto = postsService.findById(id);
+        PostsResponseDto dto = postsService.findById(postId);
         List<PostsImageResponseDto> postsImages = dto.getPostsImages();
         model.addAttribute("postsImages", postsImages);
         model.addAttribute("post", dto);

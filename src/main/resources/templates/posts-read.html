@@ -22,12 +22,27 @@
                 <label for="content" th:text="'조회수 : ' + ${post.view}"></label>
             </div>
             <div class="text-center">
-                <button id="recommend" type="button">
-                    <span th:text="추천">
-
-                    </span>
+                <button type="button"
+                        th:if="${user != null}"
+                        th:onclick="'main.recommend(' + ${recommend.recommend} + ',' + ${recommend.recommendCount} + ')'"
+                        class="badge bi bi-x-square">추천
+                </button>
+                <button type="button"
+                        th:unless="${user != null}"
+                        th:onclick="'main.redirectToLoginPage()'"
+                        class="badge bi bi-x-square">추천
                 </button>
                 <span id="recommendCount" th:text="${post.recommend}"></span>
+                <button type="button"
+                        th:if="${user != null}"
+                        th:onclick="'main.disRecommend(' + ${recommend.recommend} + ',' + ${recommend.recommendCount} + ')'"
+                        class="badge bi bi-x-square">비추천
+                </button>
+                <button type="button"
+                        th:unless="${user != null}"
+                        th:onclick="'main.redirectToLoginPage()'"
+                        class="badge bi bi-x-square">비추천
+                </button>
             </div>
         </form>
         <div class="text-right">

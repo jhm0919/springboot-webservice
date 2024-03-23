@@ -1,10 +1,7 @@
 package com.jhm.springbootwebservice.domain.recommend;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -12,6 +9,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 @Embeddable
 public class RecommendPK implements Serializable {
 
