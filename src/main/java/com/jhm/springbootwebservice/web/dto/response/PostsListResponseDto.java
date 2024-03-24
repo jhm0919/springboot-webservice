@@ -14,7 +14,7 @@ public class PostsListResponseDto {
     private String postType;
     private int commentsSize;
     private int view;
-    private int recommend;
+    private int recommendUp;
     private String modifiedDate;
 
     public PostsListResponseDto(Posts entity) {
@@ -24,7 +24,7 @@ public class PostsListResponseDto {
         this.postType = entity.getPostType().getTitle();
         this.commentsSize = entity.getComments().size();
         this.view = entity.getView();
-        this.recommend = entity.getRecommend();
+        this.recommendUp = entity.getRecommendUp();
         this.modifiedDate = entity.getModifiedDate();
 
     }

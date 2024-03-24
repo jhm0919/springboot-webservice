@@ -5,10 +5,13 @@ import lombok.Getter;
 @Getter
 public class RecommendResponseDto {
     private boolean isRecommend;
-    private int recommendCount;
+    private int recommendUpCount;
+    private int recommendDownCount;
 
-    public RecommendResponseDto(boolean isRecommend, int recommendCount) {
+    public RecommendResponseDto(boolean isRecommend, int recommendUpCount, int recommendDownCount) {
         this.isRecommend = isRecommend;
-        this.recommendCount = recommendCount;
+        this.recommendUpCount = recommendUpCount;
+        this.recommendDownCount = recommendDownCount;
     }
+
 }

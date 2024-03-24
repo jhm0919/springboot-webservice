@@ -3,6 +3,7 @@ package com.jhm.springbootwebservice.domain.posts;
 import com.jhm.springbootwebservice.domain.BaseTimeEntity;
 import com.jhm.springbootwebservice.domain.comments.Comment;
 import com.jhm.springbootwebservice.domain.postimage.PostsImage;
+import com.jhm.springbootwebservice.domain.recommend.Recommend;
 import com.jhm.springbootwebservice.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -38,7 +39,10 @@ public class Posts extends BaseTimeEntity {
     private int view;
 
     @Column(columnDefinition = "integer default 0")
-    private int recommend;
+    private int recommendUp;
+
+    @Column(columnDefinition = "integer default 0")
+    private int recommendDown;
 
     @ManyToOne(fetch = FetchType.LAZY) // @ManyToOne의 기본 Fetch 전략은 EAGER(즉시 로딩)이다.
     @JoinColumn(name = "user_id")
@@ -53,7 +57,7 @@ public class Posts extends BaseTimeEntity {
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "posts", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @OrderBy("id asc")
+//    @OrderBy("id asc")
     private List<PostsImage> PostsImages;
 
     public void update(String title, String content) {
@@ -61,11 +65,19 @@ public class Posts extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void recommendCount(){
-        this.recommend++;
+    public void recommendUp() {
+        this.recommendUp++;
     }
 
-    public void disRecommend(){
-        this.recommend--;
+    public void recommendDown() {
+        this.recommendUp--;
+    }
+
+    public void disRecommendDown(){
+        this.recommendDown++;
+    }
+
+    public void disRecommendUp() {
+        this.recommendDown--;
     }
 }

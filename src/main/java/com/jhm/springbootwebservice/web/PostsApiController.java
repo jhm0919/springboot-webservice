@@ -48,6 +48,7 @@ public class PostsApiController {
 
     @DeleteMapping("/posts/{id}")
     public Long delete(@PathVariable Long id) {
+        recommendService.delete(id);
         postsService.delete(id);
         return id;
     }
@@ -63,9 +64,13 @@ public class PostsApiController {
     public RecommendResponseDto recommend(@PathVariable Long postId, @LoginUser SessionUser user) {
         RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId());
 
+        RecommendResponseDto recommend = recommendService.recommend(requestDto);
+        int recommendUpCount = recommend.getRecommendUpCount();
+        int recommendDownCount = recommend.getRecommendDownCount();
+        boolean isRecommend = recommendService.findById(requestDto).isRecommend();
+
         RecommendResponseDto recommendResponseDto =
-            new RecommendResponseDto(recommendService.findById(requestDto).isRecommend(),
-                recommendService.recommend(requestDto).getRecommendCount());
+            new RecommendResponseDto(isRecommend, recommendUpCount, recommendDownCount);
         return recommendResponseDto;
     }
 
@@ -73,9 +78,13 @@ public class PostsApiController {
     public RecommendResponseDto disRecommend(@PathVariable Long postId, @LoginUser SessionUser user) {
         RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId());
 
+        RecommendResponseDto recommend = recommendService.disRecommend(requestDto);
+        int recommendUpCount = recommend.getRecommendUpCount();
+        int recommendDownCount = recommend.getRecommendDownCount();
+        boolean isRecommend = recommendService.findById(requestDto).isRecommend();
+
         RecommendResponseDto recommendResponseDto =
-            new RecommendResponseDto(recommendService.findById(requestDto).isRecommend(),
-                recommendService.recommend(requestDto).getRecommendCount());
+            new RecommendResponseDto(isRecommend, recommendUpCount, recommendDownCount);
         return recommendResponseDto;
     }
 }

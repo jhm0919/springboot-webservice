@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @RequiredArgsConstructor
 @Service
@@ -21,7 +23,6 @@ public class RecommendServiceImpl implements RecommendService{
     private final RecommendRepository recommendRepository;
     private final PostsRepository postsRepository;
     private final UserRepository userRepository;
-
 
     @Override
     public RecommendResponseDto findById(RecommendRequestDto requestDto) {
@@ -34,12 +35,27 @@ public class RecommendServiceImpl implements RecommendService{
             .build();
         boolean isRecommend = recommendRepository.findById(recommendPK).isPresent();
 
-        return new RecommendResponseDto(isRecommend, post.getRecommend());
+        return new RecommendResponseDto(isRecommend, post.getRecommendUp(),post.getRecommendDown());
+    }
+
+    @Override
+    public void delete(Long id) {
+        List<Recommend> recommend = recommendRepository.findByPostsId(id);
+        recommendRepository.deleteAll(recommend);
     }
 
     @Override
     @Transactional
     public RecommendResponseDto recommend(RecommendRequestDto requestDto) {
+        return getRecommendResponseDto(requestDto, true);
+    }
+
+    @Override
+    public RecommendResponseDto disRecommend(RecommendRequestDto requestDto) {
+        return getRecommendResponseDto(requestDto, false);
+    }
+
+    private RecommendResponseDto getRecommendResponseDto(RecommendRequestDto requestDto, boolean tOrF) {
         Posts post = postsRepository.findById(requestDto.getPostId()).orElseThrow(() ->
             new IllegalArgumentException("해당 게시물이 없습니다."));
         User user = userRepository.findById(requestDto.getUserId()).orElseThrow(() ->
@@ -49,10 +65,6 @@ public class RecommendServiceImpl implements RecommendService{
             .postId(post.getId())
             .userId(user.getId())
             .build();
-
-        if (recommendRepository.findById(recommendPK).isPresent()) { // 추천이 눌려있다면
-            return new RecommendResponseDto(false, post.getRecommend());
-        }
 
         Recommend recommend = Recommend.builder()
             .id(recommendPK)
@@ -60,32 +72,32 @@ public class RecommendServiceImpl implements RecommendService{
             .user(user)
             .build();
 
-        recommendRepository.save(recommend);
-        post.recommendCount();
-        postsRepository.save(post);
+        if (recommendRepository.findById(recommendPK).isPresent()) { // 추천,비추천이 눌려있다면
 
-        return new RecommendResponseDto(true, post.getRecommend());
-    }
+            recommendRepository.delete(recommend);
 
-    @Override
-    public RecommendResponseDto disRecommend(RecommendRequestDto requestDto) {
-        Posts post = postsRepository.findById(requestDto.getPostId()).orElseThrow(() ->
-            new IllegalArgumentException("해당 게시물이 없습니다."));
-        User user = userRepository.findById(requestDto.getUserId()).orElseThrow(() ->
-            new IllegalArgumentException("해당 사용자가 없습니다."));
+            if (tOrF) {
+                post.recommendDown(); // 추천 감소
+            } else {
+                post.disRecommendDown(); // 비추천 감소
+            }
 
-        RecommendPK recommendPK = RecommendPK.builder()
-            .postId(post.getId())
-            .userId(user.getId())
-            .build();
+            postsRepository.save(post);
 
-        if (recommendRepository.findById(recommendPK).isEmpty()) { // 추천이 눌려있지 않으면
-            return new RecommendResponseDto(false, post.getRecommend());
+            return new RecommendResponseDto(false, post.getRecommendUp(), post.getRecommendDown());
         }
-        recommendRepository.deleteById(recommendPK);
-        post.disRecommend();
+        // 추천이 안눌려 있다면
+
+        recommendRepository.save(recommend);
+
+        if (tOrF) {
+            post.recommendUp(); // 추천 증가
+        } else {
+            post.disRecommendUp(); // 비추천 증가
+        }
+
         postsRepository.save(post);
 
-        return new RecommendResponseDto(true, post.getRecommend());
+        return new RecommendResponseDto(true, post.getRecommendUp(), post.getRecommendDown());
     }
 }

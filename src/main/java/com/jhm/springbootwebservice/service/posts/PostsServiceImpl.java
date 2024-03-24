@@ -86,6 +86,12 @@ public class PostsServiceImpl implements PostsService{
         Posts posts = postsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
         saveImages(multipartFiles, posts);
+
+//        Posts post = Posts.builder()
+//            .title(requestDto.getTitle())
+//            .content(requestDto.getContent())
+//            .build();
+
         posts.update(requestDto.getTitle(), requestDto.getContent());
         return id;
     }

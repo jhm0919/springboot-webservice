@@ -8,6 +8,8 @@ public class CommentResponseDto {
     private Long id;
     private String comment;
     private String author;
+    private int recommendUp;
+    private int recommendDown;
     private String createdDate;
     private Long userId;
     private Long postsId;
@@ -17,6 +19,8 @@ public class CommentResponseDto {
         this.id = entity.getId();
         this.comment = entity.getComment();
         this.author = entity.getUser().getName();
+        this.recommendUp = entity.getRecommendUp();
+        this.recommendDown = entity.getRecommendDown();
         this.userId = entity.getUser().getId();
         this.postsId = entity.getPosts().getId();
         this.createdDate = entity.getCreatedDate();

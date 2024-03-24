@@ -23,6 +23,12 @@ public class Comment extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String comment;
 
+    @Column(columnDefinition = "integer default 0")
+    private int recommendUp;
+
+    @Column(columnDefinition = "integer default 0")
+    private int recommendDown;
+
     @ManyToOne
     @JoinColumn(name = "posts_id")
     private Posts posts;
