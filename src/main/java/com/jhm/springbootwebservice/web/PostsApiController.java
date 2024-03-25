@@ -3,8 +3,8 @@ package com.jhm.springbootwebservice.web;
 import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.service.posts.PostsService;
+import com.jhm.springbootwebservice.service.recommend.PostsRecommendService;
 import com.jhm.springbootwebservice.service.recommend.RecommendService;
-import com.jhm.springbootwebservice.web.dto.request.PostsImageRequestDto;
 import com.jhm.springbootwebservice.web.dto.request.RecommendRequestDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
@@ -25,7 +25,7 @@ import java.util.List;
 public class PostsApiController {
 
     private final PostsService postsService;
-    private final RecommendService recommendService;
+    private final PostsRecommendService postsRecommendService;
 
     @PostMapping(value = "/posts", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public Long save(@RequestPart("json_data") PostsSaveRequestDto postsSaveRequestDto,
@@ -48,7 +48,7 @@ public class PostsApiController {
 
     @DeleteMapping("/posts/{id}")
     public Long delete(@PathVariable Long id) {
-        recommendService.delete(id);
+        postsRecommendService.delete(id);
         postsService.delete(id);
         return id;
     }
@@ -64,10 +64,10 @@ public class PostsApiController {
     public RecommendResponseDto recommend(@PathVariable Long postId, @LoginUser SessionUser user) {
         RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId());
 
-        RecommendResponseDto recommend = recommendService.recommend(requestDto);
+        RecommendResponseDto recommend = postsRecommendService.recommend(requestDto);
         int recommendUpCount = recommend.getRecommendUpCount();
         int recommendDownCount = recommend.getRecommendDownCount();
-        boolean isRecommend = recommendService.findById(requestDto).isRecommend();
+        boolean isRecommend = postsRecommendService.findById(requestDto).isRecommend();
 
         RecommendResponseDto recommendResponseDto =
             new RecommendResponseDto(isRecommend, recommendUpCount, recommendDownCount);
@@ -78,10 +78,10 @@ public class PostsApiController {
     public RecommendResponseDto disRecommend(@PathVariable Long postId, @LoginUser SessionUser user) {
         RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId());
 
-        RecommendResponseDto recommend = recommendService.disRecommend(requestDto);
+        RecommendResponseDto recommend = postsRecommendService.disRecommend(requestDto);
         int recommendUpCount = recommend.getRecommendUpCount();
         int recommendDownCount = recommend.getRecommendDownCount();
-        boolean isRecommend = recommendService.findById(requestDto).isRecommend();
+        boolean isRecommend = postsRecommendService.findById(requestDto).isRecommend();
 
         RecommendResponseDto recommendResponseDto =
             new RecommendResponseDto(isRecommend, recommendUpCount, recommendDownCount);

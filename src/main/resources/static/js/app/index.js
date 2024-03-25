@@ -221,7 +221,7 @@ var main = {
         });
     },
 
-    recommend: function (isRecommend) {
+    postRecommend: function (isRecommend) {
         var id = $('#id').val();
         // if (isRecommend) {
         //     alert("이미 추천 또는 비추천한 게시물입니다.");
@@ -236,18 +236,17 @@ var main = {
             var recommendUpCount = response.recommendUpCount;
             // var isRecommend = response.recommend;
             $('#recommendUpCount').text(recommendUpCount);
-            $('#recommendDownCount').text(recommendDownCount);
-            if (isRecommend) {
-                alert("추천 되었습니다.");
-            } else {
-                alert("추천이 취소되었습니다.");
-            }
+            // if (isRecommend) {
+            //     alert("추천 되었습니다.");
+            // } else {
+            //     alert("추천이 취소되었습니다.");
+            // }
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
     },
 
-    disRecommend: function (isRecommend) {
+    postDisRecommend: function (isRecommend) {
         var id = $('#id').val();
         // if (isRecommend) {
         //     alert("이미 추천 또는 비추천한 게시물입니다.");
@@ -261,12 +260,63 @@ var main = {
         }).done(function (response) {
             // var isRecommend = response.recommend;
             var recommendDownCount = response.recommendDownCount;
-            if (isRecommend) {
-                alert("비추천 되었습니다.");
-            } else {
-                alert("비추천이 취소되었습니다.");
-            }
+            // if (isRecommend) {
+            //     alert("비추천 되었습니다.");
+            // } else {
+            //     alert("비추천이 취소되었습니다.");
+            // }
+            $('#recommendDownCount').text(recommendDownCount);
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+    },
+
+    commentRecommend: function (isRecommend) {
+        var postId = $('#id').val();
+        var commentId = $('#commentId').val();
+        // if (isRecommend) {
+        //     alert("이미 추천 또는 비추천한 게시물입니다.");
+        //     return false;
+        // }
+        $.ajax({
+            type: 'PUT',
+            url: '/api/posts/' + postId + '/comments/' + commentId + '/recommend',
+            dataType: 'JSON',
+            contentType: 'application/json'
+        }).done(function (response) {
+            var recommendUpCount = response.recommendUpCount;
+            // var isRecommend = response.recommend;
             $('#recommendUpCount').text(recommendUpCount);
+            // if (isRecommend) {
+            //     alert("추천 되었습니다.");
+            // } else {
+            //     alert("추천이 취소되었습니다.");
+            // }
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+    },
+
+    commentDisRecommend: function (isRecommend) {
+        var postId = $('#id').val();
+        var commentId = $('#commentId').val();
+        // if (isRecommend) {
+        //     alert("이미 추천 또는 비추천한 게시물입니다.");
+        //     return false;
+        // }
+        $.ajax({
+            type: 'PUT',
+            url: '/api/posts/' + postId + '/comments/' + commentId + '/disRecommend',
+            dataType: 'JSON',
+            contentType: 'application/json'
+        }).done(function (response) {
+            // var isRecommend = response.recommend;
+            var recommendDownCount = response.recommendDownCount;
+            // if (isRecommend) {
+            //     alert("비추천 되었습니다.");
+            // } else {
+            //     alert("비추천이 취소되었습니다.");
+            // }
             $('#recommendDownCount').text(recommendDownCount);
         }).fail(function (error) {
             alert(JSON.stringify(error));

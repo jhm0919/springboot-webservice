@@ -11,5 +11,10 @@ public class RecommendRequestDto {
 
     private Long postId;
     private Long userId;
+    private Long commentId;
 
+    public RecommendRequestDto(Long postId, Long userId) {
+        this.postId = postId;
+        this.userId = userId;
+    }
 }

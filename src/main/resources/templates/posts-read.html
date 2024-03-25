@@ -24,7 +24,7 @@
             <div class="text-center">
                 <button type="button"
                         th:if="${user != null}"
-                        th:onclick="'main.recommend(' + ${recommend.recommend} + ')'"
+                        th:onclick="'main.postRecommend(' + ${recommend.recommend} + ')'"
                         class="badge bi bi-x-square">추천
                 </button>
                 <button type="button"
@@ -36,7 +36,7 @@
                 <span id="recommendDownCount" th:text="${post.recommendDown}"></span>
                 <button type="button"
                         th:if="${user != null}"
-                        th:onclick="'main.disRecommend(' + ${recommend.recommend} + ')'"
+                        th:onclick="'main.postDisRecommend(' + ${recommend.recommend} + ')'"
                 class="badge bi bi-x-square">비추천
                 </button>
                 <button type="button"
@@ -68,7 +68,7 @@
                     <!-- 각각의 댓글 항목 -->
                     <li th:each="comment : ${comments}" th:id="'comments-' + ${comment.id}" class="list-group-item">
                         <div>
-                            <div type="hidden" th:value="${comment.id}"></div>
+                            <input type="hidden" th:id="'commentId'" th:value="${comment.id}">
                             <span style="font-size: small" th:text="${comment.author}"></span>
                             <span style="font-size: xx-small" th:text="${comment.createdDate}"></span>
                             <th:block th:if="${user != null && comment.userId == user.getId()}">

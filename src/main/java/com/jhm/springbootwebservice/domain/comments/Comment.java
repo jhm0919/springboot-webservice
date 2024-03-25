@@ -37,8 +37,23 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-
     public void update(String comment) {
         this.comment = comment;
+    }
+
+    public void recommendUp() {
+        this.recommendUp++;
+    }
+
+    public void recommendDown() {
+        this.recommendUp--;
+    }
+
+    public void disRecommendUp(){
+        this.recommendDown++;
+    }
+
+    public void disRecommendDown() {
+        this.recommendDown--;
     }
 }

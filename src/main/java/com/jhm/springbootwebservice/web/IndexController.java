@@ -3,8 +3,8 @@ package com.jhm.springbootwebservice.web;
 import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.domain.posts.PostType;
-import com.jhm.springbootwebservice.domain.recommend.RecommendRepository;
 import com.jhm.springbootwebservice.service.posts.PostsService;
+import com.jhm.springbootwebservice.service.recommend.PostsRecommendService;
 import com.jhm.springbootwebservice.service.recommend.RecommendService;
 import com.jhm.springbootwebservice.web.dto.request.RecommendRequestDto;
 import com.jhm.springbootwebservice.web.dto.response.*;
@@ -28,7 +28,7 @@ import java.util.List;
 public class IndexController {
 
     private final PostsService postsService;
-    private final RecommendService recommendService;
+    private final PostsRecommendService postsRecommendService;
 
     @GetMapping("/")
     public String index(Model model, @LoginUser SessionUser user, // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
@@ -76,7 +76,7 @@ public class IndexController {
         }
 
         if (user != null) {
-            RecommendResponseDto recommendResponseDto = recommendService.findById(new RecommendRequestDto(postId, user.getId()));
+            RecommendResponseDto recommendResponseDto = postsRecommendService.findById(new RecommendRequestDto(postId, user.getId()));
             model.addAttribute("user", user);
             model.addAttribute("recommend", recommendResponseDto);
 

@@ -1,4 +1,4 @@
-package com.jhm.springbootwebservice.domain.recommend;
+package com.jhm.springbootwebservice.domain.posts.recommend;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Getter
 @Builder
 @Embeddable
-public class RecommendPK implements Serializable {
+public class PostsRecommendPK implements Serializable {
 
     @Column(nullable = false)
     private Long postId;

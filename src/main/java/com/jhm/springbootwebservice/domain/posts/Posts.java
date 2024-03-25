@@ -3,7 +3,6 @@ package com.jhm.springbootwebservice.domain.posts;
 import com.jhm.springbootwebservice.domain.BaseTimeEntity;
 import com.jhm.springbootwebservice.domain.comments.Comment;
 import com.jhm.springbootwebservice.domain.postimage.PostsImage;
-import com.jhm.springbootwebservice.domain.recommend.Recommend;
 import com.jhm.springbootwebservice.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -73,11 +72,11 @@ public class Posts extends BaseTimeEntity {
         this.recommendUp--;
     }
 
-    public void disRecommendDown(){
+    public void disRecommendUp(){
         this.recommendDown++;
     }
 
-    public void disRecommendUp() {
+    public void disRecommendDown() {
         this.recommendDown--;
     }
 }
