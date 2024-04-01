@@ -16,13 +16,6 @@ var main = {
         $('#btn-comment-save').on('click', function () {
             _this.commentSave();
         });
-
-        // $('#recommend').on('click', function() {
-        //     _this.recommend();
-        // });
-        // $('#disRecommend').on('click', function() {
-        //     _this.disRecommend();
-        // });
         $('#btn-modify').on('click', function() {
             _this.modify();
         });
@@ -75,9 +68,9 @@ var main = {
             processData: false,
             cache: false,
             dataType: 'JSON',
-        }).done(function() {
+        }).done(function(response) {
             alert('게시글이 등록되었습니다.');
-            window.location.href = '/';
+            window.location.href = "/posts/read/" + response;
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
@@ -116,9 +109,9 @@ var main = {
             processData: false,
             cache: false,
             dataType: 'JSON',
-        }).done(function() {
-            alert('글이 수정되었습니다.');
-            window.location.href = '/';
+        }).done(function(response) {
+            alert('게시글이 수정되었습니다.');
+            window.location.href = "/posts/read/" + response;
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
@@ -221,12 +214,17 @@ var main = {
         });
     },
 
-    postRecommend: function (isRecommend) {
+    postRecommend: function (isRecommend, userId) {
         var id = $('#id').val();
+        var postUserId = $('#postUserId').val();
         // if (isRecommend) {
         //     alert("이미 추천 또는 비추천한 게시물입니다.");
         //     return false;
         // }
+        if (userId == postUserId) {
+            confirm("본인의 게시글은 추천할 수 없습니다.");
+            return false;
+        }
         $.ajax({
             type: 'PUT',
             url: '/api/posts/' + id + '/recommend',
@@ -246,12 +244,17 @@ var main = {
         });
     },
 
-    postDisRecommend: function (isRecommend) {
+    postDisRecommend: function (isRecommend, userId) {
         var id = $('#id').val();
+        var postUserId = $('#postUserId').val();
         // if (isRecommend) {
         //     alert("이미 추천 또는 비추천한 게시물입니다.");
         //     return false;
         // }
+        if (userId == postUserId) {
+            confirm("본인의 게시글은 비추천할 수 없습니다.");
+            return false;
+        }
         $.ajax({
             type: 'PUT',
             url: '/api/posts/' + id + '/disRecommend',
@@ -271,13 +274,15 @@ var main = {
         });
     },
 
-    commentRecommend: function (isRecommend) {
-        var postId = $('#id').val();
-        var commentId = $('#commentId').val();
+    commentRecommend: function (postId, commentId, userId, commentUserId) {
         // if (isRecommend) {
         //     alert("이미 추천 또는 비추천한 게시물입니다.");
         //     return false;
         // }
+        if (commentUserId == userId) {
+            confirm("본인 댓글은 추천할 수 없습니다.");
+            return false;
+        }
         $.ajax({
             type: 'PUT',
             url: '/api/posts/' + postId + '/comments/' + commentId + '/recommend',
@@ -286,7 +291,7 @@ var main = {
         }).done(function (response) {
             var recommendUpCount = response.recommendUpCount;
             // var isRecommend = response.recommend;
-            $('#recommendUpCount').text(recommendUpCount);
+            $('#commentRecommendUpCount_' + commentId).text(recommendUpCount);
             // if (isRecommend) {
             //     alert("추천 되었습니다.");
             // } else {
@@ -297,13 +302,15 @@ var main = {
         });
     },
 
-    commentDisRecommend: function (isRecommend) {
-        var postId = $('#id').val();
-        var commentId = $('#commentId').val();
+    commentDisRecommend: function (postId, commentId, userId, commentUserId) {
         // if (isRecommend) {
         //     alert("이미 추천 또는 비추천한 게시물입니다.");
         //     return false;
         // }
+        if (commentUserId == userId) {
+            confirm("본인 댓글은 비추천할 수 없습니다.");
+            return false;
+        }
         $.ajax({
             type: 'PUT',
             url: '/api/posts/' + postId + '/comments/' + commentId + '/disRecommend',
@@ -317,7 +324,7 @@ var main = {
             // } else {
             //     alert("비추천이 취소되었습니다.");
             // }
-            $('#recommendDownCount').text(recommendDownCount);
+            $('#commentRecommendDownCount_' + commentId).text(recommendDownCount);
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
@@ -354,7 +361,7 @@ var main = {
         if (con_check === true) {
             $.ajax({
                 type: 'PUT',
-                url: '/api/user',
+                url: '/api/update',
                 dataType: 'JSON',
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify(data)

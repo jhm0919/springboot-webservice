@@ -56,6 +56,7 @@ public class CommentApiController {
 
         RecommendResponseDto recommendResponseDto =
             new RecommendResponseDto(isRecommend, recommendUpCount, recommendDownCount);
+
         return recommendResponseDto;
     }
 

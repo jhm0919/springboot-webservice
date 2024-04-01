@@ -28,7 +28,8 @@
                     <div th:if="${user}">
                         <span id="user" th:text="${user.getName()}"></span> 님 안녕하세요!
                         <a href="/logout" class="btn btn-outline-primary active" role="button">로그아웃</a>
-                        <a href="/update" class="btn btn-outline-primary active">수정</a>
+                        <a th:unless="${#strings.equals(user.role, 'OAUTH_USER')}"
+                           href="/update" class="btn btn-outline-primary active">수정</a>
                     </div>
                     <div th:unless="${user}">
                         <a href="/auth/login" class="btn btn-secondary" role="button">로그인</a>

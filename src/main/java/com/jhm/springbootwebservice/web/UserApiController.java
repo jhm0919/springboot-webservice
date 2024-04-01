@@ -24,7 +24,7 @@ public class UserApiController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
 
-    @PutMapping("/user")
+    @PutMapping("/update")
     public Long modify(@RequestBody UserRequestDto dto) {
         userService.modify(dto);
 

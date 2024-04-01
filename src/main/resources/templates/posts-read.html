@@ -7,6 +7,7 @@
                 <label for="content">제목</label>
                 <div style="display: flex;">
                     <input type="hidden" th:id="'id'" th:value="${post.id}">
+                    <input type="hidden" th:id="'postUserId'" th:value="${post.userId}">
                     <input style="width: 80%" type="text" class="form-control" id="title" th:value="${post.title}" readonly>
                     <input style="width: 20%; margin-left: 10px" type="text" class="form-control" id="author" th:value="${post.author}" readonly>
                 </div>
@@ -24,7 +25,7 @@
             <div class="text-center">
                 <button type="button"
                         th:if="${user != null}"
-                        th:onclick="'main.postRecommend(' + ${recommend.recommend} + ')'"
+                        th:onclick="'main.postRecommend(' + ${recommend.recommend} + ',' + ${user.id} + ')'"
                         class="badge bi bi-x-square">추천
                 </button>
                 <button type="button"
@@ -36,7 +37,7 @@
                 <span id="recommendDownCount" th:text="${post.recommendDown}"></span>
                 <button type="button"
                         th:if="${user != null}"
-                        th:onclick="'main.postDisRecommend(' + ${recommend.recommend} + ')'"
+                        th:onclick="'main.postDisRecommend(' + ${recommend.recommend} + ',' + ${user.id} + ')'"
                 class="badge bi bi-x-square">비추천
                 </button>
                 <button type="button"
@@ -80,7 +81,7 @@
                             <div class="text-right">
                                 <button type="button"
                                         th:if="${user != null}"
-                                        th:onclick="'main.commentRecommend(' + ${recommend.recommend} + ')'"
+                                        th:onclick="'main.commentRecommend(' + ${comment.postsId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ')'"
                                         class="badge bi bi-x-square">추천
                                 </button>
                                 <button type="button"
@@ -88,10 +89,10 @@
                                         th:onclick="'main.redirectToLoginPage()'"
                                         class="badge bi bi-x-square">추천
                                 </button>
-                                <span id="commentRecommendUpCount" th:text="${comment.recommendUp}"></span>
+                                <span th:id="'commentRecommendUpCount_' + ${comment.id}" th:text="${comment.recommendUp}"></span>
                                 <button type="button"
                                         th:if="${user != null}"
-                                        th:onclick="'main.commentDisRecommend(' + ${recommend.recommend} + ')'"
+                                        th:onclick="'main.commentDisRecommend(' + ${comment.postsId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ')'"
                                         class="badge bi bi-x-square">비추천
                                 </button>
                                 <button type="button"
@@ -99,7 +100,7 @@
                                         th:onclick="'main.redirectToLoginPage()'"
                                         class="badge bi bi-x-square">비추천
                                 </button>
-                                <span id="commentRecommendDownCount" th:text="${comment.recommendDown}"></span>
+                                <span th:id="'commentRecommendDownCount_' + ${comment.id}" th:text="${comment.recommendDown}"></span>
                             </div>
                         </div>
 

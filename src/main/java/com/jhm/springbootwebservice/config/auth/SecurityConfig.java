@@ -46,7 +46,9 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/", "/scss/**", "/css/**", "/files/**", "/img/**", "/js/**", "/vendor/**", "/posts/read/**", "/auth/**", "/error/**")
                 .permitAll()
-                .requestMatchers("/api/**").hasRole(Role.USER.name())
+                .requestMatchers("/api/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name(), Role.OAUTH_USER.name())
+                .requestMatchers("/update").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
+                .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                 .anyRequest().authenticated())
             .formLogin(formLogin -> formLogin
                 .loginPage("/auth/login")
@@ -59,7 +61,7 @@ public class SecurityConfig {
             .oauth2Login(oauth2Login -> oauth2Login /* OAuth2 로그인 기능에 대한 여러 설정의 진입점 */
                 .userInfoEndpoint(userinfoEndpoint -> userinfoEndpoint /* OAuth2 로그인 성공 이후 사용자 정보를 가져올 때의 설정들을 담당 */
                 .userService(customOAuth2UserService))
-                .defaultSuccessUrl("/", true));//.userDetailsService(customUserDetailsService);
+                .defaultSuccessUrl("/", true));
 
                  /* 소셜 로그인 성공 시 후속 조치를 진행할 UserService 인터페이스의 구현체를 등록함
                   리소스 서버(즉, 소셜 서비스들)에서 사용자 정보를 가져온 상태에서 추가로 진행하고자

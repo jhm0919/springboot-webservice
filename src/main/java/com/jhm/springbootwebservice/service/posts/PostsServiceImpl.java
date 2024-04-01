@@ -41,59 +41,52 @@ public class PostsServiceImpl implements PostsService{
         User user = userRepository.findById(id).orElseThrow(() ->
             new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
-        log.info("multipartFiles = {}", multipartFiles);
-
         requestDto.setUser(user);
 
         Posts result = requestDto.toEntity();
 
-        saveImages(multipartFiles, result);
+        saveFiles(multipartFiles, result); // 이미지 저장
 
         return postsRepository.save(result).getId();
     }
-
-    private void saveImages(List<MultipartFile> multipartFiles, Posts result) {
-        if (multipartFiles != null && !multipartFiles.isEmpty()) {
-            for (MultipartFile file : multipartFiles) {
-                UUID uuid = UUID.randomUUID();
-                String originalName = file.getOriginalFilename();
-                String imageFileName = uuid + "_" + originalName;
-
-                File uploadFolder = new File(PREV_IMAGE_URL);
-                File destinationFile = new File(uploadFolder, imageFileName);
-
-                try {
-                    file.transferTo(destinationFile);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                PostsImage image = PostsImage.builder()
-                        .url(imageFileName)
-                        .name(originalName)
-                        .posts(result)
-                        .build();
-
-                postsImageRepository.save(image);
-            }
-        }
-    }
-
 
     @Override
     @Transactional
     public Long update(Long id, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles) {
         Posts posts = postsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-        saveImages(multipartFiles, posts);
-
-//        Posts post = Posts.builder()
-//            .title(requestDto.getTitle())
-//            .content(requestDto.getContent())
-//            .build();
 
         posts.update(requestDto.getTitle(), requestDto.getContent());
+
+        saveFiles(multipartFiles, posts); // 이미지 저장
+
         return id;
+    }
+
+    private void saveFiles(List<MultipartFile> multipartFiles, Posts result) {
+        if (multipartFiles != null && !multipartFiles.isEmpty()) {
+            for (MultipartFile file : multipartFiles) {
+                UUID uuid = UUID.randomUUID();
+                String originalName = file.getOriginalFilename();
+                String imageFileName = uuid + "_" + originalName;
+
+                File fileName = new File(PREV_IMAGE_URL, imageFileName);
+
+                try {
+                    file.transferTo(fileName);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                PostsImage image = PostsImage.builder()
+                    .url(imageFileName)
+                    .name(originalName)
+                    .posts(result)
+                    .build();
+
+                postsImageRepository.save(image);
+            }
+        }
     }
 
     @Override
@@ -198,6 +191,5 @@ public class PostsServiceImpl implements PostsService{
         }
         return id;
     }
-
 
 }

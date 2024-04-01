@@ -25,6 +25,13 @@
                 <input type="file" name="files" accept="image/*,.txt" class="form-control" id="files" multiple>
                 <th:block th:each="image : ${postsImages}">
                     <div th:text="${image.name}"/>
+<!--                    <div>-->
+<!--                        <input type="checkbox" th:id="'checkbox_' + ${image.id}" th:name="'selectedImages'" th:value="${image.id}">-->
+<!--                        <label th:for="'checkbox_' + ${image.id}">-->
+<!--                            <img th:src="'/files/' + ${image.url}" width="100">-->
+<!--                        </label>-->
+<!--                    </div>-->
+<!--                    <input type="checkbox" th:id="${image.id}" th:name="'selectedImages'" th:value="${image.id}">-->
                     <img width="100" th:src="'/files/' + ${image.url}"/>
                     <button th:onclick="'main.imageDelete(' + ${image.postId} + ',' + ${image.id} + ')'" class="badge bi bi-x-square">삭제</button>
                 </th:block>

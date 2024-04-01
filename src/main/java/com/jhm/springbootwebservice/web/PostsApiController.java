@@ -13,6 +13,7 @@ import com.jhm.springbootwebservice.web.dto.response.RecommendResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,7 +32,9 @@ public class PostsApiController {
     public Long save(@RequestPart("json_data") PostsSaveRequestDto postsSaveRequestDto,
                      @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles,
                      @LoginUser SessionUser user) {
-        return postsService.save(user.getId(), postsSaveRequestDto, multipartFiles);
+        Long postId = postsService.save(user.getId(), postsSaveRequestDto, multipartFiles);
+
+        return postId;
     }
 
     @GetMapping("/posts/{id}")
