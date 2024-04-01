@@ -45,7 +45,9 @@ public class PostsApiController {
     @PutMapping(value = "/posts/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public Long update(@PathVariable Long id,
                        @RequestPart("json_data") PostsUpdateRequestDto requestDto,
-                       @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles) {
+                       @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles,
+                       @RequestParam(value = "checkedImageIds", required = false) List<Long> checkedImageIds) {
+        // 체크된 이미지 id들을 받아서 어떻게할지
         return postsService.update(id, requestDto, multipartFiles);
     }
 

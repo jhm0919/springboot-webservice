@@ -85,11 +85,20 @@ var main = {
         var inputFile = $("input[type='file']");
         var files = inputFile[0].files;
 
+        // 체크된 이미지 정보를 수집합니다.
+        var checkedImageIds = [];
+        $("input.image-checkbox:checked").each(function() {
+            checkedImageIds.push($(this).attr('id').replace('checkbox_', ''));
+        });
+
         formData.append('json_data', new Blob([JSON.stringify(data)],
             {type: 'application/json; charset=UTF-8;'}));
         for(let i = 0; i < files.length; i++) {
             formData.append("files", files[i]);
         }
+
+        // 체크된 이미지 정보를 FormData에 추가합니다.
+        formData.append("checkedImageIds", JSON.stringify(checkedImageIds));
 
         if (!data.title) {
             alert("제목을 입력해주세요.")
