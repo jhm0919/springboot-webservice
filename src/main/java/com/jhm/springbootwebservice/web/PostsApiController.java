@@ -38,7 +38,7 @@ public class PostsApiController {
     }
 
     @GetMapping("/posts/{id}")
-    public PostsResponseDto findById (@PathVariable Long id) {
+    public PostsResponseDto findById(@PathVariable Long id) {
         return postsService.findById(id);
     }
 
