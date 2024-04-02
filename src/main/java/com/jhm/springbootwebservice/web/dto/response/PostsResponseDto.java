@@ -1,8 +1,10 @@
 package com.jhm.springbootwebservice.web.dto.response;
 
+import com.jhm.springbootwebservice.domain.posts.PostType;
 import com.jhm.springbootwebservice.domain.posts.Posts;
 import com.jhm.springbootwebservice.domain.postimage.PostsImage;
 import lombok.Getter;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,8 +17,11 @@ public class PostsResponseDto {
     private String content;
     private String author;
     private int view;
+    private PostType postType;
     private int recommendUp;
     private int recommendDown;
+    private String createdDate;
+    private String modifiedDate;
     private Long userId;
     private List<CommentResponseDto> comments;
     private List<PostsImageResponseDto> postsImages;
@@ -27,8 +32,11 @@ public class PostsResponseDto {
         this.content = entity.getContent();
         this.author = entity.getAuthor();
         this.view = entity.getView();
+        this.postType = entity.getPostType();
         this.recommendUp = entity.getRecommendUp();
         this.recommendDown = entity.getRecommendDown();
+        this.createdDate = entity.getCreatedDate();
+        this.modifiedDate = entity.getModifiedDate();
         this.userId = entity.getUser().getId();
         this.comments = entity.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
 //        this.imageUrls = entity.getPostsImages().stream().map(PostsImage::getUrl).collect(Collectors.toList());

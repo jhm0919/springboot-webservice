@@ -3,47 +3,47 @@
 <h3 style="text-align: center">게시글 수정</h3>
 <br/>
 <div class="col-md-9 mx-auto">
-    <div class="col-md-12">
-        <form enctype="multipart/form-data">
-            <div class="form-group">
-                <div>
-                    <select name="postType" id="postType">
-                        <option value="">게시판 선택</option>
-                        <option value="NOTICE">공지사항</option>
-                        <option value="FREE">자유게시판</option>
-                    </select>
-                </div>
-                <label for="content">제목</label>
-                <div style="display: flex;">
-                    <input type="hidden" id="id" th:value="${post.id}">
-                    <input style="width: 80%" type="text" class="form-control" id="title" th:value="${post.title}" >
-                    <input style="width: 20%; margin-left: 10px" type="text" class="form-control" id="author" th:value="${post.author}" readonly>
-                </div>
+    <form enctype="multipart/form-data">
+        <div class="form-group">
+            <div>
+                <select name="postType" id="postType">
+                    <!--                <option value="NOTICE">공지사항</option>-->
+                    <option value="FREE">자유게시판</option>
+                    <option value="BOARD1">게시판1</option>
+                    <option value="BOARD2">게시판2</option>
+                    <option value="BOARD3">게시판3</option>
+                </select>
             </div>
-            <div class="form-group">
-                <label for="content">내용</label>
-                <textarea class="form-control h-75" id="content" th:text="${post.content}"></textarea>
-                <th:block th:each="image : ${imageUrls}">
-                    <img width="500" th:src="'/files/' + ${image}"/>
-                </th:block>
+            <label for="content">제목</label>
+            <div style="display: flex;">
+                <input type="hidden" id="id" th:value="${post.id}">
+                <input style="width: 80%" type="text" class="form-control" id="title" th:value="${post.title}" >
+                <input style="width: 20%; margin-left: 10px" type="text" class="form-control" id="author" th:value="${post.author}" readonly>
             </div>
-            <div class="form-floating mb-3">
-                <label>이미지 업로드</label>
-                <input type="file" name="files" accept="image/*,.txt" class="form-control" id="files" multiple>
-                <span>삭제하고 싶은 이미지를 선택하세요.</span>
-                <th:block th:each="image : ${postsImages}">
-                    <div th:text="${image.name}"/>
-                    <input type="checkbox" class="image-checkbox" th:id="'checkbox_' + ${image.id}" />
-                    <img width="100" th:src="'/files/' + ${image.url}" class="image" />
-<!--                    <button th:onclick="'main.imageDelete(' + ${image.postId} + ',' + ${image.id} + ')'" class="badge bi bi-x-square">삭제</button>-->
-                </th:block>
-            </div>
-        </form>
-        <div class="text-right">
-            <a href="/" role="button" class="btn btn-secondary">목록으로</a>
-            <button type="button" class="btn btn-primary" id="btn-update">수정완료</button>
-            <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
         </div>
+        <div class="form-group">
+            <label for="content">내용</label>
+            <textarea class="form-control h-75" id="content" th:text="${post.content}"></textarea>
+            <th:block th:each="image : ${imageUrls}">
+                <img width="500" th:src="'/files/' + ${image}"/>
+            </th:block>
+        </div>
+        <div class="form-floating mb-3">
+            <label>이미지 업로드</label>
+            <input type="file" name="files" accept="image/*,.txt" class="form-control" id="files" multiple>
+            <span>삭제하고 싶은 이미지를 선택하세요.</span>
+            <th:block th:each="image : ${postsImages}">
+                <div th:text="${image.name}"/>
+                <input type="checkbox" class="image-checkbox" th:id="'checkbox_' + ${image.id}" />
+                <img width="100" th:src="'/files/' + ${image.url}" class="image" />
+<!--                    <button th:onclick="'main.imageDelete(' + ${image.postId} + ',' + ${image.id} + ')'" class="badge bi bi-x-square">삭제</button>-->
+            </th:block>
+        </div>
+    </form>
+    <div class="text-right">
+        <a href="/" role="button" class="btn btn-secondary">목록으로</a>
+        <button type="button" class="btn btn-primary" id="btn-update">수정완료</button>
+        <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
     </div>
 </div>
 

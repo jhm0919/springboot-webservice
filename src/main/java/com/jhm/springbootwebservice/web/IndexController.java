@@ -90,6 +90,7 @@ public class IndexController {
 
         postsService.updateView(postId); // view++
 
+        model.addAttribute("postTypes", PostType.values());
         model.addAttribute("postsImages", postsImages);
         model.addAttribute("post", postsResponseDto);
 

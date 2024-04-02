@@ -23,76 +23,84 @@
 
 <body class="bg-gradient-primary">
 
-    <div class="container">
+<div class="container">
 
-        <div class="card o-hidden border-0 shadow-lg my-5">
-            <div class="card-body p-0">
-                <!-- Nested Row within Card Body -->
-                <div class="row">
-<!--                    <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>-->
-                    <div class="col-lg-12">
-                        <div class="p-5">
-                            <div class="text-center">
-                                <h1 class="h4 text-gray-900 mb-4">회원가입</h1>
-                            </div>
-                            <form class="user" action="/auth/joinProc" method="post">
-                                <div class="form-group">
-                                    <span class="m-0 font-weight-bold text-primary">계정</span>
-                                    <input type="email" class="form-control form-control-user" id="exampleInputEmail"
-                                           th:value="${userDto != null ? userDto.email : ''}"
-                                           name="email" placeholder="이메일을 입력하세요.">
-                                    <span class="m-0 font-weight-bold text-danger" th:if="${valid_email != null}" th:text="${valid_email}"></span>
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+
+        <div class="col-xl-8 col-lg-12 col-md-9">
+
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <!-- Nested Row within Card Body -->
+                    <div class="row">
+                        <!--                        <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>-->
+                        <div class="col-lg-12">
+                            <div class="p-5">
+                                <div class="text-center">
+                                    <h1 class="h4 text-gray-900 mb-4">회원가입</h1>
                                 </div>
-                                <div class="form-group">
-                                    <span class="m-0 font-weight-bold text-primary">닉네임</span>
-                                    <input type="text" class="form-control form-control-user" id="inputName"
-                                           th:value="${userDto != null ? userDto.name : ''}"
-                                           name="name" placeholder="닉네임을 입력하세요.">
-                                    <span class="m-0 font-weight-bold text-danger" th:if="${valid_name != null}" th:text="${valid_name}"></span>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <span class="m-0 font-weight-bold text-primary">비밀번호</span>
-                                        <input type="password" class="form-control form-control-user"
-                                               th:value="${userDto != null ? userDto.password : ''}"
-                                               name="password" id="exampleInputPassword" placeholder="비밀번호">
-                                        <span class="m-0 font-weight-bold text-danger" th:if="${valid_password != null}" th:text="${valid_password}"></span>
+                                <form class="user" action="/auth/joinProc" method="post">
+                                    <div class="form-group">
+                                        <span class="m-0 font-weight-bold text-primary">계정</span>
+                                        <input type="email" class="form-control form-control-user" id="exampleInputEmail"
+                                               th:value="${userDto != null ? userDto.email : ''}"
+                                               name="email" placeholder="이메일을 입력하세요.">
+                                        <span class="m-0 font-weight-bold text-danger" th:if="${valid_email != null}" th:text="${valid_email}"></span>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <span class="m-0 font-weight-bold text-primary">비밀번호 확인</span>
-                                        <input type="password" class="form-control form-control-user"
-                                               th:value="${userDto != null ? userDto.passwordConfirm : ''}"
-                                               name="passwordConfirm" id="exampleRepeatPassword" placeholder="비밀번호 확인">
-                                        <span class="m-0 font-weight-bold text-danger" th:if="${valid_passwordConfirm != null}" th:text="${valid_passwordConfirm}"></span>
+                                    <div class="form-group">
+                                        <span class="m-0 font-weight-bold text-primary">닉네임</span>
+                                        <input type="text" class="form-control form-control-user" id="inputName"
+                                               th:value="${userDto != null ? userDto.name : ''}"
+                                               name="name" placeholder="닉네임을 입력하세요.">
+                                        <span class="m-0 font-weight-bold text-danger" th:if="${valid_name != null}" th:text="${valid_name}"></span>
                                     </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <span class="m-0 font-weight-bold text-primary">비밀번호</span>
+                                            <input type="password" class="form-control form-control-user"
+                                                   th:value="${userDto != null ? userDto.password : ''}"
+                                                   name="password" id="exampleInputPassword" placeholder="비밀번호">
+                                            <span class="m-0 font-weight-bold text-danger" th:if="${valid_password != null}" th:text="${valid_password}"></span>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <span class="m-0 font-weight-bold text-primary">비밀번호 확인</span>
+                                            <input type="password" class="form-control form-control-user"
+                                                   th:value="${userDto != null ? userDto.passwordConfirm : ''}"
+                                                   name="passwordConfirm" id="exampleRepeatPassword" placeholder="비밀번호 확인">
+                                            <span class="m-0 font-weight-bold text-danger" th:if="${valid_passwordConfirm != null}" th:text="${valid_passwordConfirm}"></span>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                                        가입하기
+                                    </button>
+                                    <a href="/" class="btn btn-info btn-user btn-block">
+                                        홈으로
+                                    </a>
+                                    <!--                                <hr>-->
+                                    <!--                                <a href="index.html" class="btn btn-google btn-user btn-block">-->
+                                    <!--                                    <i class="fab fa-google fa-fw"></i> Register with Google-->
+                                    <!--                                </a>-->
+                                    <!--                                <a href="index.html" class="btn btn-facebook btn-user btn-block">-->
+                                    <!--                                    <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook-->
+                                    <!--                                </a>-->
+                                </form>
+                                <hr>
+                                <div class="text-center">
+                                    <a class="small" href="#">비밀번호 찾기</a>
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-user btn-block">
-                                    가입하기
-                                </button>
-                                <a href="/" class="btn btn-info btn-user btn-block">
-                                    홈으로
-                                </a>
-<!--                                <hr>-->
-<!--                                <a href="index.html" class="btn btn-google btn-user btn-block">-->
-<!--                                    <i class="fab fa-google fa-fw"></i> Register with Google-->
-<!--                                </a>-->
-<!--                                <a href="index.html" class="btn btn-facebook btn-user btn-block">-->
-<!--                                    <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook-->
-<!--                                </a>-->
-                            </form>
-                            <hr>
-                            <div class="text-center">
-                                <a class="small" href="#">비밀번호 찾기</a>
-                            </div>
-                            <div class="text-center">
-                                <a class="small" href="/auth/login">로그인</a>
+                                <div class="text-center">
+                                    <a class="small" href="/auth/login">로그인</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
+        </div>
     </div>
+
+</div>
 
 <th:block th:replace="~{fragments/footer :: footerFragment}"></th:block>

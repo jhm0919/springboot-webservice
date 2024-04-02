@@ -1,160 +1,186 @@
 <th:block th:replace="~{fragments/header :: headerFragment}"></th:block>
-
+<br/>
 <div class="col-md-9 mx-auto">
-    <div class="col-md-12">
-        <form>
-            <div class="form-group">
-                <label for="content">제목</label>
-                <div style="display: flex;">
-                    <input type="hidden" th:id="'id'" th:value="${post.id}">
-                    <input type="hidden" th:id="'postUserId'" th:value="${post.userId}">
-                    <input style="width: 80%" type="text" class="form-control" id="title" th:value="${post.title}" readonly>
-                    <input style="width: 20%; margin-left: 10px" type="text" class="form-control" id="author" th:value="${post.author}" readonly>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="content">내용</label>
-                <div id="content" th:text="${post.content}"></div>
-                <th:block th:each="image : ${postsImages}">
-                    <img width="500" th:src="'/files/' + ${image.url}"/>
-                </th:block>
-            </div>
-            <div class="form-group">
-                <label for="content" th:text="'조회수 : ' + ${post.view}"></label>
-            </div>
-            <div class="text-center">
-                <button type="button"
-                        th:if="${user != null}"
-                        th:onclick="'main.postRecommend(' + ${recommend.recommend} + ',' + ${user.id} + ')'"
-                        class="badge bi bi-x-square">추천
-                </button>
-                <button type="button"
-                        th:unless="${user != null}"
-                        th:onclick="'main.redirectToLoginPage()'"
-                class="badge bi bi-x-square">추천
-                </button>
-                <span id="recommendUpCount" th:text="${post.recommendUp}"></span>
-                <span id="recommendDownCount" th:text="${post.recommendDown}"></span>
-                <button type="button"
-                        th:if="${user != null}"
-                        th:onclick="'main.postDisRecommend(' + ${recommend.recommend} + ',' + ${user.id} + ')'"
-                class="badge bi bi-x-square">비추천
-                </button>
-                <button type="button"
-                        th:unless="${user != null}"
-                        th:onclick="'main.redirectToLoginPage()'"
-                class="badge bi bi-x-square">비추천
-                </button>
-            </div>
-        </form>
-        <div class="text-right">
-            <a href="/" role="button" class="btn btn-secondary">목록으로</a>
-            <th:block th:if="${author}">
-                <a th:href="@{'/posts/update/' + ${post.id}}" role="button" class="btn btn-primary">수정하기</a>
-                <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
-            </th:block>
-        </div>
-        <br/>
-        <br/>
-        <!-- 댓글 부분 -->
-        <th:block th:if="${comments != null}">
-            <div class="card">
-                <!-- 댓글 개수 -->
-                <div class="card-header bi bi-chat-dots">
-                    <span th:if="${comments.size() > 0}" th:text="'댓글 ' + ${comments.size() + '개'}"></span>
-                    <span th:unless="${comments.size() > 0}">댓글 0개</span>
-                </div>
-                <!-- 댓글 리스트 -->
-                <ul class="list-group-flush">
-                    <!-- 각각의 댓글 항목 -->
-                    <li th:each="comment : ${comments}" th:id="'comments-' + ${comment.id}" class="list-group-item">
-                        <div>
-                            <input type="hidden" th:id="'commentId'" th:value="${comment.id}">
-                            <span style="font-size: small" th:text="${comment.author}"></span>
-                            <span style="font-size: xx-small" th:text="${comment.createdDate}"></span>
-                            <th:block th:if="${user != null && comment.userId == user.getId()}">
-                                <!-- 댓글 수정 버튼 -->
-                                <button style="font-size: small" data-toggle="collapse" th:data-target="'.multi-collapse-' + ${comment.id}" class="badge bi bi-pencil-square">수정</button>
-                                <!-- 댓글 삭제 버튼 -->
-                                <button style="font-size: small" th:onclick="'main.commentDelete(' + ${comment.postsId} + ',' + ${comment.id} + ')'" class="badge bi bi-x-square">삭제</button>
-                            </th:block>
-                            <div class="text-right">
-                                <button type="button"
-                                        th:if="${user != null}"
-                                        th:onclick="'main.commentRecommend(' + ${comment.postsId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ')'"
-                                        class="badge bi bi-x-square">추천
-                                </button>
-                                <button type="button"
-                                        th:unless="${user != null}"
-                                        th:onclick="'main.redirectToLoginPage()'"
-                                        class="badge bi bi-x-square">추천
-                                </button>
-                                <span th:id="'commentRecommendUpCount_' + ${comment.id}" th:text="${comment.recommendUp}"></span>
-                                <button type="button"
-                                        th:if="${user != null}"
-                                        th:onclick="'main.commentDisRecommend(' + ${comment.postsId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ')'"
-                                        class="badge bi bi-x-square">비추천
-                                </button>
-                                <button type="button"
-                                        th:unless="${user != null}"
-                                        th:onclick="'main.redirectToLoginPage()'"
-                                        class="badge bi bi-x-square">비추천
-                                </button>
-                                <span th:id="'commentRecommendDownCount_' + ${comment.id}" th:text="${comment.recommendDown}"></span>
-                            </div>
-                        </div>
-
-
-                        <!-- 댓글 내용 -->
-                        <p th:class="'collapse multi-collapse-' + ${comment.id} + ' show'" th:text="${comment.comment}"></p>
-
-                        <!-- 댓글 수정 폼 -->
-                        <form th:class="'collapse multi-collapse-' + ${comment.id}" method="post">
-                            <input type="hidden" th:id="'id'" th:value="${comment.id}">
-                            <input type="hidden" th:id="'postsId'" th:value="${comment.postsId}">
-                            <div class="row">
-                                <div class="form-group col-10">
-                                    <textarea class="form-control" th:id="'comment-content'" rows="3" th:text="${comment.comment}"></textarea>
-                                </div>
-                                <div class="col-2">
-                                    <button type="button" th:id="'btn-comment-update'" class="btn btn-primary"> 수정</button>
-                                </div>
-                            </div>
-                        </form>
-                        <hr>
+    <form>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" th:text="'전체'" th:href="@{'/'}"></a>
                     </li>
+                    <th:block th:each="postType : ${postTypes}" >
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               th:classappend="${postType.key.toUpperCase() == post.postType.toString()} ? 'active' : ''"
+                               th:text="${postType.title}"
+                               th:value="${postType.key}"
+                               th:href="@{/(postType= ${postType.key})}"></a>
+                        </li>
+                    </th:block>
                 </ul>
             </div>
+        </nav>
+
+        <div class="form-group">
+<!--            <label for="content">제목</label>-->
+            <div style="display: flex;">
+                <input type="hidden" th:id="'id'" th:value="${post.id}">
+                <input type="hidden" th:id="'postUserId'" th:value="${post.userId}">
+                <input style="width: 80%" type="text" class="form-control" id="title" th:value="${post.title}" readonly>
+                <input style="width: 20%" type="text" class="form-control" id="modifiedDate" th:value="${post.modifiedDate}" readonly>
+            </div>
+            <div style="display: flex;">
+                <input style="width: 80%" type="text" class="form-control" id="author" th:value="${post.author}" readonly>
+                <input style="width: 10%" type="text" class="form-control" id="view" th:value="'조회수' + ${post.view}" readonly>
+                <input style="width: 10%" type="text" class="form-control" id="recommend" th:value="'추천수' + ${post.recommendUp}" readonly>
+
+                <!-- 댓글 없는 글 오류남-->
+<!--                <input style="width: 10%; margin-right: 10px" th:if="${comments.size() > 0}" th:text="'댓글 ' + ${comments.size()}" readonly>-->
+<!--                <input style="width: 10%; margin-right: 10px" th:unless="${comments.size() > 0}" th:text="'댓글 0'" readonly>-->
+            </div>
+        </div>
+        <div class="form-group">
+<!--            <label for="content">내용</label>-->
+            <div id="content" th:text="${post.content}"></div>
+            <th:block th:each="image : ${postsImages}">
+                <img width="500" th:src="'/files/' + ${image.url}"/>
+            </th:block>
+        </div>
+        <div class="form-group">
+            <label for="content" th:text="'조회수 : ' + ${post.view}"></label>
+        </div>
+        <div class="text-center">
+            <button type="button"
+                    th:if="${user != null}"
+                    th:onclick="'main.postRecommend(' + ${recommend.recommend} + ',' + ${user.id} + ')'"
+                    class="badge bi bi-x-square">추천
+            </button>
+            <button type="button"
+                    th:unless="${user != null}"
+                    th:onclick="'main.redirectToLoginPage()'"
+            class="badge bi bi-x-square">추천
+            </button>
+            <span id="recommendUpCount" th:text="${post.recommendUp}"></span>
+            <span id="recommendDownCount" th:text="${post.recommendDown}"></span>
+            <button type="button"
+                    th:if="${user != null}"
+                    th:onclick="'main.postDisRecommend(' + ${recommend.recommend} + ',' + ${user.id} + ')'"
+            class="badge bi bi-x-square">비추천
+            </button>
+            <button type="button"
+                    th:unless="${user != null}"
+                    th:onclick="'main.redirectToLoginPage()'"
+            class="badge bi bi-x-square">비추천
+            </button>
+        </div>
+    </form>
+    <div class="text-right">
+        <a href="/" role="button" class="btn btn-secondary">목록으로</a>
+        <th:block th:if="${author}">
+            <a th:href="@{'/posts/update/' + ${post.id}}" role="button" class="btn btn-primary">수정하기</a>
+            <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
         </th:block>
-        <!-- comments가 비어있을 때 표시할 내용 -->
-        <th:block th:unless="${comments != null}">
-            <li class="list-group-item">댓글이 없습니다.</li>
-        </th:block>
+    </div>
+    <br/>
+    <br/>
+    <!-- 댓글 부분 -->
+    <th:block th:if="${comments != null}">
         <div class="card">
-            <div class="card-header bi bi-chat-right-dots">댓글 쓰기</div>
-
-        <!-- 댓글작성 부분 -->
-            <form>
-                <input type="hidden" id="postsId" th:value="${post.id}">
-
-                <div class="card-body" th:if="${user}">
-                    <div class="row">
-                        <div class="col-10">
-                            <textarea id="comment" class="form-control" rows="3" placeholder="댓글을 입력하세요"></textarea>
-                        </div>
-                        <div class="col-2 ">
-                            <button type="button" id="btn-comment-save" class="btn btn-primary btn"> 등록</button>
+            <!-- 댓글 개수 -->
+            <div class="card-header bi bi-chat-dots">
+                <span th:if="${comments.size() > 0}" th:text="'댓글 ' + ${comments.size() + '개'}"></span>
+                <span th:unless="${comments.size() > 0}">댓글 0개</span>
+            </div>
+            <!-- 댓글 리스트 -->
+            <ul class="list-group-flush">
+                <!-- 각각의 댓글 항목 -->
+                <li th:each="comment : ${comments}" th:id="'comments-' + ${comment.id}" class="list-group-item">
+                    <div>
+                        <input type="hidden" th:id="'commentId'" th:value="${comment.id}">
+                        <span style="font-size: small" th:text="${comment.author}"></span>
+                        <span style="font-size: xx-small" th:text="${comment.createdDate}"></span>
+                        <th:block th:if="${user != null && comment.userId == user.getId()}">
+                            <!-- 댓글 수정 버튼 -->
+                            <button style="font-size: small" data-toggle="collapse" th:data-target="'.multi-collapse-' + ${comment.id}" class="badge bi bi-pencil-square">수정</button>
+                            <!-- 댓글 삭제 버튼 -->
+                            <button style="font-size: small" th:onclick="'main.commentDelete(' + ${comment.postsId} + ',' + ${comment.id} + ')'" class="badge bi bi-x-square">삭제</button>
+                        </th:block>
+                        <div class="text-right">
+                            <button type="button"
+                                    th:if="${user != null}"
+                                    th:onclick="'main.commentRecommend(' + ${comment.postsId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ')'"
+                                    class="badge bi bi-x-square">추천
+                            </button>
+                            <button type="button"
+                                    th:unless="${user != null}"
+                                    th:onclick="'main.redirectToLoginPage()'"
+                                    class="badge bi bi-x-square">추천
+                            </button>
+                            <span th:id="'commentRecommendUpCount_' + ${comment.id}" th:text="${comment.recommendUp}"></span>
+                            <button type="button"
+                                    th:if="${user != null}"
+                                    th:onclick="'main.commentDisRecommend(' + ${comment.postsId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ')'"
+                                    class="badge bi bi-x-square">비추천
+                            </button>
+                            <button type="button"
+                                    th:unless="${user != null}"
+                                    th:onclick="'main.redirectToLoginPage()'"
+                                    class="badge bi bi-x-square">비추천
+                            </button>
+                            <span th:id="'commentRecommendDownCount_' + ${comment.id}" th:text="${comment.recommendDown}"></span>
                         </div>
                     </div>
-                </div>
 
-                <div class="card-body" style="font-size: small" th:unless="${user}">
-                    <a href="/auth/login">로그인</a>을 하시면 댓글을 등록할 수 있습니다.
-                </div>
-            </form>
+
+                    <!-- 댓글 내용 -->
+                    <p th:class="'collapse multi-collapse-' + ${comment.id} + ' show'" th:text="${comment.comment}"></p>
+
+                    <!-- 댓글 수정 폼 -->
+                    <form th:class="'collapse multi-collapse-' + ${comment.id}" method="post">
+                        <input type="hidden" th:id="'id'" th:value="${comment.id}">
+                        <input type="hidden" th:id="'postsId'" th:value="${comment.postsId}">
+                        <div class="row">
+                            <div class="form-group col-10">
+                                <textarea class="form-control" th:id="'comment-content'" rows="3" th:text="${comment.comment}"></textarea>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" th:id="'btn-comment-update'" class="btn btn-primary"> 수정</button>
+                            </div>
+                        </div>
+                    </form>
+                    <hr>
+                </li>
+            </ul>
         </div>
+    </th:block>
+    <!-- comments가 비어있을 때 표시할 내용 -->
+    <th:block th:unless="${comments != null}">
+        <li class="list-group-item">댓글이 없습니다.</li>
+    </th:block>
+    <div class="card">
+        <div class="card-header bi bi-chat-right-dots">댓글 쓰기</div>
 
+    <!-- 댓글작성 부분 -->
+        <form>
+            <input type="hidden" id="postsId" th:value="${post.id}">
+
+            <div class="card-body" th:if="${user}">
+                <div class="row">
+                    <div class="col-10">
+                        <textarea id="comment" class="form-control" rows="3" placeholder="댓글을 입력하세요"></textarea>
+                    </div>
+                    <div class="col-2 ">
+                        <button type="button" id="btn-comment-save" class="btn btn-primary btn"> 등록</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body" style="font-size: small" th:unless="${user}">
+                <a href="/auth/login">로그인</a>을 하시면 댓글을 등록할 수 있습니다.
+            </div>
+        </form>
     </div>
+
 </div>
 
 
