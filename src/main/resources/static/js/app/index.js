@@ -78,6 +78,7 @@ var main = {
     update : function () {
         var formData = new FormData();
         var data = {
+            postType: $('#postType').val(),
             title: $('#title').val(),
             content: $('#content').val(),
         };
@@ -91,6 +92,8 @@ var main = {
             checkedImageIds.push($(this).attr('id').replace('checkbox_', ''));
         });
 
+        // console.log(checkedImageIds);
+
         formData.append('json_data', new Blob([JSON.stringify(data)],
             {type: 'application/json; charset=UTF-8;'}));
         for(let i = 0; i < files.length; i++) {
@@ -98,7 +101,10 @@ var main = {
         }
 
         // 체크된 이미지 정보를 FormData에 추가합니다.
-        formData.append("checkedImageIds", JSON.stringify(checkedImageIds));
+        // formData.append("checkedImageIds", JSON.stringify(checkedImageIds));
+        if (checkedImageIds.length > 0) {
+            formData.append("checkedImageIds", checkedImageIds.join(',')); // 배열을 문자열로 변환하여 FormData에 추가합니다.
+        }
 
         if (!data.title) {
             alert("제목을 입력해주세요.")
@@ -210,18 +216,18 @@ var main = {
         }
     },
     /** 이미지 삭제 */
-    imageDelete : function (postsId, imageId) {
-        $.ajax({
-            type: 'DELETE',
-            url: '/api/posts/' + postsId + '/images/' + imageId,
-            dataType: 'JSON',
-        }).done(function () {
-            alert('이미지가 삭제되었습니다.');
-            window.location.reload();
-        }).fail(function (error) {
-            alert(JSON.stringify(error));
-        });
-    },
+    // imageDelete : function (postsId, imageId) {
+    //     $.ajax({
+    //         type: 'DELETE',
+    //         url: '/api/posts/' + postsId + '/images/' + imageId,
+    //         dataType: 'JSON',
+    //     }).done(function () {
+    //         alert('이미지가 삭제되었습니다.');
+    //         window.location.reload();
+    //     }).fail(function (error) {
+    //         alert(JSON.stringify(error));
+    //     });
+    // },
 
     postRecommend: function (isRecommend, userId) {
         var id = $('#id').val();

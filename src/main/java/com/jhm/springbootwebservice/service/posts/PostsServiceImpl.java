@@ -52,16 +52,41 @@ public class PostsServiceImpl implements PostsService{
 
     @Override
     @Transactional
-    public Long update(Long id, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles) {
+    public Long update(Long id, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles, List<Long> checkedIds) {
         Posts posts = postsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
 
-        posts.update(requestDto.getTitle(), requestDto.getContent());
+        posts.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getPostType());
 
         saveFiles(multipartFiles, posts); // 이미지 저장
 
+        if (checkedIds != null) { // 체크한 이미지(삭제하고싶은 이미지)가 있는 경우
+            for (Long checkedId : checkedIds) {
+                PostsImage postsImage = postsImageRepository.findByPostsIdAndId(posts.getId(), checkedId);
+                String imageFileName = PREV_IMAGE_URL + postsImage.getUrl();
+                File imageFileUrl = new File(imageFileName);
+
+                if (imageFileUrl.delete()) {
+                    postsImageRepository.delete(postsImage);
+                }
+            }
+        }
+
         return id;
     }
+
+//    @Override
+//    @Transactional
+//    public Long deleteImage(Long postsId, Long id) {
+//        PostsImage postsImage = postsImageRepository.findByPostsIdAndId(postsId, id);
+//        String imageFileName = PREV_IMAGE_URL + postsImage.getUrl();
+//        File imageFileUrl = new File(imageFileName);
+//
+//        if (imageFileUrl.delete()) {
+//            postsImageRepository.delete(postsImage);
+//        }
+//        return id;
+//    }
 
     private void saveFiles(List<MultipartFile> multipartFiles, Posts result) {
         if (multipartFiles != null && !multipartFiles.isEmpty()) {
@@ -177,19 +202,6 @@ public class PostsServiceImpl implements PostsService{
         Posts posts = postsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
         postsRepository.delete(posts);
-    }
-
-    @Override
-    @Transactional
-    public Long deleteImage(Long postsId, Long id) {
-        PostsImage postsImage = postsImageRepository.findByPostsIdAndId(postsId, id);
-        String imageFileName = PREV_IMAGE_URL + postsImage.getUrl();
-        File imageFileUrl = new File(imageFileName);
-
-        if (imageFileUrl.delete()) {
-            postsImageRepository.delete(postsImage);
-        }
-        return id;
     }
 
 }

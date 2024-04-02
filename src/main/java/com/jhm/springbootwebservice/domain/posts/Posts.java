@@ -58,9 +58,10 @@ public class Posts extends BaseTimeEntity {
     @OneToMany(mappedBy = "posts", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<PostsImage> PostsImages;
 
-    public void update(String title, String content) {
+    public void update(String title, String content, PostType postType) {
         this.title = title;
         this.content = content;
+        this.postType = postType;
     }
 
     public void recommendUp() {

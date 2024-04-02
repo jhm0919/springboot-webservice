@@ -17,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -46,9 +48,18 @@ public class PostsApiController {
     public Long update(@PathVariable Long id,
                        @RequestPart("json_data") PostsUpdateRequestDto requestDto,
                        @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles,
-                       @RequestParam(value = "checkedImageIds", required = false) List<Long> checkedImageIds) {
-        // 체크된 이미지 id들을 받아서 어떻게할지
-        return postsService.update(id, requestDto, multipartFiles);
+                       @RequestParam(value = "checkedImageIds", required = false) String checkedImageIds) {
+        
+        List<Long> checkedIds = null; 
+        
+        if (checkedImageIds != null) { // 체크된 이미지가 있을 경우에만 값이 있음
+            checkedIds = Arrays.stream(checkedImageIds.split(","))
+                    .map(Long::parseLong)
+                    .collect(Collectors.toList());
+            log.info("checkedImageIds={}", checkedIds);
+        }
+
+        return postsService.update(id, requestDto, multipartFiles, checkedIds);
     }
 
     @DeleteMapping("/posts/{id}")
@@ -58,12 +69,12 @@ public class PostsApiController {
         return id;
     }
 
-    @DeleteMapping("/posts/{postsId}/images/{id}")
-    public Long deleteImage(@PathVariable Long postsId,
-                            @PathVariable Long id) {
-        postsService.deleteImage(postsId, id);
-        return id;
-    }
+//    @DeleteMapping("/posts/{postsId}/images/{id}")
+//    public Long deleteImage(@PathVariable Long postsId,
+//                            @PathVariable Long id) {
+//        postsService.deleteImage(postsId, id);
+//        return id;
+//    }
 
     @PutMapping("/posts/{postId}/recommend")
     public RecommendResponseDto recommend(@PathVariable Long postId, @LoginUser SessionUser user) {

@@ -14,7 +14,7 @@ public interface PostsService {
 
     Long save(Long id, PostsSaveRequestDto requestDto, List<MultipartFile> multipartFiles);
 
-    Long update(Long id, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles);
+    Long update(Long id, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles, List<Long> checkedIds);
 
     int updateView(Long id);
 
@@ -24,5 +24,5 @@ public interface PostsService {
 
     void delete(Long id);
 
-    Long deleteImage(Long postsId, Long id);
+//    Long deleteImage(Long postsId, Long id);
 }

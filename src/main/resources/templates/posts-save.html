@@ -13,17 +13,18 @@
             </select>
         </div>
         <label for="content">제목</label>
-        <div style="display: flex;" class="form-group">
-            <input style="width: 80%" type="text" class="form-control" id="title" placeholder="제목을 입력하세요" th:value="${title}">
-            <input style="width: 20%; margin-left: 10px;" type="text" class="form-control" id="author" th:value="${user.getName()}" readonly>
-        </div>
+            <div style="display: flex;" class="form-group">
+                <input style="width: 80%" type="text" class="form-control" id="title" placeholder="제목을 입력하세요" th:value="${title}">
+                <input style="width: 20%; margin-left: 10px;" type="text" class="form-control" id="author" th:value="${user.getName()}" readonly>
+            </div>
         <label for="content">내용</label>
-        <div class="form-group">
-            <textarea class="form-control h-75" id="content" placeholder="내용을 입력하세요" th:text="${content}"></textarea>
-        </div>
+            <div class="form-group">
+                <textarea class="form-control h-75" id="content" placeholder="내용을 입력하세요" th:text="${content}"></textarea>
+            </div>
         <div class="form-floating mb-3">
             <label>이미지 업로드</label>
             <input type="file" name="files" accept="image/*,.txt" class="form-control" id="files" multiple>
+            <img id="preview">
         </div>
     </form>
     <div class="text-right">
