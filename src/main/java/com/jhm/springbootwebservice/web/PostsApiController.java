@@ -3,6 +3,7 @@ package com.jhm.springbootwebservice.web;
 import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.service.posts.PostsService;
+import com.jhm.springbootwebservice.service.recommend.CommentsRecommendService;
 import com.jhm.springbootwebservice.service.recommend.PostsRecommendService;
 import com.jhm.springbootwebservice.service.recommend.RecommendService;
 import com.jhm.springbootwebservice.web.dto.request.RecommendRequestDto;
@@ -29,6 +30,7 @@ public class PostsApiController {
 
     private final PostsService postsService;
     private final PostsRecommendService postsRecommendService;
+    private final CommentsRecommendService commentsRecommendService;
 
     @PostMapping(value = "/posts", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public Long save(@RequestPart("json_data") PostsSaveRequestDto postsSaveRequestDto,
@@ -49,9 +51,9 @@ public class PostsApiController {
                        @RequestPart("json_data") PostsUpdateRequestDto requestDto,
                        @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles,
                        @RequestParam(value = "checkedImageIds", required = false) String checkedImageIds) {
-        
-        List<Long> checkedIds = null; 
-        
+
+        List<Long> checkedIds = null;
+
         if (checkedImageIds != null) { // 체크된 이미지가 있을 경우에만 값이 있음
             checkedIds = Arrays.stream(checkedImageIds.split(","))
                     .map(Long::parseLong)
@@ -64,30 +66,18 @@ public class PostsApiController {
 
     @DeleteMapping("/posts/{id}")
     public Long delete(@PathVariable Long id) {
-        postsRecommendService.delete(id);
+        postsRecommendService.delete(id); // 게시글 추천, 비추천 삭제
+        commentsRecommendService.delete(id); // 댓글에 있는 추천, 비추천 삭제
         postsService.delete(id);
         return id;
     }
-
-//    @DeleteMapping("/posts/{postsId}/images/{id}")
-//    public Long deleteImage(@PathVariable Long postsId,
-//                            @PathVariable Long id) {
-//        postsService.deleteImage(postsId, id);
-//        return id;
-//    }
 
     @PutMapping("/posts/{postId}/recommend")
     public RecommendResponseDto recommend(@PathVariable Long postId, @LoginUser SessionUser user) {
         RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId());
 
         RecommendResponseDto recommend = postsRecommendService.recommend(requestDto);
-        int recommendUpCount = recommend.getRecommendUpCount();
-        int recommendDownCount = recommend.getRecommendDownCount();
-        boolean isRecommend = postsRecommendService.findById(requestDto).isRecommend();
-
-        RecommendResponseDto recommendResponseDto =
-            new RecommendResponseDto(isRecommend, recommendUpCount, recommendDownCount);
-        return recommendResponseDto;
+        return recommend;
     }
 
     @PutMapping("/posts/{postId}/disRecommend")
@@ -95,12 +85,6 @@ public class PostsApiController {
         RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId());
 
         RecommendResponseDto recommend = postsRecommendService.disRecommend(requestDto);
-        int recommendUpCount = recommend.getRecommendUpCount();
-        int recommendDownCount = recommend.getRecommendDownCount();
-        boolean isRecommend = postsRecommendService.findById(requestDto).isRecommend();
-
-        RecommendResponseDto recommendResponseDto =
-            new RecommendResponseDto(isRecommend, recommendUpCount, recommendDownCount);
-        return recommendResponseDto;
+        return recommend;
     }
 }

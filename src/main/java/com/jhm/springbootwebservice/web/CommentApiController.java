@@ -28,12 +28,12 @@ public class CommentApiController {
         return commentsService.save(user.getId(), id, commentRequestDto);
     }
 
-    @PutMapping("/posts/{postsId}/comments/{id}")
+    @PutMapping("/posts/{postsId}/comments/{commentId}")
     public Long update(@PathVariable Long postsId,
-                       @PathVariable Long id,
+                       @PathVariable Long commentId,
                        @RequestBody CommentRequestDto dto) {
 
-        return commentsService.update(postsId, id, dto);
+        return commentsService.update(postsId, commentId, dto);
     }
 
     @DeleteMapping("/posts/{postsId}/comments/{id}")
@@ -48,16 +48,8 @@ public class CommentApiController {
                                           @PathVariable Long commentId,
                                           @LoginUser SessionUser user) {
         RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId(), commentId);
-
         RecommendResponseDto recommend = commentsRecommendService.recommend(requestDto);
-        int recommendUpCount = recommend.getRecommendUpCount();
-        int recommendDownCount = recommend.getRecommendDownCount();
-        boolean isRecommend = commentsRecommendService.findById(requestDto).isRecommend();
-
-        RecommendResponseDto recommendResponseDto =
-            new RecommendResponseDto(isRecommend, recommendUpCount, recommendDownCount);
-
-        return recommendResponseDto;
+        return recommend;
     }
 
     @PutMapping("/posts/{postId}/comments/{commentId}/disRecommend")
@@ -65,15 +57,8 @@ public class CommentApiController {
                                              @PathVariable Long commentId,
                                              @LoginUser SessionUser user) {
         RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId(), commentId);
-
         RecommendResponseDto recommend = commentsRecommendService.disRecommend(requestDto);
-        int recommendUpCount = recommend.getRecommendUpCount();
-        int recommendDownCount = recommend.getRecommendDownCount();
-        boolean isRecommend = commentsRecommendService.findById(requestDto).isRecommend();
-
-        RecommendResponseDto recommendResponseDto =
-            new RecommendResponseDto(isRecommend, recommendUpCount, recommendDownCount);
-        return recommendResponseDto;
+        return recommend;
     }
 
 }

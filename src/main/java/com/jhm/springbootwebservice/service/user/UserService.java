@@ -4,6 +4,8 @@ import com.jhm.springbootwebservice.config.auth.dto.UserRequestDto;
 import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,12 +44,18 @@ public class UserService {
 
     // 회원 수정 (Dirty checking)
     @Transactional
-    public void modify(UserRequestDto dto) {
+    public ResponseEntity<String> modify(UserRequestDto dto) {
         User user = userRepository.findById(dto.toEntity().getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당하는 회원이 존재하지 않습니다."));
 
         String password = encoder.encode(dto.getPassword());
-
-        user.update(dto.getName(), password);
+        boolean result = userRepository.existsByName(dto.getName());
+        if (!result) {
+            user.update(dto.getName(), password);
+            return ResponseEntity.ok("성공");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("이름이 이미 존재합니다.");
+        }
     }
 }

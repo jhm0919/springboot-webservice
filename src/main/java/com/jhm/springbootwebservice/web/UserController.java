@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping("/auth/joinProc")
-    public String loginProc(@Valid UserRequestDto userDto, Errors errors, Model model) {
+    public String joinProc(@Valid UserRequestDto userDto, Errors errors, Model model) {
 
         if (errors.hasErrors()) {
             // 회원가입 실패 시 입력 데이터값 유지
@@ -78,4 +78,5 @@ public class UserController {
 
         return "user-update";
     }
+
 }

@@ -24,7 +24,6 @@ public class PostsRecommendService {
     private final PostsRepository postsRepository;
     private final UserRepository userRepository;
 
-//    @Override
     @Transactional
     public RecommendResponseDto findById(RecommendRequestDto requestDto) {
         Posts post = postsRepository.findById(requestDto.getPostId()).orElseThrow(() ->
@@ -39,7 +38,6 @@ public class PostsRecommendService {
         return new RecommendResponseDto(isRecommend, post.getRecommendUp(),post.getRecommendDown());
     }
 
-//    @Override
     @Transactional
     public void delete(Long id) {
         List<PostsRecommendUp> postsRecommendUp = postsRecommendUpRepository.findByPostsId(id);
@@ -48,7 +46,6 @@ public class PostsRecommendService {
         postsRecommendDownRepository.deleteAll(postsRecommendDown);
     }
 
-//    @Override
     @Transactional
     public RecommendResponseDto recommend(RecommendRequestDto requestDto) {
         Posts post = postsRepository.findById(requestDto.getPostId()).orElseThrow(() ->
@@ -81,7 +78,6 @@ public class PostsRecommendService {
         }
     }
 
-//    @Override
     @Transactional
     public RecommendResponseDto disRecommend(RecommendRequestDto requestDto) {
         Posts post = postsRepository.findById(requestDto.getPostId()).orElseThrow(() ->

@@ -5,7 +5,6 @@ import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.domain.posts.PostType;
 import com.jhm.springbootwebservice.service.posts.PostsService;
 import com.jhm.springbootwebservice.service.recommend.PostsRecommendService;
-import com.jhm.springbootwebservice.service.recommend.RecommendService;
 import com.jhm.springbootwebservice.web.dto.request.RecommendRequestDto;
 import com.jhm.springbootwebservice.web.dto.response.*;
 import com.nimbusds.oauth2.sdk.util.StringUtils;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -32,11 +30,12 @@ public class IndexController {
     private final PostsRecommendService postsRecommendService;
 
     @GetMapping("/")
-    public String index(Model model, @LoginUser SessionUser user, // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
-                        @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+    public String index(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                        @LoginUser SessionUser user, // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
                         String searchKeyword,
                         String searchType,
-                        String postType) {
+                        String postType,
+                        Model model) {
 
         Page<PostsListResponseDto> posts;
 
