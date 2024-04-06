@@ -51,17 +51,21 @@ public class Posts extends BaseTimeEntity {
     @Column(nullable = false)
     private PostType postType;
 
-    @OneToMany(mappedBy = "posts", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "posts", cascade = CascadeType.REMOVE) // 기본 Fetch 전략 : LAZY
     @OrderBy("id asc") // 댓글 정렬
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "posts", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "posts", cascade = CascadeType.REMOVE)
     private List<PostsImage> PostsImages;
 
     public void update(String title, String content, PostType postType) {
         this.title = title;
         this.content = content;
         this.postType = postType;
+    }
+
+    public void increaseView() {
+        this.view++;
     }
 
     public void recommendUp() {

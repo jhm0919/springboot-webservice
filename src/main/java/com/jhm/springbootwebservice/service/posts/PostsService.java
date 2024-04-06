@@ -12,11 +12,11 @@ import java.util.List;
 
 public interface PostsService {
 
-    Long save(Long id, PostsSaveRequestDto requestDto, List<MultipartFile> multipartFiles);
+    Long save(Long userId, PostsSaveRequestDto requestDto, List<MultipartFile> multipartFiles);
 
-    Long update(Long id, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles, List<Long> checkedIds);
+    Long update(Long postId, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles, List<Long> checkedIds);
 
-    int updateView(Long id);
+    void updateView(Long id);
 
     PostsResponseDto findById(Long id);
 

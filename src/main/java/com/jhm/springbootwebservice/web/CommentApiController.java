@@ -20,27 +20,28 @@ public class CommentApiController {
     private final CommentsService commentsService;
     private final CommentsRecommendService commentsRecommendService;
 
-    @PostMapping("/posts/{id}/comments")
-    public Long save(@PathVariable Long id,
+    @PostMapping("/posts/{postId}/comments")
+    public Long save(@PathVariable Long postId,
                      @RequestBody CommentRequestDto commentRequestDto,
                      @LoginUser SessionUser user) {
 
-        return commentsService.save(user.getId(), id, commentRequestDto);
+        return commentsService.save(user.getId(), postId, commentRequestDto);
     }
 
-    @PutMapping("/posts/{postsId}/comments/{commentId}")
-    public Long update(@PathVariable Long postsId,
+    @PutMapping("/posts/{postId}/comments/{commentId}")
+    public Long update(@PathVariable Long postId,
                        @PathVariable Long commentId,
                        @RequestBody CommentRequestDto dto) {
 
-        return commentsService.update(postsId, commentId, dto);
+        return commentsService.update(postId, commentId, dto);
     }
 
-    @DeleteMapping("/posts/{postsId}/comments/{id}")
-    public Long delete(@PathVariable Long postsId,
-                       @PathVariable Long id) {
-
-        return commentsService.delete(postsId, id);
+    @DeleteMapping("/posts/{postId}/comments/{commentId}")
+    public Long delete(@PathVariable Long postId,
+                       @PathVariable Long commentId) {
+        commentsRecommendService.commentDelete(commentId); // 댓글에 있는 추천,비추천 삭제
+        commentsService.delete(postId, commentId); // 댓글 삭제
+        return commentId;
     }
 
     @PutMapping("/posts/{postId}/comments/{commentId}/recommend")

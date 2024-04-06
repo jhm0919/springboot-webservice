@@ -7,7 +7,6 @@ import com.jhm.springbootwebservice.domain.postimage.PostsImage;
 import com.jhm.springbootwebservice.domain.posts.PostsRepository;
 import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
-import com.jhm.springbootwebservice.web.dto.request.PostsImageRequestDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
@@ -37,58 +36,35 @@ public class PostsServiceImpl implements PostsService{
 
     @Override
     @Transactional
-    public Long save(Long id, PostsSaveRequestDto requestDto, List<MultipartFile> multipartFiles) {
-        User user = userRepository.findById(id).orElseThrow(() ->
+    public Long save(Long userId, PostsSaveRequestDto requestDto, List<MultipartFile> multipartFiles) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
             new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
         requestDto.setUser(user);
 
-        Posts result = requestDto.toEntity();
+        Posts posts = requestDto.toEntity();
 
-        saveFiles(multipartFiles, result); // 이미지 저장
+        saveImageFiles(multipartFiles, posts); // 이미지 저장
 
-        return postsRepository.save(result).getId();
+        return postsRepository.save(posts).getId();
     }
 
     @Override
     @Transactional
-    public Long update(Long id, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles, List<Long> checkedIds) {
-        Posts posts = postsRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+    public Long update(Long postId, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles, List<Long> checkedIds) {
+        Posts posts = postsRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. postId=" + postId));
 
-        posts.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getPostType());
+        posts.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getPostType()); // 게시글 수정
 
-        saveFiles(multipartFiles, posts); // 이미지 저장
+        saveImageFiles(multipartFiles, posts); // 이미지 저장
 
-        if (checkedIds != null) { // 체크한 이미지(삭제하고싶은 이미지)가 있는 경우
-            for (Long checkedId : checkedIds) {
-                PostsImage postsImage = postsImageRepository.findByPostsIdAndId(posts.getId(), checkedId);
-                String imageFileName = PREV_IMAGE_URL + postsImage.getUrl();
-                File imageFileUrl = new File(imageFileName);
+        deleteImageFiles(checkedIds, posts); // 이미지 삭제
 
-                if (imageFileUrl.delete()) {
-                    postsImageRepository.delete(postsImage);
-                }
-            }
-        }
-
-        return id;
+        return postId;
     }
 
-//    @Override
-//    @Transactional
-//    public Long deleteImage(Long postsId, Long id) {
-//        PostsImage postsImage = postsImageRepository.findByPostsIdAndId(postsId, id);
-//        String imageFileName = PREV_IMAGE_URL + postsImage.getUrl();
-//        File imageFileUrl = new File(imageFileName);
-//
-//        if (imageFileUrl.delete()) {
-//            postsImageRepository.delete(postsImage);
-//        }
-//        return id;
-//    }
-
-    private void saveFiles(List<MultipartFile> multipartFiles, Posts result) {
+    private void saveImageFiles(List<MultipartFile> multipartFiles, Posts posts) {
         if (multipartFiles != null && !multipartFiles.isEmpty()) {
             for (MultipartFile file : multipartFiles) {
                 UUID uuid = UUID.randomUUID();
@@ -106,7 +82,7 @@ public class PostsServiceImpl implements PostsService{
                 PostsImage image = PostsImage.builder()
                     .url(imageFileName)
                     .name(originalName)
-                    .posts(result)
+                    .posts(posts)
                     .build();
 
                 postsImageRepository.save(image);
@@ -114,18 +90,35 @@ public class PostsServiceImpl implements PostsService{
         }
     }
 
+    private void deleteImageFiles(List<Long> checkedIds, Posts posts) {
+        if (checkedIds != null) { // 체크한 이미지(삭제하고싶은 이미지)가 있는 경우
+            for (Long checkedId : checkedIds) {
+                PostsImage postsImage = postsImageRepository.findByPostsIdAndId(posts.getId(), checkedId);
+                String imageFileName = PREV_IMAGE_URL + postsImage.getUrl();
+                File imageFileUrl = new File(imageFileName);
+
+                if (imageFileUrl.delete()) {
+                    postsImageRepository.delete(postsImage);
+                }
+            }
+        }
+    }
+
     @Override
     @Transactional
-    public int updateView(Long id) {
-        return postsRepository.updateView(id);
+    public void updateView(Long id) {
+        Posts posts = postsRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
+        posts.increaseView(); // 조회수 증가
+        postsRepository.save(posts);
     }
 
     @Override
     @Transactional(readOnly = true)
     public PostsResponseDto findById(Long id) {
-        Posts entity = postsRepository.findById(id)
+        Posts posts = postsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-        return new PostsResponseDto(entity);
+        return new PostsResponseDto(posts);
     }
 
     @Override
@@ -133,18 +126,18 @@ public class PostsServiceImpl implements PostsService{
     public Page<PostsListResponseDto> findAll(Pageable pageable, String postType, String searchType, String searchKeyword) {
         Page<PostsListResponseDto> postsListResponseDto;
 
-        if (postType != null) { // 카테고리 선택 했을 때
-            PostType type = PostType.valueOf(postType.toUpperCase());
-            if (searchKeyword != null) { // 카테고리와 검색어 모두 존재하는 경우
+        if (postType != null) { // postType 선택 했을 때
+            PostType type = PostType.valueOf(postType.toUpperCase()); // PostType으로 변환
+            if (searchKeyword != null) { // postType + 검색조건
                 postsListResponseDto = getPostsListPostTypeResponseDtos(pageable, searchType, searchKeyword, type);
-            } else { // postType만 존재하는 경우
-                postsListResponseDto = mapToDto(postsRepository.findAllByPostType(type, pageable));
+            } else { // postType + 전체조회
+                postsListResponseDto = entityToDto(postsRepository.findAllByPostType(type, pageable));
             }
         } else { // 카테고리 선택 안한 경우
-            if (searchKeyword != null) { // 검색어만 있는 경우
+            if (searchKeyword != null) { // 검색조건
                 postsListResponseDto = getPostsListResponseDtos(pageable, searchType, searchKeyword);
-            } else { // 카테고리와 검색어 모두 없는 경우
-                postsListResponseDto = mapToDto(postsRepository.findAll(pageable));
+            } else { // 전체조회
+                postsListResponseDto = entityToDto(postsRepository.findAll(pageable));
             }
         }
         return postsListResponseDto;
@@ -153,17 +146,17 @@ public class PostsServiceImpl implements PostsService{
     private Page<PostsListResponseDto> getPostsListResponseDtos(Pageable pageable, String searchType, String searchKeyword) {
         Page<PostsListResponseDto> postsListResponseDto;
         switch (searchType) {
-            default:
-                postsListResponseDto = mapToDto(postsRepository.findByTitleContainingOrContentContaining(searchKeyword, searchKeyword, pageable));
+            default: // 검색조건 : 제목+내용
+                postsListResponseDto = entityToDto(postsRepository.findByTitleContainingOrContentContaining(searchKeyword, searchKeyword, pageable));
                 break;
-            case "title":
-                postsListResponseDto = mapToDto(postsRepository.findByTitleContaining(searchKeyword, pageable));
+            case "title": // 검색조건 : 제목
+                postsListResponseDto = entityToDto(postsRepository.findByTitleContaining(searchKeyword, pageable));
                 break;
-            case "content":
-                postsListResponseDto = mapToDto(postsRepository.findByContentContaining(searchKeyword, pageable));
+            case "content": // 검색조건 : 내용
+                postsListResponseDto = entityToDto(postsRepository.findByContentContaining(searchKeyword, pageable));
                 break;
-            case "author":
-                postsListResponseDto = mapToDto(postsRepository.findByAuthorContaining(searchKeyword, pageable));
+            case "author": // 검색조건 : 작성자
+                postsListResponseDto = entityToDto(postsRepository.findByAuthorContaining(searchKeyword, pageable));
                 break;
         }
         return postsListResponseDto;
@@ -172,27 +165,27 @@ public class PostsServiceImpl implements PostsService{
     private Page<PostsListResponseDto> getPostsListPostTypeResponseDtos(Pageable pageable, String searchType, String searchKeyword, PostType type) {
         Page<PostsListResponseDto> postsListResponseDto;
         switch (searchType) {
-            default:
-                postsListResponseDto = mapToDto(
+            default:  // 검색조건 : 전체
+                postsListResponseDto = entityToDto(
                     postsRepository.findByPostTypeAndTitleContainingOrPostTypeAndContentContaining(type, searchKeyword, type, searchKeyword, pageable));
                 break;
-            case "title":
-                postsListResponseDto = mapToDto(
+            case "title": // 검색조건 : 제목
+                postsListResponseDto = entityToDto(
                     postsRepository.findByPostTypeAndTitleContaining(type, searchKeyword, pageable));
                 break;
-            case "content":
-                postsListResponseDto = mapToDto(
+            case "content": // 검색조건 : 내용
+                postsListResponseDto = entityToDto(
                     postsRepository.findByPostTypeAndContentContaining(type, searchKeyword, pageable));
                 break;
-            case "author":
-                postsListResponseDto = mapToDto(
+            case "author": // 검색조건 : 작성자
+                postsListResponseDto = entityToDto(
                     postsRepository.findByPostTypeAndAuthorContaining(type, searchKeyword, pageable));
                 break;
         }
         return postsListResponseDto;
     }
 
-    private Page<PostsListResponseDto> mapToDto(Page<Posts> postsPage) {
+    private Page<PostsListResponseDto> entityToDto(Page<Posts> postsPage) {
         return postsPage.map(PostsListResponseDto::new);
     }
 
@@ -203,5 +196,4 @@ public class PostsServiceImpl implements PostsService{
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
         postsRepository.delete(posts);
     }
-
 }

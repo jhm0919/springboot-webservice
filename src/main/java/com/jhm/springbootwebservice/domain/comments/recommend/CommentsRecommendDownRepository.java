@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface CommentsRecommendDownRepository extends JpaRepository<CommentsRecommendDown, CommentsRecommendPK> {
     List<CommentsRecommendDown> findByPostsId(Long id);
+    List<CommentsRecommendDown> findByCommentId(Long id);
 }

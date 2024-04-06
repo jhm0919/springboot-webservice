@@ -19,15 +19,15 @@ public class CommentsServiceImpl implements CommentsService {
     private final PostsRepository postsRepository;
 
     @Override
-    public Long save(Long userId, Long id, CommentRequestDto dto) {
+    public Long save(Long userId, Long postId, CommentRequestDto dto) {
         User user = userRepository.findById(userId).orElseThrow(() ->
             new IllegalArgumentException("댓글 쓰기 실패: 해당 사용자가 존재하지 않습니다."));
 
-        Posts posts = postsRepository.findById(id).orElseThrow(() ->
+        Posts post = postsRepository.findById(postId).orElseThrow(() ->
             new IllegalArgumentException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다."));
 
         dto.setUser(user);
-        dto.setPosts(posts);
+        dto.setPosts(post);
 
         Comment comment = dto.toEntity();
         commentRepository.save(comment);
@@ -36,20 +36,20 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public Long update(Long postsId, Long id, CommentRequestDto dto) {
-        Comment comment = commentRepository.findByPostsIdAndId(postsId, id);
+    public Long update(Long postId, Long commentId, CommentRequestDto dto) {
+        Comment comment = commentRepository.findByPostsIdAndId(postId, commentId);
 
         comment.update(dto.getComment());
 
-        return id;
+        return commentId;
     }
 
     @Override
-    public Long delete(Long postsId, Long id) {
-        Comment comment = commentRepository.findByPostsIdAndId(postsId, id);
+    public Long delete(Long postId, Long commentId) {
+        Comment comment = commentRepository.findByPostsIdAndId(postId, commentId);
 
         commentRepository.delete(comment);
 
-        return id;
+        return commentId;
     }
 }

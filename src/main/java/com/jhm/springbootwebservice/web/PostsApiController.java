@@ -41,10 +41,10 @@ public class PostsApiController {
         return postId;
     }
 
-    @GetMapping("/posts/{id}")
-    public PostsResponseDto findById(@PathVariable Long id) {
-        return postsService.findById(id);
-    }
+//    @GetMapping("/posts/{id}")
+//    public PostsResponseDto findById(@PathVariable Long id) { // 언제 쓰는거지?
+//        return postsService.findById(id);
+//    }
 
     @PutMapping(value = "/posts/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public Long update(@PathVariable Long id,
@@ -67,7 +67,7 @@ public class PostsApiController {
     @DeleteMapping("/posts/{id}")
     public Long delete(@PathVariable Long id) {
         postsRecommendService.delete(id); // 게시글 추천, 비추천 삭제
-        commentsRecommendService.delete(id); // 댓글에 있는 추천, 비추천 삭제
+        commentsRecommendService.postDelete(id); // 댓글에 있는 추천, 비추천 삭제
         postsService.delete(id);
         return id;
     }

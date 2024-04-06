@@ -46,80 +46,106 @@ public class CommentsRecommendService {
 //    }
 
     @Transactional
-    public void delete(Long id) {
-        List<CommentsRecommendUp> postsRecommendUp = commentsRecommendUpRepository.findByPostsId(id);
-        List<CommentsRecommendDown> postsRecommendDown = commentsRecommendDownRepository.findByPostsId(id);
+    public void postDelete(Long postId) { // 지워지는 게시글 id인 추천들 삭제
+        List<CommentsRecommendUp> postsRecommendUp = commentsRecommendUpRepository.findByPostsId(postId);
+        List<CommentsRecommendDown> postsRecommendDown = commentsRecommendDownRepository.findByPostsId(postId);
         commentsRecommendUpRepository.deleteAll(postsRecommendUp);
         commentsRecommendDownRepository.deleteAll(postsRecommendDown);
     }
 
     @Transactional
+    public void commentDelete(Long commentId) {
+        List<CommentsRecommendUp> commentsRecommendUp = commentsRecommendUpRepository.findByCommentId(commentId);
+        List<CommentsRecommendDown> commentsRecommendDown = commentsRecommendDownRepository.findByCommentId(commentId);
+        commentsRecommendUpRepository.deleteAll(commentsRecommendUp);
+        commentsRecommendDownRepository.deleteAll(commentsRecommendDown);
+    }
+
+    @Transactional
     public RecommendResponseDto recommend(RecommendRequestDto requestDto) {
         Posts post = postsRepository.findById(requestDto.getPostId()).orElseThrow(() ->
-                new IllegalArgumentException("해당 게시물이 없습니다."));
+            new IllegalArgumentException("해당 게시물이 없습니다."));
         User user = userRepository.findById(requestDto.getUserId()).orElseThrow(() ->
-                new IllegalArgumentException("해당 사용자가 없습니다."));
-        Comment comment = commentRepository.findByPostsIdAndId(requestDto.getPostId(), requestDto.getCommentId());
+            new IllegalArgumentException("해당 사용자가 없습니다."));
+        Comment comment = getComment(requestDto);
 
-        CommentsRecommendPK commentsRecommendPK = CommentsRecommendPK.builder()
-                .postId(post.getId())
-                .userId(user.getId())
-                .commentId(comment.getId())
-                .build();
+        CommentsRecommendPK commentRecommendPK = getCommentRecommendPK(post, user, comment);
 
-        Optional<CommentsRecommendUp> recommendUpOptional = commentsRecommendUpRepository.findById(commentsRecommendPK);
+        Optional<CommentsRecommendUp> recommendUpOptional = commentsRecommendUpRepository.findById(commentRecommendPK);
 
         if (recommendUpOptional.isPresent()) { // 추천 한 경우
-            commentsRecommendUpRepository.deleteById(commentsRecommendPK);
-            comment.recommendDown(); // 추천 감소
-            commentRepository.save(comment);
-            return new RecommendResponseDto(false, comment.getRecommendUp(), comment.getRecommendDown());
+            recommendCancelLogic(comment, commentRecommendPK);
         } else { // 추천 안한 경우
-            CommentsRecommendUp recommend = CommentsRecommendUp.builder()
-                    .id(commentsRecommendPK)
-                    .posts(post)
-                    .comment(comment)
-                    .user(user)
-                    .build();
-            commentsRecommendUpRepository.save(recommend);
-            comment.recommendUp(); // 추천 증가
-            commentRepository.save(comment);
-            return new RecommendResponseDto(true, comment.getRecommendUp(), comment.getRecommendDown());
+            recommendLogic(post, user, comment, commentRecommendPK);
         }
+        commentRepository.save(comment);
+        return new RecommendResponseDto(comment.getRecommendUp(), comment.getRecommendDown());
+    }
+
+    private void recommendLogic(Posts post, User user, Comment comment, CommentsRecommendPK commentRecommendPK) {
+        CommentsRecommendUp recommend = CommentsRecommendUp.builder()
+                .id(commentRecommendPK)
+                .posts(post)
+                .comment(comment)
+                .user(user)
+                .build();
+        commentsRecommendUpRepository.save(recommend);
+        comment.recommendUp(); // 추천 증가
+    }
+
+    private void recommendCancelLogic(Comment comment, CommentsRecommendPK commentRecommendPK) {
+        commentsRecommendUpRepository.deleteById(commentRecommendPK);
+        comment.recommendDown(); // 추천 감소
     }
 
     @Transactional
     public RecommendResponseDto disRecommend(RecommendRequestDto requestDto) {
         Posts post = postsRepository.findById(requestDto.getPostId()).orElseThrow(() ->
-                new IllegalArgumentException("해당 게시물이 없습니다."));
+            new IllegalArgumentException("해당 게시물이 없습니다."));
         User user = userRepository.findById(requestDto.getUserId()).orElseThrow(() ->
-                new IllegalArgumentException("해당 사용자가 없습니다."));
-        Comment comment = commentRepository.findByPostsIdAndId(requestDto.getPostId(), requestDto.getCommentId());
+            new IllegalArgumentException("해당 사용자가 없습니다."));
+        Comment comment = getComment(requestDto);
 
-        CommentsRecommendPK commentsRecommendPK = CommentsRecommendPK.builder()
-                .postId(post.getId())
-                .userId(user.getId())
-                .commentId(comment.getId())
-                .build();
+        CommentsRecommendPK commentRecommendPK = getCommentRecommendPK(post, user, comment);
 
-        Optional<CommentsRecommendDown> recommendDownOptional = commentsRecommendDownRepository.findById(commentsRecommendPK);
+        Optional<CommentsRecommendDown> recommendDownOptional = commentsRecommendDownRepository.findById(commentRecommendPK);
 
         if (recommendDownOptional.isPresent()) {
-            commentsRecommendDownRepository.deleteById(commentsRecommendPK);
-            comment.disRecommendDown(); // 비추천 감소
-            commentRepository.save(comment);
-            return new RecommendResponseDto(false, comment.getRecommendUp(), comment.getRecommendDown());
+            disRecommendCancelLogic(comment, commentRecommendPK);
         } else {
-            CommentsRecommendDown recommend = CommentsRecommendDown.builder()
-                    .id(commentsRecommendPK)
-                    .posts(post)
-                    .user(user)
-                    .comment(comment)
-                    .build();
-            commentsRecommendDownRepository.save(recommend);
-            comment.disRecommendUp(); // 추천 증가
-            commentRepository.save(comment);
-            return new RecommendResponseDto(true, comment.getRecommendUp(), comment.getRecommendDown());
+            disRecommendLogic(post, user, comment, commentRecommendPK);
         }
+        commentRepository.save(comment);
+        return new RecommendResponseDto(comment.getRecommendUp(), comment.getRecommendDown());
     }
+
+    private void disRecommendLogic(Posts post, User user, Comment comment, CommentsRecommendPK commentRecommendPK) {
+        CommentsRecommendDown recommend = CommentsRecommendDown.builder()
+            .id(commentRecommendPK)
+            .posts(post)
+            .user(user)
+            .comment(comment)
+            .build();
+        commentsRecommendDownRepository.save(recommend);
+        comment.disRecommendUp(); // 추천 증가
+    }
+
+    private void disRecommendCancelLogic(Comment comment, CommentsRecommendPK commentRecommendPK) {
+        commentsRecommendDownRepository.deleteById(commentRecommendPK);
+        comment.disRecommendDown(); // 비추천 감소
+    }
+
+    private Comment getComment(RecommendRequestDto requestDto) {
+        return commentRepository.findByPostsIdAndId(requestDto.getPostId(), requestDto.getCommentId());
+    }
+
+    private static CommentsRecommendPK getCommentRecommendPK(Posts post, User user, Comment comment) {
+        CommentsRecommendPK commentsRecommendPK = CommentsRecommendPK.builder()
+            .postId(post.getId())
+            .userId(user.getId())
+            .commentId(comment.getId())
+            .build();
+        return commentsRecommendPK;
+    }
+
 }

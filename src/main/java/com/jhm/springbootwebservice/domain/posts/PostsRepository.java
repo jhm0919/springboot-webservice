@@ -14,29 +14,27 @@ import org.springframework.stereotype.Repository;
  */
 public interface PostsRepository extends JpaRepository<Posts, Long> {
 
-    @Modifying
-    @Query("update Posts p set p.view = p.view + 1 where p.id = :id")
-    int updateView(Long id);
 
-//    @Modifying
-//    @Query("update Posts p set p.recommendUp = p.recommendUp + 1 where p.id = :id")
-//    int updateRecommend(Long id);
-//
-//    @Modifying
-//    @Query("update Posts p set p.recommendDown = p.recommendDown - 1 where p.id = :id")
-//    int recommendCancel(Long id);
 
-    Page<Posts> findAllByPostType(PostType postType, Pageable pageable);
-
+    // postType이 없을 때
+    // 제목+내용 검색조건
     Page<Posts> findByTitleContainingOrContentContaining(String title, String content, Pageable pageable);
+    // 제목 검색조건
     Page<Posts> findByTitleContaining(String searchKeyword, Pageable pageable);
+    // 내용 검색조건
     Page<Posts> findByContentContaining(String searchKeyword, Pageable pageable);
+    // 작성자 검색조건
     Page<Posts> findByAuthorContaining(String searchKeyword, Pageable pageable);
 
+    // postType이 선택되었을 때
+    // postType + 전체조회
+    Page<Posts> findAllByPostType(PostType postType, Pageable pageable);
+    // postType + 제목+내용 검색조건
     Page<Posts> findByPostTypeAndTitleContainingOrPostTypeAndContentContaining(PostType type1, String title, PostType type2, String content, Pageable pageable);
+    // postType + 제목 검색조건
     Page<Posts> findByPostTypeAndTitleContaining(PostType type, String searchKeyword, Pageable pageable);
+    // postType + 내용 검색조건
     Page<Posts> findByPostTypeAndContentContaining(PostType type, String searchKeyword, Pageable pageable);
+    // postType + 작성자 검색조건
     Page<Posts> findByPostTypeAndAuthorContaining(PostType type, String searchKeyword, Pageable pageable);
-
-
 }

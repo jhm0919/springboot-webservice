@@ -5,9 +5,7 @@ import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.domain.posts.PostType;
 import com.jhm.springbootwebservice.service.posts.PostsService;
 import com.jhm.springbootwebservice.service.recommend.PostsRecommendService;
-import com.jhm.springbootwebservice.web.dto.request.RecommendRequestDto;
 import com.jhm.springbootwebservice.web.dto.response.*;
-import com.nimbusds.oauth2.sdk.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,7 +25,6 @@ import java.util.List;
 public class IndexController {
 
     private final PostsService postsService;
-    private final PostsRecommendService postsRecommendService;
 
     @GetMapping("/")
     public String index(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
@@ -37,12 +34,8 @@ public class IndexController {
                         String postType,
                         Model model) {
 
-        Page<PostsListResponseDto> posts;
-
-        if (StringUtils.isBlank(postType)) {
-            postType = null;
-        }
-        posts = postsService.findAll(pageable, postType, searchType, searchKeyword);
+        postType = postType == "" ? null : postType;
+        Page<PostsListResponseDto> posts = postsService.findAll(pageable, postType, searchType, searchKeyword);
 
         int nowPage = posts.getPageable().getPageNumber() + 1; //pageable에서 넘어온 현재페이지를 가지고올수있다 * 0부터시작하니까 +1
         int startPage = Math.max(nowPage - 4, 1); //매개변수로 들어온 두 값을 비교해서 큰값을 반환
@@ -55,58 +48,58 @@ public class IndexController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
-        getUser(user, model);
+        addSessionUserToModel(user, model);
 
         return "index";
     }
 
     @GetMapping("/posts/save")
     public String postsSave(Model model, @LoginUser SessionUser user) {
-        getUser(user, model);
+        addSessionUserToModel(user, model);
         return "posts-save";
     }
 
     @GetMapping("/posts/read/{postId}")
     public String postsRead(@PathVariable Long postId, @LoginUser SessionUser user, Model model) {
-        PostsResponseDto postsResponseDto = postsService.findById(postId);
-        List<CommentResponseDto> comments = postsResponseDto.getComments();
-        List<PostsImageResponseDto> postsImages = postsResponseDto.getPostsImages();
+        PostsResponseDto post = postsService.findById(postId);
+        List<CommentResponseDto> comments = post.getComments();
+        List<PostsImageResponseDto> postsImages = post.getPostsImages();
 
-        if (comments != null && !comments.isEmpty()) {
-            model.addAttribute("comments", comments);
-        }
+        postsService.updateView(postId);
 
         if (user != null) {
-            RecommendResponseDto recommendResponseDto = postsRecommendService.findById(new RecommendRequestDto(postId, user.getId()));
             model.addAttribute("user", user);
-            model.addAttribute("recommend", recommendResponseDto);
 
             /** 게시글 작성자 본인인지 확인 */
-            if (postsResponseDto.getUserId().equals(user.getId())) {
+            if (post.getUserId().equals(user.getId())) {
                 model.addAttribute("author", true);
             }
         }
 
-        postsService.updateView(postId); // view++
-
+        if (!comments.isEmpty()) {
+            model.addAttribute("comments", comments);
+        }
         model.addAttribute("postTypes", PostType.values());
         model.addAttribute("postsImages", postsImages);
-        model.addAttribute("post", postsResponseDto);
+        model.addAttribute("post", post);
 
         return "posts-read";
     }
 
     @GetMapping("/posts/update/{postId}")
     public String postsUpdate(@PathVariable Long postId, @LoginUser SessionUser user, Model model) {
-        getUser(user, model);
-        PostsResponseDto dto = postsService.findById(postId);
-        List<PostsImageResponseDto> postsImages = dto.getPostsImages();
+
+        PostsResponseDto post = postsService.findById(postId);
+        List<PostsImageResponseDto> postsImages = post.getPostsImages();
+
+        addSessionUserToModel(user, model);
         model.addAttribute("postsImages", postsImages);
-        model.addAttribute("post", dto);
+        model.addAttribute("post", post);
+
         return "posts-update";
     }
 
-    private void getUser(SessionUser user, Model model) {
+    private void addSessionUserToModel(SessionUser user, Model model) {
         if (user != null) {
             model.addAttribute("user", user);
         }

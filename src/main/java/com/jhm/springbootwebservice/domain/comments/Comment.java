@@ -29,11 +29,11 @@ public class Comment extends BaseTimeEntity {
     @Column(columnDefinition = "integer default 0")
     private int recommendDown;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "posts_id")
     private Posts posts;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

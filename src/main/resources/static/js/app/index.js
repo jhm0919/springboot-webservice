@@ -34,7 +34,6 @@ var main = {
             title: $('#title').val(),
             author: $('#author').val(),
             content: $('#content').val(),
-            userId: '<%= session.getAttribute("userId") %>'
         };
         var inputFile = $("input[type='file']");
         var files = inputFile[0].files;
@@ -215,27 +214,9 @@ var main = {
             });
         }
     },
-    /** 이미지 삭제 */
-    // imageDelete : function (postsId, imageId) {
-    //     $.ajax({
-    //         type: 'DELETE',
-    //         url: '/api/posts/' + postsId + '/images/' + imageId,
-    //         dataType: 'JSON',
-    //     }).done(function () {
-    //         alert('이미지가 삭제되었습니다.');
-    //         window.location.reload();
-    //     }).fail(function (error) {
-    //         alert(JSON.stringify(error));
-    //     });
-    // },
-
-    postRecommend: function (isRecommend, userId) {
+    postRecommend: function (userId) {
         var id = $('#id').val();
         var postUserId = $('#postUserId').val();
-        // if (isRecommend) {
-        //     alert("이미 추천 또는 비추천한 게시물입니다.");
-        //     return false;
-        // }
         if (userId == postUserId) {
             confirm("본인의 게시글은 추천할 수 없습니다.");
             return false;
@@ -247,25 +228,15 @@ var main = {
             contentType: 'application/json'
         }).done(function (response) {
             var recommendUpCount = response.recommendUpCount;
-            // var isRecommend = response.recommend;
             $('#recommendUpCount').text(recommendUpCount);
-            // if (isRecommend) {
-            //     alert("추천 되었습니다.");
-            // } else {
-            //     alert("추천이 취소되었습니다.");
-            // }
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
     },
 
-    postDisRecommend: function (isRecommend, userId) {
+    postDisRecommend: function (userId) {
         var id = $('#id').val();
         var postUserId = $('#postUserId').val();
-        // if (isRecommend) {
-        //     alert("이미 추천 또는 비추천한 게시물입니다.");
-        //     return false;
-        // }
         if (userId == postUserId) {
             confirm("본인의 게시글은 비추천할 수 없습니다.");
             return false;
@@ -276,13 +247,7 @@ var main = {
             dataType: 'JSON',
             contentType: 'application/json'
         }).done(function (response) {
-            // var isRecommend = response.recommend;
             var recommendDownCount = response.recommendDownCount;
-            // if (isRecommend) {
-            //     alert("비추천 되었습니다.");
-            // } else {
-            //     alert("비추천이 취소되었습니다.");
-            // }
             $('#recommendDownCount').text(recommendDownCount);
         }).fail(function (error) {
             alert(JSON.stringify(error));
