@@ -26,25 +26,6 @@ public class CommentsRecommendService {
     private final PostsRepository postsRepository;
     private final UserRepository userRepository;
 
-//    @Transactional
-//    public RecommendResponseDto findById(RecommendRequestDto requestDto) {
-//        Posts post = postsRepository.findById(requestDto.getPostId()).orElseThrow(() ->
-//                new IllegalArgumentException("해당 게시물이 없습니다."));
-//        User user = userRepository.findById(requestDto.getUserId()).orElseThrow(() ->
-//                new IllegalArgumentException("해당 사용자가 없습니다."));
-//        Comment comment = commentRepository.findByPostsIdAndId(requestDto.getPostId(), requestDto.getCommentId());
-//
-//        CommentsRecommendPK commentsRecommendPK = CommentsRecommendPK.builder()
-//                .postId(post.getId())
-//                .userId(user.getId())
-//                .commentId(comment.getId())
-//                .build();
-//
-//        boolean isRecommend = commentsRecommendUpRepository.findById(commentsRecommendPK).isPresent();
-//
-//        return new RecommendResponseDto(isRecommend, comment.getRecommendUp(),comment.getRecommendDown());
-//    }
-
     @Transactional
     public void postDelete(Long postId) { // 지워지는 게시글 id인 추천들 삭제
         List<CommentsRecommendUp> postsRecommendUp = commentsRecommendUpRepository.findByPostsId(postId);

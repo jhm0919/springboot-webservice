@@ -4,12 +4,10 @@ import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.service.comments.CommentsService;
 import com.jhm.springbootwebservice.service.recommend.CommentsRecommendService;
-import com.jhm.springbootwebservice.service.recommend.RecommendService;
 import com.jhm.springbootwebservice.web.dto.request.CommentRequestDto;
 import com.jhm.springbootwebservice.web.dto.request.RecommendRequestDto;
 import com.jhm.springbootwebservice.web.dto.response.RecommendResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api")

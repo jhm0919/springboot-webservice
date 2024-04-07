@@ -5,21 +5,24 @@ import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.service.posts.PostsService;
 import com.jhm.springbootwebservice.service.recommend.CommentsRecommendService;
 import com.jhm.springbootwebservice.service.recommend.PostsRecommendService;
-import com.jhm.springbootwebservice.service.recommend.RecommendService;
 import com.jhm.springbootwebservice.web.dto.request.RecommendRequestDto;
-import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsUpdateRequestDto;
 import com.jhm.springbootwebservice.web.dto.response.RecommendResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartRequest;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequestMapping("/api")
@@ -41,13 +44,19 @@ public class PostsApiController {
         return postId;
     }
 
-//    @GetMapping("/posts/{id}")
-//    public PostsResponseDto findById(@PathVariable Long id) { // 언제 쓰는거지?
-//        return postsService.findById(id);
-//    }
+    @PostMapping("/image/upload")
+    public ModelAndView imageUpload(MultipartHttpServletRequest request) throws IOException {
+        ModelAndView mav = new ModelAndView("jsonView");
 
-    @PutMapping(value = "/posts/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public Long update(@PathVariable Long id,
+        String uploadPath = postsService.ckUpload(request);
+
+        mav.addObject("uploaded", true);
+        mav.addObject("url", uploadPath);
+        return mav;
+    }
+
+    @PutMapping(value = "/posts/{postId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Long update(@PathVariable Long postId,
                        @RequestPart("json_data") PostsUpdateRequestDto requestDto,
                        @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles,
                        @RequestParam(value = "checkedImageIds", required = false) String checkedImageIds) {
@@ -61,15 +70,15 @@ public class PostsApiController {
             log.info("checkedImageIds={}", checkedIds);
         }
 
-        return postsService.update(id, requestDto, multipartFiles, checkedIds);
+        return postsService.update(postId, requestDto, multipartFiles, checkedIds);
     }
 
-    @DeleteMapping("/posts/{id}")
-    public Long delete(@PathVariable Long id) {
-        postsRecommendService.delete(id); // 게시글 추천, 비추천 삭제
-        commentsRecommendService.postDelete(id); // 댓글에 있는 추천, 비추천 삭제
-        postsService.delete(id);
-        return id;
+    @DeleteMapping("/posts/{postId}")
+    public Long delete(@PathVariable Long postId) {
+        postsRecommendService.delete(postId); // 게시글 추천, 비추천 삭제
+        commentsRecommendService.postDelete(postId); // 댓글에 있는 추천, 비추천 삭제
+        postsService.delete(postId);
+        return postId;
     }
 
     @PutMapping("/posts/{postId}/recommend")

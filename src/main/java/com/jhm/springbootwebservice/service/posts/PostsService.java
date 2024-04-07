@@ -7,12 +7,17 @@ import com.jhm.springbootwebservice.web.dto.request.PostsUpdateRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartRequest;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface PostsService {
 
     Long save(Long userId, PostsSaveRequestDto requestDto, List<MultipartFile> multipartFiles);
+
+    String ckUpload(MultipartHttpServletRequest request) throws IOException;
 
     Long update(Long postId, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles, List<Long> checkedIds);
 
@@ -23,6 +28,4 @@ public interface PostsService {
     Page<PostsListResponseDto> findAll(Pageable pageable, String postType, String searchType, String searchKeyword);
 
     void delete(Long id);
-
-//    Long deleteImage(Long postsId, Long id);
 }

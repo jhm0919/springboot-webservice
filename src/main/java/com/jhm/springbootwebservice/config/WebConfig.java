@@ -2,10 +2,12 @@ package com.jhm.springbootwebservice.config;
 
 import com.jhm.springbootwebservice.config.auth.LoginUserArgumentResolver;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import java.util.List;
 
@@ -26,5 +28,10 @@ public class WebConfig implements WebMvcConfigurer {
             .addResourceLocations("file:src/main/resources/static/");
 //        addResourceHandler에 정의한 루트로 들어오는 모든 정적 리소스 요청을
 //        addResourceLocations에서 정의한 경로에서 찾는다는 의미이다.
+    }
+
+    @Bean
+    MappingJackson2JsonView jsonView() {
+        return new MappingJackson2JsonView();
     }
 }

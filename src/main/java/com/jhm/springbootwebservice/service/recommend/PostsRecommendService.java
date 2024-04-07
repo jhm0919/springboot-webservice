@@ -24,20 +24,6 @@ public class PostsRecommendService {
     private final PostsRepository postsRepository;
     private final UserRepository userRepository;
 
-//    @Transactional
-//    public RecommendResponseDto findById(RecommendRequestDto requestDto) {
-//        Posts post = postsRepository.findById(requestDto.getPostId()).orElseThrow(() ->
-//            new IllegalArgumentException("해당 게시물이 없습니다."));
-//
-//        PostsRecommendPK postsRecommendPK = PostsRecommendPK.builder()
-//            .postId(requestDto.getPostId())
-//            .userId(requestDto.getUserId())
-//            .build();
-//        boolean isRecommend = postsRecommendUpRepository.findById(postsRecommendPK).isPresent();
-//
-//        return new RecommendResponseDto(isRecommend, post.getRecommendUp(),post.getRecommendDown());
-//    }
-
     @Transactional
     public void delete(Long id) {
         List<PostsRecommendUp> postsRecommendUp = postsRecommendUpRepository.findByPostsId(id);

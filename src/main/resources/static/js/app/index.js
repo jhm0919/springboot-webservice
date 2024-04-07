@@ -28,12 +28,13 @@ var main = {
         });
     },
     save : function () {
+        var content = editor.getData()
         var formData = new FormData();
         var data = {
             postType: $('#postType').val(),
             title: $('#title').val(),
             author: $('#author').val(),
-            content: $('#content').val(),
+            content: content,
         };
         var inputFile = $("input[type='file']");
         var files = inputFile[0].files;
@@ -75,11 +76,12 @@ var main = {
         });
     },
     update : function () {
+        var content = editor.getData()
         var formData = new FormData();
         var data = {
             postType: $('#postType').val(),
             title: $('#title').val(),
-            content: $('#content').val(),
+            content: content,
         };
         var id = $('#id').val();
         var inputFile = $("input[type='file']");

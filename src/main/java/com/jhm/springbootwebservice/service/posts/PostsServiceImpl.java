@@ -7,6 +7,7 @@ import com.jhm.springbootwebservice.domain.postimage.PostsImage;
 import com.jhm.springbootwebservice.domain.posts.PostsRepository;
 import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
+import com.jhm.springbootwebservice.util.ImageUtil;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
@@ -18,9 +19,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,6 +54,55 @@ public class PostsServiceImpl implements PostsService{
 
         return postsRepository.save(posts).getId();
     }
+
+    @Override
+    @Transactional
+    public String ckUpload(MultipartHttpServletRequest request) {
+
+        MultipartFile uploadFile = request.getFile("upload");
+
+        String fileName = getFileName(uploadFile);
+
+        String realPath = getPath(request);
+
+        String savePath = realPath + fileName;
+
+        String uploadPath = request.getContextPath() + PREV_IMAGE_URL + fileName;
+
+        uploadFile(savePath, uploadFile);
+
+        return uploadPath;
+    }
+
+    private void uploadFile(String savePath, MultipartFile uploadFile) {
+        File file = new File(savePath);
+        try {
+            uploadFile.transferTo(file);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload the file", e);
+        }
+    }
+
+    private String getFileName(MultipartFile uploadFile) {
+        String originalFileName = uploadFile.getOriginalFilename();
+        String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+        return UUID.randomUUID() + ext;
+    }
+
+    private String getPath(MultipartHttpServletRequest request) {
+        // 실제 파일 저장 경로
+        String realPath = request.getServletContext().getRealPath(PREV_IMAGE_URL);
+        Path directoryPath = Paths.get(realPath);
+        if (!Files.exists(directoryPath)) {
+            try {
+                Files.createDirectories(directoryPath);
+            } catch (IOException e) {
+                throw new RuntimeException("Could not create upload directory", e);
+            }
+        }
+        return realPath;
+    }
+
 
     @Override
     @Transactional

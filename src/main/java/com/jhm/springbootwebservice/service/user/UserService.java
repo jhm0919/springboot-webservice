@@ -48,8 +48,8 @@ public class UserService {
         User user = userRepository.findById(dto.toEntity().getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당하는 회원이 존재하지 않습니다."));
 
-        String password = encoder.encode(dto.getPassword());
-        boolean result = userRepository.existsByName(dto.getName());
+        String password = encoder.encode(dto.getPassword()); // 비밀번호 인코딩
+        boolean result = userRepository.existsByName(dto.getName()); // 닉네임이 이미 있으면 true
         if (!result) {
             user.update(dto.getName(), password);
             return ResponseEntity.ok("성공");
