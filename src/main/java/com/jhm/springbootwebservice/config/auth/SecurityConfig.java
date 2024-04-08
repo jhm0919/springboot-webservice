@@ -44,7 +44,7 @@ public class SecurityConfig {
             .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/", "/scss/**", "/css/**", "/files/**", "/img/**", "/js/**", "/vendor/**", "/posts/read/**", "/auth/**", "/error/**")
+                    "/", "/scss/**", "/css/**", "/files/**", "/temp/**", "/img/**", "/js/**", "/vendor/**", "/posts/read/**", "/auth/**", "/error/**")
                 .permitAll()
                 .requestMatchers("/api/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name(), Role.OAUTH_USER.name())
                 .requestMatchers("/update").hasAnyRole(Role.ADMIN.name(), Role.USER.name())

@@ -44,17 +44,6 @@ public class PostsApiController {
         return postId;
     }
 
-    @PostMapping("/image/upload")
-    public ModelAndView imageUpload(MultipartHttpServletRequest request) throws IOException {
-        ModelAndView mav = new ModelAndView("jsonView");
-
-        String uploadPath = postsService.ckUpload(request);
-
-        mav.addObject("uploaded", true);
-        mav.addObject("url", uploadPath);
-        return mav;
-    }
-
     @PutMapping(value = "/posts/{postId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public Long update(@PathVariable Long postId,
                        @RequestPart("json_data") PostsUpdateRequestDto requestDto,

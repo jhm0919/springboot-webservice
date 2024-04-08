@@ -57,55 +57,6 @@ public class PostsServiceImpl implements PostsService{
 
     @Override
     @Transactional
-    public String ckUpload(MultipartHttpServletRequest request) {
-
-        MultipartFile uploadFile = request.getFile("upload");
-
-        String fileName = getFileName(uploadFile);
-
-        String realPath = getPath(request);
-
-        String savePath = realPath + fileName;
-
-        String uploadPath = request.getContextPath() + PREV_IMAGE_URL + fileName;
-
-        uploadFile(savePath, uploadFile);
-
-        return uploadPath;
-    }
-
-    private void uploadFile(String savePath, MultipartFile uploadFile) {
-        File file = new File(savePath);
-        try {
-            uploadFile.transferTo(file);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to upload the file", e);
-        }
-    }
-
-    private String getFileName(MultipartFile uploadFile) {
-        String originalFileName = uploadFile.getOriginalFilename();
-        String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
-        return UUID.randomUUID() + ext;
-    }
-
-    private String getPath(MultipartHttpServletRequest request) {
-        // 실제 파일 저장 경로
-        String realPath = request.getServletContext().getRealPath(PREV_IMAGE_URL);
-        Path directoryPath = Paths.get(realPath);
-        if (!Files.exists(directoryPath)) {
-            try {
-                Files.createDirectories(directoryPath);
-            } catch (IOException e) {
-                throw new RuntimeException("Could not create upload directory", e);
-            }
-        }
-        return realPath;
-    }
-
-
-    @Override
-    @Transactional
     public Long update(Long postId, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles, List<Long> checkedIds) {
         Posts posts = postsRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. postId=" + postId));

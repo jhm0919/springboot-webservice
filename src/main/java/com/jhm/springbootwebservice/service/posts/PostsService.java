@@ -17,8 +17,6 @@ public interface PostsService {
 
     Long save(Long userId, PostsSaveRequestDto requestDto, List<MultipartFile> multipartFiles);
 
-    String ckUpload(MultipartHttpServletRequest request) throws IOException;
-
     Long update(Long postId, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles, List<Long> checkedIds);
 
     void updateView(Long id);
