@@ -35,31 +35,18 @@ public class PostsApiController {
     private final PostsRecommendService postsRecommendService;
     private final CommentsRecommendService commentsRecommendService;
 
-    @PostMapping(value = "/posts", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public Long save(@RequestPart("json_data") PostsSaveRequestDto postsSaveRequestDto,
-                     @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles,
-                     @LoginUser SessionUser user) {
-        Long postId = postsService.save(user.getId(), postsSaveRequestDto, multipartFiles);
+    @PostMapping(value = "/posts")
+    public Long save(@RequestBody PostsSaveRequestDto postsSaveRequestDto,
+                     @LoginUser SessionUser user) throws Exception {
+        Long postId = postsService.save(user.getId(), postsSaveRequestDto);
 
         return postId;
     }
 
-    @PutMapping(value = "/posts/{postId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(value = "/posts/{postId}")
     public Long update(@PathVariable Long postId,
-                       @RequestPart("json_data") PostsUpdateRequestDto requestDto,
-                       @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles,
-                       @RequestParam(value = "checkedImageIds", required = false) String checkedImageIds) {
-
-        List<Long> checkedIds = null;
-
-        if (checkedImageIds != null) { // 체크된 이미지가 있을 경우에만 값이 있음
-            checkedIds = Arrays.stream(checkedImageIds.split(","))
-                    .map(Long::parseLong)
-                    .collect(Collectors.toList());
-            log.info("checkedImageIds={}", checkedIds);
-        }
-
-        return postsService.update(postId, requestDto, multipartFiles, checkedIds);
+                       @RequestBody PostsUpdateRequestDto requestDto) {
+        return postsService.update(postId, requestDto);
     }
 
     @DeleteMapping("/posts/{postId}")

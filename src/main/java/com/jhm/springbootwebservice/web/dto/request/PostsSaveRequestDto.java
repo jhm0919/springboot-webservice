@@ -5,6 +5,8 @@ import com.jhm.springbootwebservice.domain.posts.Posts;
 import com.jhm.springbootwebservice.domain.user.User;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @Getter
 @Builder

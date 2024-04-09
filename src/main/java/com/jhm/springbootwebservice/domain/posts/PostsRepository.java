@@ -14,8 +14,6 @@ import org.springframework.stereotype.Repository;
  */
 public interface PostsRepository extends JpaRepository<Posts, Long> {
 
-
-
     // postType이 없을 때
     // 제목+내용 검색조건
     Page<Posts> findByTitleContainingOrContentContaining(String title, String content, Pageable pageable);

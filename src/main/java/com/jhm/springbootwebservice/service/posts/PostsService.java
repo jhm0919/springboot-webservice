@@ -15,9 +15,9 @@ import java.util.List;
 
 public interface PostsService {
 
-    Long save(Long userId, PostsSaveRequestDto requestDto, List<MultipartFile> multipartFiles);
+    Long save(Long userId, PostsSaveRequestDto requestDto) throws Exception;
 
-    Long update(Long postId, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles, List<Long> checkedIds);
+    Long update(Long postId, PostsUpdateRequestDto requestDto);
 
     void updateView(Long id);
 

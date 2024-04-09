@@ -13,7 +13,7 @@ public class FileUploadService {
 
 //    private String localLocation = "C:\\Users\\jhm09\\Desktop\\images\\";
     private String tempLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\temp\\";
-    private String localLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\files\\";
+//    private String localLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\files\\";
 
     public String upload(MultipartRequest request) throws IOException {
         MultipartFile file = request.getFile("upload");
@@ -21,10 +21,10 @@ public class FileUploadService {
         String ext = fileName.substring(fileName.indexOf("."));
 
         String uuidFileName = UUID.randomUUID() + ext;
-        String localPath = localLocation + uuidFileName;
+        String localPath = tempLocation + uuidFileName;
 
-        String tempUrl = "/temp/" + uuidFileName;
-        String url = "/files/" + uuidFileName;
+        String url = "/temp/" + uuidFileName;
+//        String url = "/files/" + uuidFileName;
 
         File localFile = new File(localPath);
         file.transferTo(localFile);

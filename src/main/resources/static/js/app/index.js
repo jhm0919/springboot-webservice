@@ -29,21 +29,12 @@ var main = {
     },
     save : function () {
         var content = editor.getData()
-        var formData = new FormData();
         var data = {
             postType: $('#postType').val(),
             title: $('#title').val(),
             author: $('#author').val(),
             content: content,
         };
-        var inputFile = $("input[type='file']");
-        var files = inputFile[0].files;
-
-        formData.append('json_data', new Blob([JSON.stringify(data)],
-            {type: 'application/json; charset=UTF-8;'}));
-        for(let i = 0; i < files.length; i++) {
-            formData.append("files", files[i]);
-        }
 
         if (!data.title) {
             alert("제목을 입력해주세요.")
@@ -63,10 +54,8 @@ var main = {
         $.ajax({
             type: 'POST',
             url: '/api/posts',
-            data: formData,
-            contentType:false,
-            processData: false,
-            cache: false,
+            data: JSON.stringify(data),
+            contentType: 'application/json; charset=utf-8',
             dataType: 'JSON',
         }).done(function(response) {
             alert('게시글이 등록되었습니다.');
@@ -76,36 +65,13 @@ var main = {
         });
     },
     update : function () {
+        var id = $('#id').val();
         var content = editor.getData()
-        var formData = new FormData();
         var data = {
             postType: $('#postType').val(),
             title: $('#title').val(),
             content: content,
         };
-        var id = $('#id').val();
-        var inputFile = $("input[type='file']");
-        var files = inputFile[0].files;
-
-        // 체크된 이미지 정보를 수집합니다.
-        var checkedImageIds = [];
-        $("input.image-checkbox:checked").each(function() {
-            checkedImageIds.push($(this).attr('id').replace('checkbox_', ''));
-        });
-
-        // console.log(checkedImageIds);
-
-        formData.append('json_data', new Blob([JSON.stringify(data)],
-            {type: 'application/json; charset=UTF-8;'}));
-        for(let i = 0; i < files.length; i++) {
-            formData.append("files", files[i]);
-        }
-
-        // 체크된 이미지 정보를 FormData에 추가합니다.
-        // formData.append("checkedImageIds", JSON.stringify(checkedImageIds));
-        if (checkedImageIds.length > 0) {
-            formData.append("checkedImageIds", checkedImageIds.join(',')); // 배열을 문자열로 변환하여 FormData에 추가합니다.
-        }
 
         if (!data.title) {
             alert("제목을 입력해주세요.")
@@ -117,13 +83,16 @@ var main = {
             return
         }
 
+        if (!data.postType) {
+            alert("게시판을 선택해주세요.")
+            return;
+        }
+
         $.ajax({
             type: 'PUT',
-            url: '/api/posts/'+id,
-            data: formData,
-            contentType:false,
-            processData: false,
-            cache: false,
+            url: '/api/posts/' + id,
+            data: JSON.stringify(data),
+            contentType: 'application/json; charset=utf-8',
             dataType: 'JSON',
         }).done(function(response) {
             alert('게시글이 수정되었습니다.');
@@ -147,7 +116,6 @@ var main = {
             }).fail(function (error) {
                 alert(JSON.stringify(error));
             });
-
         }
     },
     commentSave : function () {

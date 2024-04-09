@@ -7,7 +7,6 @@ import com.jhm.springbootwebservice.domain.postimage.PostsImage;
 import com.jhm.springbootwebservice.domain.posts.PostsRepository;
 import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
-import com.jhm.springbootwebservice.util.ImageUtil;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
@@ -19,16 +18,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartRequest;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,78 +33,56 @@ import java.util.UUID;
 public class PostsServiceImpl implements PostsService{
 
     private final PostsRepository postsRepository;
-    private final PostsImageRepository postsImageRepository;
     private final UserRepository userRepository;
-    private final String PREV_IMAGE_URL = "C:/springboot-webservice/src/main/resources/static/files/";
+    private String tempLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\temp\\";
+    private String localLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\files\\";
 
     @Override
     @Transactional
-    public Long save(Long userId, PostsSaveRequestDto requestDto, List<MultipartFile> multipartFiles) {
+    public Long save(Long userId, PostsSaveRequestDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(() ->
             new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
+        String content = moveImg(requestDto.getContent());// content를 넘겨서 이미지 경로 이동과 내용물 변경
+        
         requestDto.setUser(user);
+        requestDto.setContent(content);
 
         Posts posts = requestDto.toEntity();
-
-        saveImageFiles(multipartFiles, posts); // 이미지 저장
 
         return postsRepository.save(posts).getId();
     }
 
+    private String moveImg(String content) {
+
+        Pattern nonValidPattern = Pattern
+                .compile("(?i)< *[IMG][^\\>]*[src] *= *[\"\']{0,1}([^\"\'\\ >]*)");
+        Matcher matcher = nonValidPattern.matcher(content);
+        String img;
+        while (matcher.find()) {
+            img = matcher.group(1);
+            log.info("asdf={}", img);
+            img = img.replace("/temp", ""); // 이미지 이름만 추출
+            content = content.replace("/temp", "/files"); // content에 있는 temp를 files로 교체
+            File file = new File(tempLocation + img);
+            file.renameTo(new File(localLocation + img));// 실제 저장 경로로 이동
+        }
+        return content;
+    }
+
     @Override
     @Transactional
-    public Long update(Long postId, PostsUpdateRequestDto requestDto, List<MultipartFile> multipartFiles, List<Long> checkedIds) {
+    public Long update(Long postId, PostsUpdateRequestDto requestDto) {
         Posts posts = postsRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. postId=" + postId));
 
-        posts.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getPostType()); // 게시글 수정
+        String content = moveImg(requestDto.getContent());
 
-        saveImageFiles(multipartFiles, posts); // 이미지 저장
+        posts.update(requestDto.getTitle(), content, requestDto.getPostType()); // 게시글 수정
 
-        deleteImageFiles(checkedIds, posts); // 이미지 삭제
+        // todo: 수정시 넘어온 이미지 제외 지우기?
 
         return postId;
-    }
-
-    private void saveImageFiles(List<MultipartFile> multipartFiles, Posts posts) {
-        if (multipartFiles != null && !multipartFiles.isEmpty()) {
-            for (MultipartFile file : multipartFiles) {
-                UUID uuid = UUID.randomUUID();
-                String originalName = file.getOriginalFilename();
-                String imageFileName = uuid + "_" + originalName;
-
-                File fileName = new File(PREV_IMAGE_URL, imageFileName);
-
-                try {
-                    file.transferTo(fileName);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                PostsImage image = PostsImage.builder()
-                    .url(imageFileName)
-                    .name(originalName)
-                    .posts(posts)
-                    .build();
-
-                postsImageRepository.save(image);
-            }
-        }
-    }
-
-    private void deleteImageFiles(List<Long> checkedIds, Posts posts) {
-        if (checkedIds != null) { // 체크한 이미지(삭제하고싶은 이미지)가 있는 경우
-            for (Long checkedId : checkedIds) {
-                PostsImage postsImage = postsImageRepository.findByPostsIdAndId(posts.getId(), checkedId);
-                String imageFileName = PREV_IMAGE_URL + postsImage.getUrl();
-                File imageFileUrl = new File(imageFileName);
-
-                if (imageFileUrl.delete()) {
-                    postsImageRepository.delete(postsImage);
-                }
-            }
-        }
     }
 
     @Override
@@ -200,6 +175,24 @@ public class PostsServiceImpl implements PostsService{
     public void delete(Long id) {
         Posts posts = postsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+        
+        String content = posts.getContent();
+
+        deleteImg(content); // 이미지 삭제
+        
         postsRepository.delete(posts);
+    }
+
+    private void deleteImg(String content) {
+        Pattern nonValidPattern = Pattern
+                .compile("(?i)< *[IMG][^\\>]*[src] *= *[\"\']{0,1}([^\"\'\\ >]*)");
+        Matcher matcher = nonValidPattern.matcher(content);
+        String img;
+        while (matcher.find()) {
+            img = matcher.group(1);
+            img = img.replace("/files", ""); // 이미지 이름만 추출
+            File file = new File(localLocation + img);
+            file.delete();
+        }
     }
 }

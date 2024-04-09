@@ -4,7 +4,6 @@ import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.domain.posts.PostType;
 import com.jhm.springbootwebservice.service.posts.PostsService;
-import com.jhm.springbootwebservice.service.recommend.PostsRecommendService;
 import com.jhm.springbootwebservice.web.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +62,6 @@ public class IndexController {
     public String postsRead(@PathVariable Long postId, @LoginUser SessionUser user, Model model) {
         PostsResponseDto post = postsService.findById(postId);
         List<CommentResponseDto> comments = post.getComments();
-        List<PostsImageResponseDto> postsImages = post.getPostsImages();
 
         postsService.updateView(postId);
 
@@ -80,7 +78,6 @@ public class IndexController {
             model.addAttribute("comments", comments);
         }
         model.addAttribute("postTypes", PostType.values());
-        model.addAttribute("postsImages", postsImages);
         model.addAttribute("post", post);
 
         return "posts-read";

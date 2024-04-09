@@ -28,17 +28,6 @@
                 <img width="500" th:src="'/files/' + ${image}"/>
             </th:block>
         </div>
-        <div class="form-floating mb-3">
-            <label>이미지 업로드</label><br/>
-            <label>파일 최대 용량 : 10MB</label>
-            <input type="file" name="files" accept="image/*,.txt" class="form-control" id="files" multiple>
-            <span>삭제하고 싶은 이미지를 선택하세요.</span>
-            <th:block th:each="image : ${postsImages}">
-                <div th:text="${image.name}"/>
-                <input type="checkbox" class="image-checkbox" th:id="'checkbox_' + ${image.id}" />
-                <img width="100" th:src="'/files/' + ${image.url}" class="image" />
-            </th:block>
-        </div>
     </form>
     <script>
         var editor;
