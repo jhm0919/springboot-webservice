@@ -14,8 +14,8 @@
                             <a class="nav-link"
                                th:classappend="${postType.key.toUpperCase() == post.postType.toString()} ? 'active' : ''"
                                th:text="${postType.title}"
-                               th:value="${postType.key}"
-                               th:href="@{/(postType= ${postType.key})}"></a>
+                               th:value="${postType}"
+                               th:href="@{/(postType= ${postType})}"></a>
                         </li>
                     </th:block>
                 </ul>

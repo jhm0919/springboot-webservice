@@ -4,6 +4,7 @@ import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.domain.posts.PostType;
 import com.jhm.springbootwebservice.service.posts.PostsService;
+import com.jhm.springbootwebservice.web.dto.request.UserSearchDto;
 import com.jhm.springbootwebservice.web.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -28,13 +31,11 @@ public class IndexController {
     @GetMapping("/")
     public String index(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                         @LoginUser SessionUser user, // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
-                        String searchKeyword,
-                        String searchType,
-                        String postType,
+                        @ModelAttribute("searchDto") UserSearchDto searchDto,
+                        @RequestParam(required = false) PostType postType,
                         Model model) {
 
-        postType = postType == "" ? null : postType;
-        Page<PostsListResponseDto> posts = postsService.findAll(pageable, postType, searchType, searchKeyword);
+        Page<PostsListResponseDto> posts = postsService.findAll(postType, searchDto, pageable);
 
         int nowPage = posts.getPageable().getPageNumber() + 1; //pageable에서 넘어온 현재페이지를 가지고올수있다 * 0부터시작하니까 +1
         int startPage = Math.max(nowPage - 4, 1); //매개변수로 들어온 두 값을 비교해서 큰값을 반환
@@ -42,7 +43,6 @@ public class IndexController {
 
         model.addAttribute("postTypes", PostType.values());
         model.addAttribute("posts", posts);
-
         model.addAttribute("nowPage", nowPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
@@ -55,6 +55,7 @@ public class IndexController {
     @GetMapping("/posts/save")
     public String postsSave(Model model, @LoginUser SessionUser user) {
         addSessionUserToModel(user, model);
+        model.addAttribute("postTypes", PostType.values());
         return "posts-save";
     }
 

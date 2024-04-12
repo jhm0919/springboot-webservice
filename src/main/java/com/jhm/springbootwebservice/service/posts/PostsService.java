@@ -1,5 +1,7 @@
 package com.jhm.springbootwebservice.service.posts;
 
+import com.jhm.springbootwebservice.domain.posts.PostType;
+import com.jhm.springbootwebservice.web.dto.request.UserSearchDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
@@ -23,7 +25,7 @@ public interface PostsService {
 
     PostsResponseDto findById(Long id);
 
-    Page<PostsListResponseDto> findAll(Pageable pageable, String postType, String searchType, String searchKeyword);
+    Page<PostsListResponseDto> findAll(PostType postType, UserSearchDto userSearchDto, Pageable pageable);
 
     void delete(Long id);
 }

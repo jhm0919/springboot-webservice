@@ -6,5 +6,5 @@ import lombok.Data;
 public class UserSearchDto {
     private String searchKeyword;
     private String searchType;
-    private String postType;
+//    private String postType;
 }

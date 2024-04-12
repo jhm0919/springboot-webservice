@@ -5,8 +5,10 @@ import com.jhm.springbootwebservice.domain.posts.PostType;
 import com.jhm.springbootwebservice.domain.posts.Posts;
 import com.jhm.springbootwebservice.domain.postimage.PostsImage;
 import com.jhm.springbootwebservice.domain.posts.PostsRepository;
+import com.jhm.springbootwebservice.domain.posts.PostsRepositoryCustom;
 import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
+import com.jhm.springbootwebservice.web.dto.request.UserSearchDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
@@ -33,6 +35,7 @@ import java.util.regex.Pattern;
 public class PostsServiceImpl implements PostsService{
 
     private final PostsRepository postsRepository;
+    private final PostsRepositoryCustom postsRepositoryCustom;
     private final UserRepository userRepository;
     private String tempLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\temp\\";
     private String localLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\files\\";
@@ -103,71 +106,8 @@ public class PostsServiceImpl implements PostsService{
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<PostsListResponseDto> findAll(Pageable pageable, String postType, String searchType, String searchKeyword) {
-        Page<PostsListResponseDto> postsListResponseDto;
-
-        if (postType != null) { // postType 선택 했을 때
-            PostType type = PostType.valueOf(postType.toUpperCase()); // PostType으로 변환
-            if (searchKeyword != null) { // postType + 검색조건
-                postsListResponseDto = getPostsListPostTypeResponseDtos(pageable, searchType, searchKeyword, type);
-            } else { // postType + 전체조회
-                postsListResponseDto = entityToDto(postsRepository.findAllByPostType(type, pageable));
-            }
-        } else { // 카테고리 선택 안한 경우
-            if (searchKeyword != null) { // 검색조건
-                postsListResponseDto = getPostsListResponseDtos(pageable, searchType, searchKeyword);
-            } else { // 전체조회
-                postsListResponseDto = entityToDto(postsRepository.findAll(pageable));
-            }
-        }
-        return postsListResponseDto;
-    }
-
-    private Page<PostsListResponseDto> getPostsListResponseDtos(Pageable pageable, String searchType, String searchKeyword) {
-        Page<PostsListResponseDto> postsListResponseDto;
-        switch (searchType) {
-            default: // 검색조건 : 제목+내용
-                postsListResponseDto = entityToDto(postsRepository.findByTitleContainingOrContentContaining(searchKeyword, searchKeyword, pageable));
-                break;
-            case "title": // 검색조건 : 제목
-                postsListResponseDto = entityToDto(postsRepository.findByTitleContaining(searchKeyword, pageable));
-                break;
-            case "content": // 검색조건 : 내용
-                postsListResponseDto = entityToDto(postsRepository.findByContentContaining(searchKeyword, pageable));
-                break;
-            case "author": // 검색조건 : 작성자
-                postsListResponseDto = entityToDto(postsRepository.findByAuthorContaining(searchKeyword, pageable));
-                break;
-        }
-        return postsListResponseDto;
-    }
-
-    private Page<PostsListResponseDto> getPostsListPostTypeResponseDtos(Pageable pageable, String searchType, String searchKeyword, PostType type) {
-        Page<PostsListResponseDto> postsListResponseDto;
-        switch (searchType) {
-            default:  // 검색조건 : 전체
-                postsListResponseDto = entityToDto(
-                    postsRepository.findByPostTypeAndTitleContainingOrPostTypeAndContentContaining(type, searchKeyword, type, searchKeyword, pageable));
-                break;
-            case "title": // 검색조건 : 제목
-                postsListResponseDto = entityToDto(
-                    postsRepository.findByPostTypeAndTitleContaining(type, searchKeyword, pageable));
-                break;
-            case "content": // 검색조건 : 내용
-                postsListResponseDto = entityToDto(
-                    postsRepository.findByPostTypeAndContentContaining(type, searchKeyword, pageable));
-                break;
-            case "author": // 검색조건 : 작성자
-                postsListResponseDto = entityToDto(
-                    postsRepository.findByPostTypeAndAuthorContaining(type, searchKeyword, pageable));
-                break;
-        }
-        return postsListResponseDto;
-    }
-
-    private Page<PostsListResponseDto> entityToDto(Page<Posts> postsPage) {
-        return postsPage.map(PostsListResponseDto::new);
+    public Page<PostsListResponseDto> findAll(PostType postType, UserSearchDto userSearchDto, Pageable pageable) {
+        return postsRepositoryCustom.findPageDynamicQuery(postType, userSearchDto, pageable);
     }
 
     @Override

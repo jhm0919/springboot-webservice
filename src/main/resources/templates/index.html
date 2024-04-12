@@ -8,13 +8,13 @@
                 <li class="nav-item">
                     <a class="nav-link" th:classappend="${postTypeString == '' || postTypeString == null} ? 'active' : ''" th:text="'전체'" th:href="@{'/'}"></a>
                 </li>
-                <th:block th:each="postType : ${postTypes}" >
+                <th:block th:each="postType : ${postTypes}">
                     <li class="nav-item">
                         <a class="nav-link"
                            th:classappend="${postType.key == postTypeString} ? 'active' : ''"
                            th:text="${postType.title}"
-                           th:value="${postType.key}"
-                           th:href="@{/(postType= ${postType.key}
+                           th:value="${postType}"
+                           th:href="@{/(postType= ${postType}
                                 , searchType = ${param.searchType}
                                 , searchKeyword = ${param.searchKeyword})}"></a>
                     </li>
