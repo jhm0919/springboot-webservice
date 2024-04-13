@@ -29,24 +29,24 @@ public class IndexController {
     private final PostsService postsService;
 
     @GetMapping("/")
-    public String index(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+    public String index(@RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "0") int myPost,
+                        @RequestParam(required = false) PostType postType,
                         @LoginUser SessionUser user, // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
                         @ModelAttribute("searchDto") UserSearchDto searchDto,
-                        @RequestParam(required = false) PostType postType,
                         Model model) {
+        String username = null;
+        if (user != null) {
+            username = user.getName();
+        }
+        Page<PostsListResponseDto> posts = postsService.findAll(postType, searchDto, page, myPost, username);
 
-        Page<PostsListResponseDto> posts = postsService.findAll(postType, searchDto, pageable);
-
-        int nowPage = posts.getPageable().getPageNumber() + 1; //pageable에서 넘어온 현재페이지를 가지고올수있다 * 0부터시작하니까 +1
-        int startPage = Math.max(nowPage - 4, 1); //매개변수로 들어온 두 값을 비교해서 큰값을 반환
-        int endPage = Math.min(nowPage + 5, posts.getTotalPages());
+//        log.info("총 element 수 : {}, 전체 page 수 : {}, 페이지에 표시할 element 수 : {}, 현재 페이지 index : {}, 현재 페이지의 element 수 : {}",
+//                posts.getTotalElements(), posts.getTotalPages(), posts.getSize(),
+//                posts.getNumber(), posts.getNumberOfElements());
 
         model.addAttribute("postTypes", PostType.values());
         model.addAttribute("posts", posts);
-        model.addAttribute("nowPage", nowPage);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-
         addSessionUserToModel(user, model);
 
         return "index";

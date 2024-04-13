@@ -1,5 +1,6 @@
 package com.jhm.springbootwebservice.service.posts;
 
+import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.domain.postimage.PostsImageRepository;
 import com.jhm.springbootwebservice.domain.posts.PostType;
 import com.jhm.springbootwebservice.domain.posts.Posts;
@@ -16,7 +17,9 @@ import com.jhm.springbootwebservice.web.dto.request.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +38,6 @@ import java.util.regex.Pattern;
 public class PostsServiceImpl implements PostsService{
 
     private final PostsRepository postsRepository;
-    private final PostsRepositoryCustom postsRepositoryCustom;
     private final UserRepository userRepository;
     private String tempLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\temp\\";
     private String localLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\files\\";
@@ -106,8 +108,13 @@ public class PostsServiceImpl implements PostsService{
     }
 
     @Override
-    public Page<PostsListResponseDto> findAll(PostType postType, UserSearchDto userSearchDto, Pageable pageable) {
-        return postsRepositoryCustom.findPageDynamicQuery(postType, userSearchDto, pageable);
+    public Page<PostsListResponseDto> findAll(PostType postType, UserSearchDto userSearchDto, int page, int myPost, String username) {
+        PageRequest pageRequest = createPageRequest(page);
+        return postsRepository.findPageDynamicQuery(postType, userSearchDto, pageRequest, myPost, username);
+    }
+
+    private PageRequest createPageRequest(int page) {
+        return PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
     }
 
     @Override

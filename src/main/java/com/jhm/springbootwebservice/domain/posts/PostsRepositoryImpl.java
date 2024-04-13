@@ -1,5 +1,6 @@
 package com.jhm.springbootwebservice.domain.posts;
 
+import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.web.dto.request.UserSearchDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.querydsl.core.QueryResults;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.ScrollPosition;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,17 +27,27 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
     QPosts posts = QPosts.posts;
 
     @Override
-    public Page<PostsListResponseDto> findPageDynamicQuery(PostType postType, UserSearchDto searchDto, Pageable pageable) {
-        List<PostsListResponseDto> results = queryFactory
+    public Page<PostsListResponseDto> findPageDynamicQuery(PostType postType, UserSearchDto searchDto, Pageable pageable, int myPost, String username) {
+        List<PostsListResponseDto> content = queryFactory
                 .select(Projections.constructor(PostsListResponseDto.class, posts))
                 .from(posts)
-                .where(postTypeEq(postType), searchDtoEq(searchDto))
+                .where(postTypeEq(postType), userEq(myPost, username), searchDtoEq(searchDto))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(posts.createdDate.desc())
+                .orderBy(posts.id.desc())
                 .fetch();
 
-        return new PageImpl<>(results, pageable, results.size());
+        Long total = queryFactory
+                .select(posts.count())
+                .from(posts)
+                .where(postTypeEq(postType), userEq(myPost, username), searchDtoEq(searchDto))
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    private BooleanExpression userEq(int myPost, String username) {
+        return myPost != 0 ? posts.author.eq(username) : null;
     }
 
     private BooleanExpression postTypeEq(PostType postTypeCond) {
