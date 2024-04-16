@@ -26,7 +26,7 @@ public interface PostsService {
 
     PostsResponseDto findById(Long id);
 
-    Page<PostsListResponseDto> findAll(PostType postType, UserSearchDto userSearchDto, int page, int myPost, String username);
+    Page<PostsListResponseDto> findAll(PostType postType, UserSearchDto userSearchDto, int page, int myPost, Long userId);
 
     void delete(Long id);
 }

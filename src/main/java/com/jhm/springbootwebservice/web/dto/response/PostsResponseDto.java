@@ -17,6 +17,7 @@ public class PostsResponseDto {
     private String content;
     private String author;
     private int view;
+    private int commentSize;
     private PostType postType;
     private int recommendUp;
     private int recommendDown;
@@ -32,6 +33,7 @@ public class PostsResponseDto {
         this.content = entity.getContent();
         this.author = entity.getAuthor();
         this.view = entity.getView();
+        this.commentSize = entity.getCommentSize();
         this.postType = entity.getPostType();
         this.recommendUp = entity.getRecommendUp();
         this.recommendDown = entity.getRecommendDown();

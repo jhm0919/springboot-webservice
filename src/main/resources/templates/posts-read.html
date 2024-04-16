@@ -31,13 +31,10 @@
                 <input style="width: 20%" type="text" class="form-control" id="modifiedDate" th:value="${post.modifiedDate}" readonly>
             </div>
             <div style="display: flex;">
-                <input style="width: 80%" type="text" class="form-control" id="author" th:value="${post.author}" readonly>
-                <input style="width: 10%" type="text" class="form-control" id="view" th:value="'조회수' + ${post.view}" readonly>
-                <input style="width: 10%" type="text" class="form-control" id="recommend" th:value="'추천수' + ${post.recommendUp}" readonly>
-
-                <!-- 댓글 없는 글 오류남-->
-<!--                <input style="width: 10%; margin-right: 10px" th:if="${comments.size() > 0}" th:text="'댓글 ' + ${comments.size()}" readonly>-->
-<!--                <input style="width: 10%; margin-right: 10px" th:unless="${comments.size() > 0}" th:text="'댓글 0'" readonly>-->
+                <input style="width: 70%" type="text" class="form-control" id="author" th:value="${post.author}" readonly>
+                <input style="width: 10%" type="text" class="form-control" id="view" th:value="'조회수 ' + ${post.view}" readonly>
+                <input style="width: 10%" type="text" class="form-control" id="recommend" th:value="'추천수 ' + ${post.recommendUp}" readonly>
+                <input style="width: 10%" type="text" class="form-control" id="commentSize" th:value="'댓글' + ${post.commentSize} + ' 개'" readonly>
             </div>
         </div>
         <div class="form-group">

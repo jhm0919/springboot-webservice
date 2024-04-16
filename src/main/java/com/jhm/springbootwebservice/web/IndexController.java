@@ -35,19 +35,15 @@ public class IndexController {
                         @LoginUser SessionUser user, // 어느 컨트롤러든지 @LoginUser만 사용하면 세션 정보를 가져올 수 있게 됨
                         @ModelAttribute("searchDto") UserSearchDto searchDto,
                         Model model) {
-        String username = null;
+        Long userId = null;
         if (user != null) {
-            username = user.getName();
+            model.addAttribute("user", user);
+            userId = user.getId();
         }
-        Page<PostsListResponseDto> posts = postsService.findAll(postType, searchDto, page, myPost, username);
-
-//        log.info("총 element 수 : {}, 전체 page 수 : {}, 페이지에 표시할 element 수 : {}, 현재 페이지 index : {}, 현재 페이지의 element 수 : {}",
-//                posts.getTotalElements(), posts.getTotalPages(), posts.getSize(),
-//                posts.getNumber(), posts.getNumberOfElements());
+        Page<PostsListResponseDto> posts = postsService.findAll(postType, searchDto, page, myPost, userId);
 
         model.addAttribute("postTypes", PostType.values());
         model.addAttribute("posts", posts);
-        addSessionUserToModel(user, model);
 
         return "index";
     }
@@ -70,7 +66,7 @@ public class IndexController {
             model.addAttribute("user", user);
 
             /** 게시글 작성자 본인인지 확인 */
-            if (post.getUserId().equals(user.getId())) {
+            if (postId.equals(user.getId())) {
                 model.addAttribute("author", true);
             }
         }

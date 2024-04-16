@@ -8,13 +8,14 @@ import com.jhm.springbootwebservice.domain.user.UserRepository;
 import com.jhm.springbootwebservice.web.dto.request.RecommendRequestDto;
 import com.jhm.springbootwebservice.web.dto.response.RecommendResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class PostsRecommendService {

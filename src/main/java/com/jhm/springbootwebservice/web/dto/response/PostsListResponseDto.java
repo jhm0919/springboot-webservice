@@ -1,10 +1,8 @@
 package com.jhm.springbootwebservice.web.dto.response;
 
-import com.jhm.springbootwebservice.domain.posts.PostType;
 import com.jhm.springbootwebservice.domain.posts.Posts;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 
 @Getter
 public class PostsListResponseDto {
@@ -22,7 +20,7 @@ public class PostsListResponseDto {
         this.title = entity.getTitle();
         this.author = entity.getAuthor();
         this.postType = entity.getPostType().getTitle();
-        this.commentsSize = entity.getComments().size();
+        this.commentsSize = entity.getCommentSize();
         this.view = entity.getView();
         this.recommendUp = entity.getRecommendUp();
         this.modifiedDate = entity.getModifiedDate();

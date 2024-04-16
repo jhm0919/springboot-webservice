@@ -1,12 +1,8 @@
 package com.jhm.springbootwebservice.service.posts;
 
-import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
-import com.jhm.springbootwebservice.domain.postimage.PostsImageRepository;
 import com.jhm.springbootwebservice.domain.posts.PostType;
 import com.jhm.springbootwebservice.domain.posts.Posts;
-import com.jhm.springbootwebservice.domain.postimage.PostsImage;
 import com.jhm.springbootwebservice.domain.posts.PostsRepository;
-import com.jhm.springbootwebservice.domain.posts.PostsRepositoryCustom;
 import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
 import com.jhm.springbootwebservice.web.dto.request.UserSearchDto;
@@ -18,17 +14,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,7 +86,7 @@ public class PostsServiceImpl implements PostsService{
         Posts posts = postsRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
         posts.increaseView(); // 조회수 증가
-        postsRepository.save(posts);
+//        postsRepository.save(posts);
     }
 
     @Override
@@ -108,9 +98,10 @@ public class PostsServiceImpl implements PostsService{
     }
 
     @Override
-    public Page<PostsListResponseDto> findAll(PostType postType, UserSearchDto userSearchDto, int page, int myPost, String username) {
+    @Transactional(readOnly = true)
+    public Page<PostsListResponseDto> findAll(PostType postType, UserSearchDto userSearchDto, int page, int myPost, Long userId) {
         PageRequest pageRequest = createPageRequest(page);
-        return postsRepository.findPageDynamicQuery(postType, userSearchDto, pageRequest, myPost, username);
+        return postsRepository.findPageDynamicQuery(postType, userSearchDto, pageRequest, myPost, userId);
     }
 
     private PageRequest createPageRequest(int page) {

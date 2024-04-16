@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.List;
 
@@ -38,6 +39,9 @@ public class Posts extends BaseTimeEntity {
     private int view;
 
     @Column(columnDefinition = "integer default 0")
+    private int commentSize;
+
+    @Column(columnDefinition = "integer default 0")
     private int recommendUp;
 
     @Column(columnDefinition = "integer default 0")
@@ -62,6 +66,14 @@ public class Posts extends BaseTimeEntity {
         this.title = title;
         this.content = content;
         this.postType = postType;
+    }
+
+    public void commentSizeUp() {
+        this.commentSize++;
+    }
+
+    public void commentSizeDown() {
+        this.commentSize--;
     }
 
     public void increaseView() {

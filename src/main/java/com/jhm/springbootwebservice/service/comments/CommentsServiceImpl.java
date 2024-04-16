@@ -28,6 +28,7 @@ public class CommentsServiceImpl implements CommentsService {
 
         dto.setUser(user);
         dto.setPosts(post);
+        post.commentSizeUp(); // 해당 게시글 댓글 수 증가
 
         Comment comment = dto.toEntity();
         commentRepository.save(comment);
@@ -46,8 +47,11 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     public Long delete(Long postId, Long commentId) {
+        Posts post = postsRepository.findById(postId).orElseThrow(() ->
+                new IllegalArgumentException("댓글 삭제 실패: 해당 게시글이 존재하지 않습니다."));
         Comment comment = commentRepository.findByPostsIdAndId(postId, commentId);
 
+        post.commentSizeDown(); // 해당 게시글 댓글 수 감소
         commentRepository.delete(comment);
 
         return commentId;
