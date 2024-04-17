@@ -15,6 +15,7 @@ import java.util.List;
 public class PostsSaveRequestDto {
     private String title;
     private String content;
+    private String pureContent;
     private String author;
     private PostType postType;
     private int view;
@@ -24,6 +25,7 @@ public class PostsSaveRequestDto {
         return Posts.builder()
                 .title(title)
                 .content(content)
+                .pureContent(pureContent)
                 .author(author)
                 .postType(postType)
                 .view(0)

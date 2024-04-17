@@ -11,9 +11,7 @@ import java.util.UUID;
 @Service
 public class FileUploadService {
 
-//    private String localLocation = "C:\\Users\\jhm09\\Desktop\\images\\";
     private String tempLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\temp\\";
-//    private String localLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\files\\";
 
     public String upload(MultipartRequest request) throws IOException {
         MultipartFile file = request.getFile("upload");
@@ -24,7 +22,6 @@ public class FileUploadService {
         String localPath = tempLocation + uuidFileName;
 
         String url = "/temp/" + uuidFileName;
-//        String url = "/files/" + uuidFileName;
 
         File localFile = new File(localPath);
         file.transferTo(localFile);

@@ -61,12 +61,12 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
             if (searchDtoCond.getSearchType().equals("title")) {
                 return posts.title.contains(searchDtoCond.getSearchKeyword());
             } else if (searchDtoCond.getSearchType().equals("content")) {
-                return posts.content.contains(searchDtoCond.getSearchKeyword());
+                return posts.pureContent.contains(searchDtoCond.getSearchKeyword());
             } else if (searchDtoCond.getSearchType().equals("author")) {
                 return posts.author.contains(searchDtoCond.getSearchKeyword());
             } else {
                 return posts.title.contains(searchDtoCond.getSearchKeyword())
-                        .or(posts.content.contains(searchDtoCond.getSearchKeyword()));
+                        .or(posts.pureContent.contains(searchDtoCond.getSearchKeyword()));
             }
         }
         return null;

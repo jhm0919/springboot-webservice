@@ -32,4 +32,5 @@ public class CommentsRecommendUp extends BaseTimeEntity {
     @MapsId("commentId")
     @ManyToOne(fetch = FetchType.LAZY)
     private Comment comment;
+
 }

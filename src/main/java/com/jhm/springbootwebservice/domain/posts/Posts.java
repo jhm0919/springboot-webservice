@@ -33,6 +33,9 @@ public class Posts extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @Column(columnDefinition = "TEXT")
+    private String pureContent;
+
     private String author;
 
     @Column(columnDefinition = "integer default 0")
@@ -62,13 +65,20 @@ public class Posts extends BaseTimeEntity {
     @OneToMany(mappedBy = "posts", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<PostsImage> PostsImages;
 
-    public void update(String title, String content, PostType postType) {
+    public void update(String title, String content, String pureContent, PostType postType) {
         this.title = title;
         this.content = content;
+        this.pureContent = pureContent;
         this.postType = postType;
     }
 
-    public void commentSizeUp() {
+    public void update(String content, String pureContent) {
+        this.content = content;
+        this.pureContent = pureContent;
+    }
+
+
+        public void commentSizeUp() {
         this.commentSize++;
     }
 

@@ -66,7 +66,7 @@ public class IndexController {
             model.addAttribute("user", user);
 
             /** 게시글 작성자 본인인지 확인 */
-            if (postId.equals(user.getId())) {
+            if (post.getUserId().equals(user.getId())) {
                 model.addAttribute("author", true);
             }
         }
@@ -74,6 +74,7 @@ public class IndexController {
         if (!comments.isEmpty()) {
             model.addAttribute("comments", comments);
         }
+
         model.addAttribute("postTypes", PostType.values());
         model.addAttribute("post", post);
 
