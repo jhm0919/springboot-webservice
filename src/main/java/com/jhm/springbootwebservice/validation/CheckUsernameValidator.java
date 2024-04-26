@@ -8,14 +8,14 @@ import org.springframework.validation.Errors;
 
 @RequiredArgsConstructor
 @Component
-public class CheckEmailValidator extends AbstractValidator<UserRequestDto> {
+public class CheckUsernameValidator extends AbstractValidator<UserRequestDto> {
 
     private final UserRepository userRepository;
 
     @Override
     protected void doValidate(UserRequestDto dto, Errors errors) {
-        if (userRepository.existsByEmail(dto.toEntity().getEmail())) {
-            errors.rejectValue("email", "계정 중복 오류", "이미 사용중인 계정입니다.");
+        if (userRepository.existsByUsername(dto.toEntity().getUsername())) {
+            errors.rejectValue("username", "아이디 중복 오류", "이미 사용중인 아이디입니다.");
         }
     }
 }

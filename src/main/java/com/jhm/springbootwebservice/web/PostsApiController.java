@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @Slf4j
@@ -38,7 +40,7 @@ public class PostsApiController {
     }
 
     @DeleteMapping("/posts/{postId}")
-    public Long delete(@PathVariable Long postId) {
+    public Long delete(@PathVariable Long postId) throws IOException {
         postsRecommendService.delete(postId); // 게시글 추천, 비추천 삭제
         commentsRecommendService.postDelete(postId); // 댓글에 있는 추천, 비추천 삭제
         postsService.delete(postId);

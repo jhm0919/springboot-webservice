@@ -18,9 +18,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final HttpSession httpSession;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-            new UsernameNotFoundException("해당 사용자가 존재하지 않습니다. : " + email));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+            new UsernameNotFoundException("해당 사용자가 존재하지 않습니다. : " + username));
 
         httpSession.setAttribute("user", new SessionUser(user));
 

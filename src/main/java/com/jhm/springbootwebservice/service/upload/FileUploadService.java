@@ -1,5 +1,6 @@
 package com.jhm.springbootwebservice.service.upload;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
@@ -11,7 +12,8 @@ import java.util.UUID;
 @Service
 public class FileUploadService {
 
-    private String tempLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\temp\\";
+    @Value("${imageUrl.tempLocation}")
+    private String tempLocation;
 
     public String upload(MultipartRequest request) throws IOException {
         MultipartFile file = request.getFile("upload");
@@ -27,4 +29,5 @@ public class FileUploadService {
         file.transferTo(localFile);
         return url;
     }
+
 }

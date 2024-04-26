@@ -8,15 +8,11 @@
         <div>
             <select name="postType" id="postType">
                 <option value="">게시판 선택</option>
-<!--                <option value="NOTICE">공지사항</option>-->
                 <th:block th:each="postType : ${postTypes}">
                     <option th:value="${postType.name()}"
                             th:text="${postType.title}"
                             >
                     </option>
-<!--                    <option value="BOARD1">게시판1</option>-->
-<!--                    <option value="BOARD2">게시판2</option>-->
-<!--                    <option value="BOARD3">게시판3</option>-->
                 </th:block>
             </select>
         </div>
@@ -37,9 +33,29 @@
             ckfinder: {
                 uploadUrl: "/api/image/upload",
                 withCredentials: true
-            }
+            },
+            // mediaEmbed: {
+            //     previewsInData: true,
+            //     providers: [
+            //         {
+            //             name: 'youtube',
+            //             url: /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+            //             html: match => {
+            //                 const id = match[1];
+            //                 return (
+            //                     '<div style="position: relative; padding-bottom: 56.25%; height: 0;">' +
+            //                     `<iframe src="https://www.youtube.com/embed/${id}" ` +
+            //                     'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" frameborder="0" allowfullscreen allow="autoplay">' +
+            //                     '</iframe>' +
+            //                     '</div>'
+            //                 );
+            //             },
+            //         },
+            //     ],
+            // },
         }).then(editor => {
             window.editor = editor;
+            // $('style').append('.ck-content { height: 480px !important; }');
         }).catch(error => {
                 console.error(error);
         });

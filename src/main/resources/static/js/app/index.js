@@ -16,8 +16,17 @@ var main = {
         $('#btn-comment-save').on('click', function () {
             _this.commentSave();
         });
+
         $('#btn-modify').on('click', function() {
             _this.modify();
+        });
+
+        $('#btn-sendEmail').on('click', function() {
+            _this.sendEmail();
+        });
+
+        $('#btn-checkNumber').on('click', function() {
+            _this.checkNumber();
         });
         // 댓글 수정
         document.querySelectorAll('#btn-comment-update').forEach(function (item) {
@@ -328,6 +337,41 @@ var main = {
             });
         }
     },
+
+    sendEmail: function () {
+        var email = $('#email').val();
+        // var data = {
+        //     email: $('#email').val(),
+        // };
+        $.ajax({
+            type: 'POST',
+            url: '/auth/mailSend',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            data: email
+            // data: JSON.stringify(data)
+        }).done(function () {
+            alert('해당 이메일로 인증번호가 발송되었습니다.');
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+    },
+
+    checkNumber: function () {
+        var userNumber = $('#userNumber').val();
+        $.ajax({
+            type: 'GET',
+            url: '/auth/mailCheck/' + userNumber,
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            // data: userNumber
+        }).done(function () {
+            alert('인증이 완료되었습니다.');
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+    },
+
 
     redirectToLoginPage: function () {
         if (confirm("로그인이 필요한 기능입니다. 로그인 하시겠습니까?")) {

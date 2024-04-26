@@ -11,14 +11,16 @@ import java.util.Map;
 public class OAuthAttributes {
     private Map<String, Object> attributes;
     private String nameAttributeKey;
+    private String username;
     private String name;
     private String email;
     private String picture;
 
     @Builder
-    public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, String name, String email, String picture) {
+    public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, String name, String email, String picture, String username) {
         this.attributes = attributes;
         this.nameAttributeKey = nameAttributeKey;
+        this.username = username;
         this.name = name;
         this.email = email;
         this.picture = picture;
@@ -42,6 +44,7 @@ public class OAuthAttributes {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
         return OAuthAttributes.builder()
+                .username((String) response.get("email"))
                 .name((String) response.get("name"))
                 .email((String) response.get("email"))
                 .picture((String) response.get("profile_image"))
@@ -52,6 +55,7 @@ public class OAuthAttributes {
 
     private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
         return OAuthAttributes.builder()
+                .username((String) attributes.get("email"))
                 .name((String) attributes.get("name"))
                 .email((String) attributes.get("email"))
                 .picture((String) attributes.get("picture"))
@@ -69,6 +73,7 @@ public class OAuthAttributes {
      */
     public User toEntity() {
         return User.builder()
+                .username(username)
                 .name(name)
                 .email(email)
                 .picture(picture)

@@ -28,5 +28,5 @@ public interface PostsService {
 
     Page<PostsListResponseDto> findAll(PostType postType, UserSearchDto userSearchDto, int page, int myPost, Long userId);
 
-    void delete(Long id);
+    void delete(Long id) throws IOException;
 }

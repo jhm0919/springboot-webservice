@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated())
             .formLogin(formLogin -> formLogin
                 .loginPage("/auth/login")
-                .usernameParameter("email")
+//                .usernameParameter("username")
                 .loginProcessingUrl("/loginProc")
                 .failureHandler(customFailureHandler)
                 .defaultSuccessUrl("/", true))

@@ -42,11 +42,11 @@
                                 </div>
                                 <form class="user" action="/auth/joinProc" method="post">
                                     <div class="form-group">
-                                        <span class="m-0 font-weight-bold text-primary">계정</span>
-                                        <input type="email" class="form-control form-control-user" id="exampleInputEmail"
-                                               th:value="${userDto != null ? userDto.email : ''}"
-                                               name="email" placeholder="이메일을 입력하세요.">
-                                        <span class="m-0 font-weight-bold text-danger" th:if="${valid_email != null}" th:text="${valid_email}"></span>
+                                        <span class="m-0 font-weight-bold text-primary">아이디</span>
+                                        <input type="text" class="form-control form-control-user" id="exampleInputAccount"
+                                               th:value="${userDto != null ? userDto.username : ''}"
+                                               name="username" placeholder="아이디를 입력하세요.">
+                                        <span class="m-0 font-weight-bold text-danger" th:if="${valid_username != null}" th:text="${valid_username}"></span>
                                     </div>
                                     <div class="form-group">
                                         <span class="m-0 font-weight-bold text-primary">닉네임</span>
@@ -55,6 +55,27 @@
                                                name="name" placeholder="닉네임을 입력하세요.">
                                         <span class="m-0 font-weight-bold text-danger" th:if="${valid_name != null}" th:text="${valid_name}"></span>
                                     </div>
+                                    <div class="form-group">
+                                        <span class="m-0 font-weight-bold text-primary">이메일</span>
+                                        <input type="email" class="form-control form-control-user"
+                                               id="email"
+                                               th:value="${userDto != null ? userDto.email : ''}"
+                                               name="email" placeholder="이메일을 입력하세요.">
+<!--                                        <span class="m-0 font-weight-bold text-danger" th:if="${valid_email != null}" th:text="${valid_email}"></span>-->
+                                    </div>
+                                    <button type="button" class="btn btn-info btn-user btn-block" id="btn-sendEmail">
+                                        인증번호 발송
+                                    </button>
+                                    <div class="form-group">
+                                        <span class="m-0 font-weight-bold text-primary">인증번호</span>
+                                        <input type="text" class="form-control form-control-user"
+                                               id="userNumber"
+                                               name="userNumber" placeholder="인증번호를 입력하세요.">
+                                        <!--                                        <span class="m-0 font-weight-bold text-danger" th:if="${valid_email != null}" th:text="${valid_email}"></span>-->
+                                    </div>
+                                    <button type="button" class="btn btn-info btn-user btn-block" id="btn-checkNumber">
+                                        인증번호 확인
+                                    </button>
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
                                             <span class="m-0 font-weight-bold text-primary">비밀번호</span>

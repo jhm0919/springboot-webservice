@@ -12,9 +12,11 @@ import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -34,8 +37,12 @@ public class PostsServiceImpl implements PostsService{
 
     private final PostsRepository postsRepository;
     private final UserRepository userRepository;
-    private String tempLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\temp\\";
-    private String localLocation = "C:\\springboot-webservice\\src\\main\\resources\\static\\files\\";
+
+    @Value("${imageUrl.tempLocation}")
+    private String tempLocation;
+
+    @Value("${imageUrl.localLocation}")
+    private String localLocation;
 
     private static Matcher getMatcher(String content) {
         Pattern pattern  = Pattern
@@ -177,27 +184,16 @@ public class PostsServiceImpl implements PostsService{
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long id) throws IOException {
         Posts posts = postsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-        
-        String content = posts.getContent();
-
-        deleteImg(content); // 이미지 삭제
-        
+        deleteImg(id); // 이미지 저장소 삭제
         postsRepository.delete(posts);
     }
 
-    private void deleteImg(String content) {
-        Pattern nonValidPattern = Pattern
-                .compile("(?i)< *[IMG][^\\>]*[src] *= *[\"\']{0,1}([^\"\'\\ >]*)");
-        Matcher matcher = nonValidPattern.matcher(content);
-
-        while (matcher.find()) {
-            String img = matcher.group(1);
-            img = img.replace("/files", ""); // 이미지 이름만 추출
-            File file = new File(localLocation + img);
-            file.delete();
-        }
+    private void deleteImg(Long id) throws IOException {
+        File file = new File(localLocation + id);
+        FileUtils.cleanDirectory(file);
+        file.delete();
     }
 }

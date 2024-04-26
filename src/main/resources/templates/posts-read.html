@@ -39,7 +39,7 @@
         </div>
         <div class="form-group">
 <!--            <label for="content">내용</label>-->
-            <article id="content" th:utext="${post.content}"></article>
+            <div id="content" th:utext="${post.content}"></div>
         </div>
         <div class="form-group">
             <label for="content" th:text="'조회수 : ' + ${post.view}"></label>
@@ -175,7 +175,6 @@
             </div>
         </form>
     </div>
-
 </div>
 
 

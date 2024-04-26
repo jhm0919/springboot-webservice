@@ -35,8 +35,9 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return user.getUsername();
     }
+
 
     /* 계정 만료 여부
      * true : 만료 안됨

@@ -4,7 +4,7 @@ import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.config.auth.dto.UserRequestDto;
 import com.jhm.springbootwebservice.service.user.UserService;
-import com.jhm.springbootwebservice.validation.CheckEmailValidator;
+import com.jhm.springbootwebservice.validation.CheckUsernameValidator;
 import com.jhm.springbootwebservice.validation.CheckNameValidator;
 import com.jhm.springbootwebservice.validation.CheckPasswordEqualValidator;
 import jakarta.validation.Valid;
@@ -22,13 +22,13 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final CheckEmailValidator checkEmailValidator;
+    private final CheckUsernameValidator checkUsernameValidator;
     private final CheckNameValidator checkNameValidator;
     private final CheckPasswordEqualValidator checkPasswordEqualValidator;
 
     @InitBinder
     public void validatorBinder(WebDataBinder binder) {
-        binder.addValidators(checkEmailValidator);
+        binder.addValidators(checkUsernameValidator);
         binder.addValidators(checkNameValidator);
         binder.addValidators(checkPasswordEqualValidator);
     }
