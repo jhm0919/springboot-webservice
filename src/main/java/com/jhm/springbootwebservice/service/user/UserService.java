@@ -3,7 +3,10 @@ package com.jhm.springbootwebservice.service.user;
 import com.jhm.springbootwebservice.config.auth.dto.UserRequestDto;
 import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
+import com.jhm.springbootwebservice.domain.validation.EmailValidation;
+import com.jhm.springbootwebservice.domain.validation.EmailValidationRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,18 +18,28 @@ import org.springframework.validation.FieldError;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final EmailValidationRepository emailValidationRepository;
     private final BCryptPasswordEncoder encoder;
 
     @Transactional
     public Long join(UserRequestDto dto) { // 사용자 비밀번호 해쉬 암호화 후 repository에 저장
-        dto.setPassword(encoder.encode(dto.getPassword()));
+        String email = dto.getEmail();
+        EmailValidation entity = emailValidationRepository.findByEmail(email); // 넘어온 이메일 엔티티
+        Boolean confirm = entity.getConfirm(); // 넘어온 이메일이 인증이 됬는지 여부
 
-        return userRepository.save(dto.toEntity()).getId();
+        if (confirm) { // 인증이 되었다면
+            dto.setPassword(encoder.encode(dto.getPassword()));
+            emailValidationRepository.delete(entity);
+            return userRepository.save(dto.toEntity()).getId();
+        } else {
+            throw new IllegalStateException("이메일 인증이 완료되지 않았습니다.");
+        }
     }
 
     // 회원가입 시 유효성 체크

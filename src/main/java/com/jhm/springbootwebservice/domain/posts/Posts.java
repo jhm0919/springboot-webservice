@@ -78,7 +78,7 @@ public class Posts extends BaseTimeEntity {
     }
 
 
-        public void commentSizeUp() {
+    public void commentSizeUp() {
         this.commentSize++;
     }
 

@@ -340,33 +340,45 @@ var main = {
 
     sendEmail: function () {
         var email = $('#email').val();
-        // var data = {
-        //     email: $('#email').val(),
-        // };
         $.ajax({
             type: 'POST',
             url: '/auth/mailSend',
-            dataType: 'JSON',
+            // dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             data: email
-            // data: JSON.stringify(data)
         }).done(function () {
-            alert('해당 이메일로 인증번호가 발송되었습니다.');
+            alert("인증번호가 발송되었습니다.");
+            // if (data === true) {
+            //     alert('해당 이메일로 인증번호가 발송되었습니다.');
+            // } else {
+            //     alert('인증번호 발송 실패');
+            // }
         }).fail(function (error) {
-            alert(JSON.stringify(error));
+            alert(error)
+            // alert(JSON.stringify(error));
         });
     },
 
     checkNumber: function () {
-        var userNumber = $('#userNumber').val();
+        const data = {
+            email: $('#email').val(),
+            code: $('#userNumber').val(),
+        };
         $.ajax({
-            type: 'GET',
-            url: '/auth/mailCheck/' + userNumber,
+            type: 'POST',
+            url: '/auth/mailCheck',
             dataType: 'JSON',
             contentType: 'application/json; charset=utf-8',
-            // data: userNumber
-        }).done(function () {
-            alert('인증이 완료되었습니다.');
+            data: JSON.stringify(data)
+        }).done(function (data) {
+            if (data === true) {
+                alert('인증이 완료되었습니다.');
+                document.getElementById('emailConfirm').value = "confirm";
+                console.log($('#emailConfirm').val())
+                console.log(typeof($('#emailConfirm').val()))
+            } else {
+                alert('인증번호가 다릅니다.')
+            }
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
