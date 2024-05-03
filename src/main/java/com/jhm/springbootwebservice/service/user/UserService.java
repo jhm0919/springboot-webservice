@@ -3,8 +3,7 @@ package com.jhm.springbootwebservice.service.user;
 import com.jhm.springbootwebservice.config.auth.dto.UserRequestDto;
 import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
-import com.jhm.springbootwebservice.domain.validation.EmailValidation;
-import com.jhm.springbootwebservice.domain.validation.EmailValidationRepository;
+import com.jhm.springbootwebservice.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,21 +23,20 @@ import java.util.Map;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final EmailValidationRepository emailValidationRepository;
+    private final RedisUtil redisUtil;
     private final BCryptPasswordEncoder encoder;
 
     @Transactional
-    public Long join(UserRequestDto dto) { // 사용자 비밀번호 해쉬 암호화 후 repository에 저장
-        String email = dto.getEmail();
-        EmailValidation entity = emailValidationRepository.findByEmail(email); // 넘어온 이메일 엔티티
-        Boolean confirm = entity.getConfirm(); // 넘어온 이메일이 인증이 됬는지 여부
+    public void join(UserRequestDto dto) { // 사용자 비밀번호 해쉬 암호화 후 repository에 저장
 
-        if (confirm) { // 인증이 되었다면
+        String email = dto.getEmail();
+        String requestCode = dto.getCode();
+        String storageCode = redisUtil.getData(email);
+
+        if (requestCode.equals(storageCode)) {
             dto.setPassword(encoder.encode(dto.getPassword()));
-            emailValidationRepository.delete(entity);
-            return userRepository.save(dto.toEntity()).getId();
-        } else {
-            throw new IllegalStateException("이메일 인증이 완료되지 않았습니다.");
+            userRepository.save(dto.toEntity());
+            redisUtil.deleteData(email);
         }
     }
 
@@ -68,7 +66,7 @@ public class UserService {
             return ResponseEntity.ok("성공");
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("이름이 이미 존재합니다.");
+                .body("이미 사용중인 닉네임 입니다.");
         }
     }
 }

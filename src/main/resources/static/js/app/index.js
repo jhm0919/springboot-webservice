@@ -1,3 +1,4 @@
+let isValidate = false;
 var main = {
     init : function () {
         var _this = this;
@@ -25,9 +26,13 @@ var main = {
             _this.sendEmail();
         });
 
-        $('#btn-checkNumber').on('click', function() {
-            _this.checkNumber();
+        $('#btn-checkCode').on('click', function() {
+            _this.checkCode();
         });
+
+        // $('#btn-join').on('click', function() {
+        //     _this.join();
+        // });
         // 댓글 수정
         document.querySelectorAll('#btn-comment-update').forEach(function (item) {
             item.addEventListener('click', function () { // 버튼 클릭 이벤트 발생시
@@ -346,44 +351,40 @@ var main = {
             // dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             data: email
-        }).done(function () {
-            alert("인증번호가 발송되었습니다.");
-            // if (data === true) {
-            //     alert('해당 이메일로 인증번호가 발송되었습니다.');
-            // } else {
-            //     alert('인증번호 발송 실패');
-            // }
+        }).done(function (response) {
+            console.log(response);
+            alert(response);
         }).fail(function (error) {
-            alert(error)
-            // alert(JSON.stringify(error));
+            // 이메일 이상할때 예외 처리필요
+            alert(error.responseText);
         });
     },
 
-    checkNumber: function () {
-        const data = {
-            email: $('#email').val(),
-            code: $('#userNumber').val(),
-        };
-        $.ajax({
-            type: 'POST',
-            url: '/auth/mailCheck',
-            dataType: 'JSON',
-            contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify(data)
-        }).done(function (data) {
-            if (data === true) {
-                alert('인증이 완료되었습니다.');
-                document.getElementById('emailConfirm').value = "confirm";
-                console.log($('#emailConfirm').val())
-                console.log(typeof($('#emailConfirm').val()))
-            } else {
-                alert('인증번호가 다릅니다.')
-            }
-        }).fail(function (error) {
-            alert(JSON.stringify(error));
-        });
-    },
-
+    // checkCode: function () {
+    //     const data = {
+    //         email: $('#email').val(),
+    //         code: $('#code').val(),
+    //     };
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '/auth/mailCheck',
+    //         dataType: 'JSON',
+    //         contentType: 'application/json; charset=utf-8',
+    //         data: JSON.stringify(data)
+    //     }).done(function (data) {
+    //         if (data === true) {
+    //             isValidate = true;
+    //             alert('인증이 완료되었습니다.');
+    //             // document.getElementById('emailConfirm').value = true;
+    //             // console.log($('#emailConfirm').val())
+    //             // console.log(typeof($('#emailConfirm').val()))
+    //         } else {
+    //             alert('인증번호가 다릅니다.')
+    //         }
+    //     }).fail(function (error) {
+    //         alert(JSON.stringify(error));
+    //     });
+    // },
 
     redirectToLoginPage: function () {
         if (confirm("로그인이 필요한 기능입니다. 로그인 하시겠습니까?")) {

@@ -32,6 +32,8 @@ dependencies {
 	implementation 'commons-io:commons-io:2.6'
 	implementation 'org.apache.tika:tika-core:2.4.1'
 
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 //	implementation 'javax.persistence:javax.persistence-api:2.2'
 
 	// mail

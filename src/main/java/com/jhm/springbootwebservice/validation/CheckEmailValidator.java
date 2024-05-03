@@ -8,12 +8,14 @@ import org.springframework.validation.Errors;
 
 @RequiredArgsConstructor
 @Component
-public class CheckPasswordEqualValidator extends AbstractValidator<UserRequestDto> {
+public class CheckEmailValidator extends AbstractValidator<UserRequestDto> {
+
+    private final UserRepository userRepository;
 
     @Override
     protected void doValidate(UserRequestDto dto, Errors errors) {
-        if (!dto.getPassword().equals(dto.getPasswordConfirm())) {
-            errors.rejectValue("passwordConfirm", "비밀번호 확인 오류", "비밀번호가 일치하지 않습니다.");
+        if (userRepository.existsByEmail(dto.toEntity().getEmail())) {
+            errors.rejectValue("email", "이메일 중복 오류", "이미 사용중인 이메일입니다.");
         }
     }
 }

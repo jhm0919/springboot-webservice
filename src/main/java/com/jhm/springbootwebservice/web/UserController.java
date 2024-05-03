@@ -4,11 +4,11 @@ import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.config.auth.dto.UserRequestDto;
 import com.jhm.springbootwebservice.service.user.UserService;
-import com.jhm.springbootwebservice.validation.CheckUsernameValidator;
-import com.jhm.springbootwebservice.validation.CheckNameValidator;
-import com.jhm.springbootwebservice.validation.CheckPasswordEqualValidator;
+import com.jhm.springbootwebservice.validation.*;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -24,12 +24,16 @@ public class UserController {
     private final UserService userService;
     private final CheckUsernameValidator checkUsernameValidator;
     private final CheckNameValidator checkNameValidator;
+    private final CheckEmailValidator checkEmailValidator;
+    private final CheckConfirmValidator checkConfirmValidator;
     private final CheckPasswordEqualValidator checkPasswordEqualValidator;
 
     @InitBinder
     public void validatorBinder(WebDataBinder binder) {
         binder.addValidators(checkUsernameValidator);
         binder.addValidators(checkNameValidator);
+        binder.addValidators(checkEmailValidator);
+        binder.addValidators(checkConfirmValidator);
         binder.addValidators(checkPasswordEqualValidator);
     }
 
@@ -55,8 +59,11 @@ public class UserController {
         }
 
         userService.join(userDto);
-
+//        if (result) {
         return "redirect:/auth/login";
+//        } else {
+//            return "/join";
+//        }
     }
 
     @GetMapping("/auth/login")
