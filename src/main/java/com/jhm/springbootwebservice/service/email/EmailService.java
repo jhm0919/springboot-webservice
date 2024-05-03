@@ -6,7 +6,6 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -63,4 +62,19 @@ public class EmailService {
         return ResponseEntity.ok("인증번호가 전송되었습니다.");
     }
 
+    public ResponseEntity<String> findUsernameSendMail(String email) throws MessagingException {
+        if (!userRepository.existsByEmail(email)) {
+            return ResponseEntity.badRequest().body("존재하지 않는 이메일입니다.");
+        }
+
+        if (redisUtil.existData(email)) {
+            redisUtil.deleteData(email);
+        }
+
+        MimeMessage message = createMail(email);
+
+        javaMailSender.send(message);
+
+        return ResponseEntity.ok("인증번호가 전송되었습니다.");
+    }
 }

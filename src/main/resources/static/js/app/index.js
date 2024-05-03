@@ -26,9 +26,10 @@ var main = {
             _this.sendEmail();
         });
 
-        $('#btn-checkCode').on('click', function() {
-            _this.checkCode();
+        $('#btn-findUsernameSendEmail').on('click', function() {
+            _this.findUsernameSendEmail();
         });
+
 
         // $('#btn-join').on('click', function() {
         //     _this.join();
@@ -360,31 +361,22 @@ var main = {
         });
     },
 
-    // checkCode: function () {
-    //     const data = {
-    //         email: $('#email').val(),
-    //         code: $('#code').val(),
-    //     };
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/auth/mailCheck',
-    //         dataType: 'JSON',
-    //         contentType: 'application/json; charset=utf-8',
-    //         data: JSON.stringify(data)
-    //     }).done(function (data) {
-    //         if (data === true) {
-    //             isValidate = true;
-    //             alert('인증이 완료되었습니다.');
-    //             // document.getElementById('emailConfirm').value = true;
-    //             // console.log($('#emailConfirm').val())
-    //             // console.log(typeof($('#emailConfirm').val()))
-    //         } else {
-    //             alert('인증번호가 다릅니다.')
-    //         }
-    //     }).fail(function (error) {
-    //         alert(JSON.stringify(error));
-    //     });
-    // },
+    findUsernameSendEmail: function () {
+        var email = $('#email').val();
+        $.ajax({
+            type: 'POST',
+            url: '/auth/findUsernameMailSend',
+            // dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: email
+        }).done(function (response) {
+            console.log(response);
+            alert(response);
+        }).fail(function (error) {
+            // 이메일 이상할때 예외 처리필요
+            alert(error.responseText);
+        });
+    },
 
     redirectToLoginPage: function () {
         if (confirm("로그인이 필요한 기능입니다. 로그인 하시겠습니까?")) {

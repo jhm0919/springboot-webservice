@@ -22,4 +22,11 @@ public class EmailController {
         log.info("응답={}", responseEntity);
         return responseEntity;
     }
+
+    @PostMapping("/findUsernameMailSend")
+    public ResponseEntity<String> findUsernameSendMail(@RequestBody String email) throws MessagingException {
+
+        ResponseEntity<String> responseEntity = emailService.findUsernameSendMail(email);
+        return responseEntity;
+    }
 }

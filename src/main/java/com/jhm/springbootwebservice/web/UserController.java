@@ -59,11 +59,8 @@ public class UserController {
         }
 
         userService.join(userDto);
-//        if (result) {
+
         return "redirect:/auth/login";
-//        } else {
-//            return "/join";
-//        }
     }
 
     @GetMapping("/auth/login")
@@ -74,6 +71,8 @@ public class UserController {
         model.addAttribute("exception", exception);
         return "login";
     }
+
+
 
     @GetMapping("/update")
     public String update(@LoginUser SessionUser sessionUser, Model model) {

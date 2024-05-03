@@ -1,13 +1,18 @@
 package com.jhm.springbootwebservice.service.user;
 
+import com.jhm.springbootwebservice.config.auth.dto.FindPasswordRequestDto;
 import com.jhm.springbootwebservice.config.auth.dto.UserRequestDto;
 import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
 import com.jhm.springbootwebservice.util.RedisUtil;
+import com.jhm.springbootwebservice.config.auth.dto.FindUsernameRequestDto;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +27,7 @@ import java.util.Map;
 @Service
 public class UserService {
 
+    private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
     private final RedisUtil redisUtil;
     private final BCryptPasswordEncoder encoder;
@@ -39,6 +45,48 @@ public class UserService {
             redisUtil.deleteData(email);
         }
     }
+
+    @Transactional
+    public String findUsername(FindUsernameRequestDto dto) {
+        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일"));
+        String username = user.getUsername();
+        return username;
+    }
+
+    @Transactional
+    public void findPassword(FindPasswordRequestDto dto) throws MessagingException {
+        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일"));
+        String username = dto.getUsername();
+        String email = dto.getEmail();
+
+        if (user.getUsername().equals(username)) {
+            String password = createCode();
+
+            MimeMessage message = javaMailSender.createMimeMessage();
+
+            message.setFrom(email);
+            message.setRecipients(MimeMessage.RecipientType.TO, email);
+            message.setSubject("이메일 인증");
+            String body = "";
+            body += "<h3>" + "임시 비밀번호가 발급되었습니다." + "</h3>";
+            body += "<h1>" + "임시 비밀번호 : " + password + "</h1>";
+            body += "<h1>" + "로그인 후 비밀번호 변경을 해주세요." + "</h1>";
+            body += "<a href='http://localhost:8080/auth/login'"+
+            ">로그인 페이지</a>";
+            body += "<h3>" + "감사합니다." + "</h3>";
+            message.setText(body,"UTF-8", "html");
+
+            javaMailSender.send(message);
+
+            user.update(encoder.encode(password));
+        }
+    }
+
+    public String createCode() {
+        int number = (int)(Math.random() * (90000)) + 100000; //(int) Math.random() * (최댓값-최소값+1) + 최소값
+        return "" + number;
+    }
+
 
     // 회원가입 시 유효성 체크
     @Transactional(readOnly = true)
