@@ -2,10 +2,14 @@ package com.jhm.springbootwebservice.service.user;
 
 import com.jhm.springbootwebservice.config.auth.dto.FindPasswordRequestDto;
 import com.jhm.springbootwebservice.config.auth.dto.UserRequestDto;
+import com.jhm.springbootwebservice.domain.posts.Posts;
+import com.jhm.springbootwebservice.domain.posts.PostsRepository;
 import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
 import com.jhm.springbootwebservice.util.RedisUtil;
 import com.jhm.springbootwebservice.config.auth.dto.FindUsernameRequestDto;
+import com.jhm.springbootwebservice.web.dto.request.UserModifyDto;
+import com.jhm.springbootwebservice.web.dto.request.UserPasswordModifyDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +25,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -29,6 +35,7 @@ public class UserService {
 
     private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
+    private final PostsRepository postsRepository;
     private final RedisUtil redisUtil;
     private final BCryptPasswordEncoder encoder;
 
@@ -78,7 +85,7 @@ public class UserService {
 
             javaMailSender.send(message);
 
-            user.update(encoder.encode(password));
+            user.updatePassword(encoder.encode(password));
         }
     }
 
@@ -103,18 +110,39 @@ public class UserService {
 
     // 회원 수정 (Dirty checking)
     @Transactional
-    public ResponseEntity<String> modify(UserRequestDto dto) {
-        User user = userRepository.findById(dto.toEntity().getId()).orElseThrow(
-                () -> new IllegalArgumentException("해당하는 회원이 존재하지 않습니다."));
+    public ResponseEntity<String> modify(UserModifyDto dto) {
+        User user = userRepository.findById(dto.getId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
 
-        String password = encoder.encode(dto.getPassword()); // 비밀번호 인코딩
-        boolean result = userRepository.existsByName(dto.getName()); // 닉네임이 이미 있으면 true
-        if (!result) {
-            user.update(dto.getName(), password);
-            return ResponseEntity.ok("성공");
+        if (!dto.getSessionName().equals(dto.getName())) { // 닉네임이 바뀌었으면
+            boolean result = userRepository.existsByName(dto.getName()); // 닉네임이 이미 있으면 true
+            if (!result) {
+                updateName(dto, user);
+                return ResponseEntity.ok("회원 정보가 수정되었습니다.");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("이미 사용중인 닉네임 입니다.");
+            }
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("이미 사용중인 닉네임 입니다.");
+            updateName(dto, user);
+            return ResponseEntity.ok("회원 정보가 수정되었습니다.");
         }
+    }
+
+    private void updateName(UserModifyDto dto, User user) {
+        user.updateName(dto.getName());
+        List<Posts> posts = postsRepository.findAllByUserId(user.getId());
+
+        log.info(posts.toString());
+
+        for (Posts post : posts) {
+            post.update(dto.getName());
+        }
+    }
+
+    public ResponseEntity<String> modifyPassword(UserPasswordModifyDto dto) {
+        User user = userRepository.findById(dto.getId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
+        String password = encoder.encode(dto.getPassword()); // 비밀번호 인코딩
+        user.updatePassword(password);
+        return ResponseEntity.ok("비밀번호가 변경되었습니다.");
     }
 }

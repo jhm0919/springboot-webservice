@@ -46,12 +46,11 @@ public class User extends BaseTimeEntity implements Serializable {
         return this;
     }
 
-    public void update(String name, String password) {
+    public void updateName(String name) {
         this.name = name;
-        this.password = password;
     }
 
-    public void update(String password) {
+    public void updatePassword(String password) {
         this.password = password;
     }
 

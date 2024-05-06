@@ -72,17 +72,34 @@ public class UserController {
         return "login";
     }
 
+    @GetMapping("/info")
+    public String info(@LoginUser SessionUser sessionUser, Model model) {
 
+        if (sessionUser != null) {
+            model.addAttribute("sessionUserDto", sessionUser);
+        }
+
+        return "user-info";
+    }
 
     @GetMapping("/update")
     public String update(@LoginUser SessionUser sessionUser, Model model) {
 
         if (sessionUser != null) {
-            model.addAttribute("name", sessionUser.getName());
             model.addAttribute("sessionUserDto", sessionUser);
         }
 
         return "user-update";
+    }
+
+    @GetMapping("/password-update")
+    public String passwordUpdate(@LoginUser SessionUser sessionUser, Model model) {
+
+        if (sessionUser != null) {
+            model.addAttribute("sessionUserDto", sessionUser);
+        }
+
+        return "user-password-update";
     }
 
 }

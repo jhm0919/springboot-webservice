@@ -46,7 +46,7 @@
                         <a th:href="@{/(myPost = ${1})}"
                            class="btn btn-outline-primary active" role="button">내 게시글</a>
                         <a th:unless="${#strings.equals(user.role, 'OAUTH_USER')}"
-                           href="/update" class="btn btn-outline-primary active">수정</a>
+                           href="/info" class="btn btn-outline-primary active">내 정보</a>
                     </div>
                     <div th:unless="${user}">
                         <a href="/auth/login" class="btn btn-secondary" role="button">로그인</a>

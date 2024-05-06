@@ -77,6 +77,9 @@ public class Posts extends BaseTimeEntity {
         this.pureContent = pureContent;
     }
 
+    public void update(String author) {
+        this.author = author;
+    }
 
     public void commentSizeUp() {
         this.commentSize++;

@@ -30,6 +30,10 @@ var main = {
             _this.findUsernameSendEmail();
         });
 
+        $('#btn-password-modify').on('click', function() {
+            _this.btnPasswordModify();
+        });
+
 
         // $('#btn-join').on('click', function() {
         //     _this.join();
@@ -299,62 +303,95 @@ var main = {
         const data = {
             id: $('#id').val(),
             modifiedDate: $('#modifiedDate').val(),
-            email: $('#email').val(),
+            username: $('#username').val(),
+            sessionName: $('#sessionName').val(),
             name: $('#name').val(),
+            email: $('#email').val(),
             password: $('#password').val()
         }
-        const passwordConfirm = $('#passwordConfirm').val()
-        if (!data.name || data.name.trim() === ""
-            || !data.password || data.password.trim() === ""
-            || !passwordConfirm || passwordConfirm.trim() === "") {
+        if (!data.name || data.name.trim() === "" ||
+            !data.password || data.password.trim() === "") {
             alert("공백 또는 입력하지 않은 부분이 있습니다.");
             return false;
-        } else if (!/(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}/.test(data.password)) {
-            alert("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.");
-            $('#password').focus();
-            return false;
-        } else if(!/^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$/.test(data.name)) {
+        }  else if(!/^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$/.test(data.name)) {
             alert("닉네임은 특수문자를 제외한 2~10자리여야 합니다.");
             $('#name').focus();
             return false;
-        } else if (data.password !== passwordConfirm) {
-            alert("비밀번호가 일치하지 않습니다.");
-            $('#passwordConfirm').focus();
-            return false;
         }
+
         const con_check = confirm("수정하시겠습니까?");
         if (con_check === true) {
             $.ajax({
                 type: 'PUT',
                 url: '/api/update',
-                dataType: 'JSON',
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify(data)
-            }).done(function () {
-                alert("회원정보가 수정되었습니다.")
+            }).done(function (response) {
+                console.log(response)
+                alert(response)
                 window.location.href = "/";
             }).fail(function (error) {
-                if (error.status == 500) {
-                    alert("이미 사용중인 닉네임 입니다.");
-                    $('#name').focus();
+                if (error.status == 405) {
+                    alert("비밀번호가 다릅니다.");
+                    $('#password').focus();
                 } else {
-                    alert(JSON.stringify(error));
+                    alert(error.responseText);
+                    $('#name').focus();
                 }
+                // alert(JSON.stringify(error));
             });
         }
     },
 
     sendEmail: function () {
         var email = $('#email').val();
+        // 타이머 표시할 요소 선택
+        const timerDisplay = document.getElementById('timer');
+        // 시작 시간 설정 (1분)
+        let timeLeft = 60;
+
+        function countdown() {
+            // 1초마다 시간 감소
+            const timer = setInterval(() => {
+                // 시간을 분과 초로 변환
+                const minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+
+                // 10보다 작은 초는 앞에 0을 붙여서 표시
+                if (seconds < 10) {
+                    seconds = '0' + seconds;
+                }
+
+                // 타이머 표시 업데이트
+                timerDisplay.textContent = `${minutes}:${seconds}`;
+
+                // 시간이 다 되면 타이머 중지
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timerDisplay.textContent = '시간 종료';
+                }
+
+                // 시간을 1초씩 감소
+                timeLeft--;
+            }, 1000);
+        }
+
         $.ajax({
             type: 'POST',
             url: '/auth/mailSend',
-            // dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             data: email
         }).done(function (response) {
             console.log(response);
             alert(response);
+
+            const timerDisplay = document.getElementById('timer');
+
+            // 시작 시간 설정 (1분)
+            let timeLeft = 60;
+
+            // 카운트다운 함수 호출
+            countdown();
         }).fail(function (error) {
             // 이메일 이상할때 예외 처리필요
             alert(error.responseText);
@@ -366,7 +403,6 @@ var main = {
         $.ajax({
             type: 'POST',
             url: '/auth/findUsernameMailSend',
-            // dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             data: email
         }).done(function (response) {
@@ -376,6 +412,45 @@ var main = {
             // 이메일 이상할때 예외 처리필요
             alert(error.responseText);
         });
+    },
+
+    btnPasswordModify: function () {
+        const data = {
+            id: $('#id').val(),
+            password: $('#password').val()
+        }
+        const passwordConfirm = $('#passwordConfirm').val()
+
+        if (!data.password || data.password.trim() === "" ||
+            !passwordConfirm || passwordConfirm.trim() === "") {
+            alert("공백 또는 입력하지 않은 부분이 있습니다.");
+        } else if (!/(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}/.test(data.password)) {
+            alert("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.");
+            $('#password').focus();
+            return false;
+        } else if (data.password !== passwordConfirm) {
+            alert("비밀번호가 일치하지 않습니다.");
+            $('#passwordConfirm').focus();
+            return false;
+        }
+
+        const con_check = confirm("수정하시겠습니까?");
+        if (con_check === true) {
+            $.ajax({
+                type: 'PUT',
+                url: '/api/update-password',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(data)
+            }).done(function (response) {
+                console.log(response)
+                alert(response)
+                window.location.href = "/";
+            }).fail(function (error) {
+                alert(error.responseText);
+                $('#name').focus();
+                // alert(JSON.stringify(error));
+            });
+        }
     },
 
     redirectToLoginPage: function () {
