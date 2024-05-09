@@ -82,17 +82,19 @@
                                     <button type="button" class="btn btn-info btn-user btn-block" id="btn-sendEmail">
                                         인증번호 발송
                                     </button>
-                                    <div id="timer">1:00</div>
                                     <div class="form-group">
                                         <span class="m-0 font-weight-bold text-primary">인증번호</span>
                                         <input type="text" class="form-control form-control-user"
                                                id="code"
                                                th:value="${userDto != null ? userDto.code : ''}"
                                                name="code" placeholder="인증번호를 입력하세요.">
-                                        <span class="m-0 font-weight-bold text-danger" th:if="${valid_code != null}" th:text="${valid_code}"></span>
+                                        <div id="timer" class="m-0 font-weight-bold text-dark" style="display: none;">1:00</div>
+<!--                                        <span class="m-0 font-weight-bold text-danger" th:if="${valid_code != null}" th:text="${valid_code}"></span>-->
                                     </div>
-
-                                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                                    <button type="button" class="btn btn-info btn-user btn-block" id="btn-confirmCode">
+                                        인증하기
+                                    </button>
+                                    <button type="submit" id="btn-submit" class="btn btn-primary btn-user btn-block" disabled>
                                         가입하기
                                     </button>
                                     <a href="/" class="btn btn-info btn-user btn-block">
@@ -126,5 +128,31 @@
     </div>
 
 </div>
+
+<!--<script>-->
+<!--    // 폼 요소 가져오기-->
+<!--    var myForm = document.getElementById('join');-->
+
+<!--    // 제출 버튼 요소 가져오기-->
+<!--    var submitButton = document.getElementById('btn-submit');-->
+
+<!--    // 폼 제출 이벤트 핸들러 설정-->
+<!--    myForm.addEventListener('submit', function(event) {-->
+<!--        // 기본 동작 막기 (새로고침 방지)-->
+<!--        event.preventDefault();-->
+
+<!--        // 여기에 폼 제출 전에 할 작업을 추가-->
+
+<!--        // 폼 제출-->
+<!--        submitForm();-->
+<!--    });-->
+
+<!--    // 사용자 정의 함수: 폼 제출-->
+<!--    function submitForm() {-->
+<!--        // 여기에 폼을 서버로 전송하는 코드를 추가-->
+<!--        console.log("폼이 제출되었습니다.");-->
+<!--    }-->
+
+<!--</script>-->
 
 <th:block th:replace="~{fragments/footer :: footerFragment}"></th:block>

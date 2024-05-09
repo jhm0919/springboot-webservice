@@ -1,4 +1,32 @@
 let isValidate = false;
+
+function countdown(timeLeft, timerDisplay, sendEmailButton) {
+    // 1초마다 시간 감소
+    const timer = setInterval(() => {
+        // 시간을 분과 초로 변환
+        const minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+
+        // 10보다 작은 초는 앞에 0을 붙여서 표시
+        if (seconds < 10) {
+            seconds = '0' + seconds;
+        }
+
+        // 타이머 표시 업데이트
+        timerDisplay.textContent = `${minutes}:${seconds}`;
+
+        // 시간이 다 되면 타이머 중지
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            timerDisplay.textContent = '인증 시간이 만료되었습니다.';
+            sendEmailButton.disabled = false;
+        }
+
+        // 시간을 1초씩 감소
+        timeLeft--;
+    }, 1000);
+}
+
 var main = {
     init : function () {
         var _this = this;
@@ -24,6 +52,10 @@ var main = {
 
         $('#btn-sendEmail').on('click', function() {
             _this.sendEmail();
+        });
+
+        $('#btn-confirmCode').on('click', function() {
+            _this.confirmCode();
         });
 
         $('#btn-findUsernameSendEmail').on('click', function() {
@@ -346,35 +378,6 @@ var main = {
     sendEmail: function () {
         var email = $('#email').val();
         // 타이머 표시할 요소 선택
-        const timerDisplay = document.getElementById('timer');
-        // 시작 시간 설정 (1분)
-        let timeLeft = 60;
-
-        function countdown() {
-            // 1초마다 시간 감소
-            const timer = setInterval(() => {
-                // 시간을 분과 초로 변환
-                const minutes = Math.floor(timeLeft / 60);
-                let seconds = timeLeft % 60;
-
-                // 10보다 작은 초는 앞에 0을 붙여서 표시
-                if (seconds < 10) {
-                    seconds = '0' + seconds;
-                }
-
-                // 타이머 표시 업데이트
-                timerDisplay.textContent = `${minutes}:${seconds}`;
-
-                // 시간이 다 되면 타이머 중지
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    timerDisplay.textContent = '시간 종료';
-                }
-
-                // 시간을 1초씩 감소
-                timeLeft--;
-            }, 1000);
-        }
 
         $.ajax({
             type: 'POST',
@@ -382,17 +385,52 @@ var main = {
             contentType: 'application/json; charset=utf-8',
             data: email
         }).done(function (response) {
-            console.log(response);
+            console.log(response.status);
             alert(response);
+
+            document.getElementById('timer').style.display = 'block';
 
             const timerDisplay = document.getElementById('timer');
 
             // 시작 시간 설정 (1분)
             let timeLeft = 60;
 
+            var sendEmailButton = document.getElementById('btn-sendEmail');
+
             // 카운트다운 함수 호출
-            countdown();
+            countdown(timeLeft, timerDisplay, sendEmailButton);
+
+            sendEmailButton.disabled = true;
+
         }).fail(function (error) {
+            // 이메일 이상할때 예외 처리필요
+            alert(error.responseText);
+        });
+    },
+
+    confirmCode: function () {
+        const data = {
+            email: $('#email').val(),
+            code: $('#code').val(),
+        }
+
+        var inputCode = document.getElementById('code');
+        var confirmButton = document.getElementById('btn-confirmCode');
+        var submitButton = document.getElementById('btn-submit');
+
+        $.ajax({
+            type: 'POST',
+            url: '/auth/confirmCode',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function (response) {
+            alert(response);
+            inputCode.disabled = true;
+            confirmButton.disabled = true;
+            document.getElementById('timer').style.display = 'none';
+            submitButton.disabled = false;
+        })
+        .fail(function (error) {
             // 이메일 이상할때 예외 처리필요
             alert(error.responseText);
         });

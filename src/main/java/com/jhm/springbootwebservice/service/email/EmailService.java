@@ -2,6 +2,7 @@ package com.jhm.springbootwebservice.service.email;
 
 import com.jhm.springbootwebservice.domain.user.UserRepository;
 import com.jhm.springbootwebservice.util.RedisUtil;
+import com.jhm.springbootwebservice.web.dto.request.ConfirmRequestDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +61,18 @@ public class EmailService {
         javaMailSender.send(message);
 
         return ResponseEntity.ok("인증번호가 전송되었습니다.");
+    }
+
+    public ResponseEntity<String> confirmCode(ConfirmRequestDto dto) {
+        String code = redisUtil.getData(dto.getEmail());
+        if (dto.getCode().equals(code)) {
+            return ResponseEntity.ok("인증 성공!");
+        } else if (dto.getCode() == "") {
+            return ResponseEntity.badRequest().body("인증번호를 입력해주세요.");
+        } else {
+            return ResponseEntity.badRequest().body("인증번호가 다릅니다.");
+        }
+
     }
 
     public ResponseEntity<String> findUsernameSendMail(String email) throws MessagingException {

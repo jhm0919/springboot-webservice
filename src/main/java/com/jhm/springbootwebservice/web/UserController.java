@@ -25,7 +25,7 @@ public class UserController {
     private final CheckUsernameValidator checkUsernameValidator;
     private final CheckNameValidator checkNameValidator;
     private final CheckEmailValidator checkEmailValidator;
-    private final CheckConfirmValidator checkConfirmValidator;
+//    private final CheckConfirmValidator checkConfirmValidator;
     private final CheckPasswordEqualValidator checkPasswordEqualValidator;
 
     @InitBinder
@@ -33,7 +33,7 @@ public class UserController {
         binder.addValidators(checkUsernameValidator);
         binder.addValidators(checkNameValidator);
         binder.addValidators(checkEmailValidator);
-        binder.addValidators(checkConfirmValidator);
+//        binder.addValidators(checkConfirmValidator);
         binder.addValidators(checkPasswordEqualValidator);
     }
 

@@ -1,6 +1,7 @@
 package com.jhm.springbootwebservice.web;
 
 import com.jhm.springbootwebservice.service.email.EmailService;
+import com.jhm.springbootwebservice.web.dto.request.ConfirmRequestDto;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,11 @@ public class EmailController {
         ResponseEntity<String> responseEntity = emailService.sendMail(email);
         log.info("응답={}", responseEntity);
         return responseEntity;
+    }
+
+    @PostMapping("/confirmCode")
+    public ResponseEntity<String> confirmCode(@RequestBody ConfirmRequestDto dto) {
+        return emailService.confirmCode(dto);
     }
 
     @PostMapping("/findUsernameMailSend")
