@@ -20,7 +20,7 @@ public class PostsListResponseDto {
         this.title = entity.getTitle();
         this.author = entity.getAuthor();
         this.postType = entity.getPostType().getTitle();
-        this.commentsSize = entity.getCommentSize();
+        this.commentsSize = entity.getComments().size();
         this.view = entity.getView();
         this.recommendUp = entity.getRecommendUp();
         this.modifiedDate = entity.getModifiedDate();

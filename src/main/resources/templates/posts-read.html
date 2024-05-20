@@ -1,4 +1,4 @@
-<th:block th:replace="~{fragments/header :: headerFragment}"></th:block>
+<th:block th:replace="~{fragments/header :: headerFragment}" xmlns:th="http://www.w3.org/1999/html"></th:block>
 <br/>
 
 <div class="col-md-9 mx-auto">
@@ -23,7 +23,6 @@
         </nav>
 
         <div class="form-group">
-<!--            <label for="content">제목</label>-->
             <div style="display: flex;">
                 <input type="hidden" th:id="'id'" th:value="${post.id}">
                 <input type="hidden" th:id="'postUserId'" th:value="${post.userId}">
@@ -89,16 +88,21 @@
             <!-- 댓글 리스트 -->
             <ul class="list-group-flush">
                 <!-- 각각의 댓글 항목 -->
-                <li th:each="comment : ${comments}" th:id="'comments-' + ${comment.id}" class="list-group-item">
+                <li th:each="comment : ${comments}" th:id="'comments-' + ${comment.id}" class="list-group-item" th:if="${#strings.equals(comment.isParent, 'N')}">
                     <div>
                         <input type="hidden" th:id="'commentId'" th:value="${comment.id}">
                         <span style="font-size: small" th:text="${comment.author}"></span>
                         <span style="font-size: xx-small" th:text="${comment.createdDate}"></span>
                         <th:block th:if="${user != null && comment.userId == user.getId()}">
                             <!-- 댓글 수정 버튼 -->
-                            <button style="font-size: small" data-toggle="collapse" th:data-target="'.multi-collapse-' + ${comment.id}" class="badge bi bi-pencil-square">수정</button>
+                            <button type="button" style="font-size: small" data-toggle="collapse" th:data-target="'#multiCollapse-' + ${comment.id} + '-edit'"
+                                    aria-expanded="false" class="badge bi bi-pencil-square">수정</button>
                             <!-- 댓글 삭제 버튼 -->
                             <button style="font-size: small" th:onclick="'main.commentDelete(' + ${comment.postsId} + ',' + ${comment.id} + ')'" class="badge bi bi-x-square">삭제</button>
+                        </th:block>
+                        <th:block th:if="${user != null}">
+                            <!-- 대댓글 버튼 -->
+                            <button style="font-size: small" data-toggle="collapse" th:data-target="'.multi-collapse-' + ${comment.id} + 'rereply'" class="badge bi bi-pencil-square">답글</button>
                         </th:block>
                         <div class="text-right">
                             <button type="button"
@@ -126,12 +130,60 @@
                         </div>
                     </div>
 
-
                     <!-- 댓글 내용 -->
                     <p th:class="'collapse multi-collapse-' + ${comment.id} + ' show'" th:text="${comment.comment}"></p>
 
+                    <!-- 대댓글 내용 -->
+                    <th:block th:if="${comment.childrenComment != null}">
+                        <ul class="list-group-flush">
+                            <li th:each="childrenComment : ${comment.childrenComment}" th:id="'comments-' + ${childrenComment.id}" class="list-group-item">
+                                <div>
+                                    <input type="hidden" th:id="'commentId'" th:value="${comment.id}">
+                                    <span style="font-size: small" th:text="${comment.author}"></span>
+                                    <span style="font-size: xx-small" th:text="${comment.createdDate}"></span>
+                                    <th:block th:if="${user != null && comment.userId == user.getId()}">
+                                        <!-- 댓글 수정 버튼 -->
+                                        <button type="button" style="font-size: small" data-toggle="collapse" th:data-target="'#multiCollapse-' + ${comment.id} + '-edit'"
+                                                aria-expanded="false" class="badge bi bi-pencil-square">수정</button>
+                                        <!-- 댓글 삭제 버튼 -->
+                                        <button style="font-size: small" th:onclick="'main.commentDelete(' + ${comment.postsId} + ',' + ${comment.id} + ')'" class="badge bi bi-x-square">삭제</button>
+                                    </th:block>
+                                    <th:block th:if="${user != null}">
+                                        <!-- 대댓글 버튼 -->
+                                        <button style="font-size: small" data-toggle="collapse" th:data-target="'.multi-collapse-' + ${comment.id} + 'rereply'" class="badge bi bi-pencil-square">답글</button>
+                                    </th:block>
+                                    <div class="text-right">
+                                        <button type="button"
+                                                th:if="${user != null}"
+                                                th:onclick="'main.commentRecommend(' + ${comment.postsId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ')'"
+                                                class="badge bi bi-x-square">추천
+                                        </button>
+                                        <button type="button"
+                                                th:unless="${user != null}"
+                                                th:onclick="'main.redirectToLoginPage()'"
+                                                class="badge bi bi-x-square">추천
+                                        </button>
+                                        <span th:id="'commentRecommendUpCount_' + ${comment.id}" th:text="${comment.recommendUp}"></span>
+                                        <button type="button"
+                                                th:if="${user != null}"
+                                                th:onclick="'main.commentDisRecommend(' + ${comment.postsId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ')'"
+                                                class="badge bi bi-x-square">비추천
+                                        </button>
+                                        <button type="button"
+                                                th:unless="${user != null}"
+                                                th:onclick="'main.redirectToLoginPage()'"
+                                                class="badge bi bi-x-square">비추천
+                                        </button>
+                                        <span th:id="'commentRecommendDownCount_' + ${comment.id}" th:text="${comment.recommendDown}"></span>
+                                    </div>
+                                </div>
+                                <p th:class="'collapse multi-collapse-' + ${comment.id} + ' show'" th:text="${childrenComment.comment}"></p>
+                            </li>
+                        </ul>
+                    </th:block>
+
                     <!-- 댓글 수정 폼 -->
-                    <form th:class="'collapse multi-collapse-' + ${comment.id}" method="post">
+                    <form class="collapse" method="post" th:id="'multiCollapse-' + ${comment.id} + '-edit'">
                         <input type="hidden" th:id="'id'" th:value="${comment.id}">
                         <input type="hidden" th:id="'postsId'" th:value="${comment.postsId}">
                         <div class="row">
@@ -139,7 +191,21 @@
                                 <textarea class="form-control" th:id="'comment-content'" rows="3" th:text="${comment.comment}"></textarea>
                             </div>
                             <div class="col-2">
-                                <button type="button" th:id="'btn-comment-update'" class="btn btn-primary"> 수정</button>
+                                <button type="button" th:id="'btn-comment-update'" class="btn btn-primary">수정</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- 대댓글 작성폼 -->
+                    <form th:class="'collapse multi-collapse-' + ${comment.id} + 'rereply'" method="post">
+                        <input type="hidden" th:id="'parentId'" th:value="${comment.id}">
+                        <input type="hidden" th:id="'postsId'" th:value="${comment.postsId}">
+                        <div class="row">
+                            <div class="form-group col-10">
+                                <textarea id="childrenComment" class="form-control" rows="3" placeholder="댓글을 입력하세요"></textarea>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" th:id="'btn-ChildrenComment-save'" class="btn btn-primary">등록</button>
                             </div>
                         </div>
                     </form>
@@ -156,24 +222,25 @@
         <div class="card-header bi bi-chat-right-dots">댓글 쓰기</div>
 
     <!-- 댓글작성 부분 -->
-        <form>
-            <input type="hidden" id="postsId" th:value="${post.id}">
+    <form>
+        <input type="hidden" id="postsId" th:value="${post.id}">
 
-            <div class="card-body" th:if="${user}">
-                <div class="row">
-                    <div class="col-10">
-                        <textarea id="comment" class="form-control" rows="3" placeholder="댓글을 입력하세요"></textarea>
-                    </div>
-                    <div class="col-2 ">
-                        <button type="button" id="btn-comment-save" class="btn btn-primary btn"> 등록</button>
-                    </div>
+        <div class="card-body" th:if="${user}">
+            <div class="row">
+                <div class="col-10">
+                    <textarea id="comment" class="form-control" rows="3" placeholder="댓글을 입력하세요"></textarea>
+                </div>
+                <div class="col-2 ">
+                    <button type="button" id="btn-comment-save" class="btn btn-primary btn"> 등록</button>
                 </div>
             </div>
+        </div>
 
-            <div class="card-body" style="font-size: small" th:unless="${user}">
-                <a href="/auth/login">로그인</a>을 하시면 댓글을 등록할 수 있습니다.
-            </div>
-        </form>
+        <div class="card-body" style="font-size: small" th:unless="${user}">
+            <a href="/auth/login">로그인</a>을 하시면 댓글을 등록할 수 있습니다.
+        </div>
+    </form>
+
     </div>
 </div>
 

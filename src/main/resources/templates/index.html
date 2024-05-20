@@ -54,7 +54,7 @@
                 <td style="text-align: center" th:text="${post.postType}"></td>
                 <td>
                     <a th:href="@{'/posts/read/' + ${post.id}}" th:text="${post.title}"></a>
-                    <i class="fas fa-comments fa-1x text-black-50" th:if="${post.commentsSize > 0}" th:text="${post.commentsSize}" style="margin-left: 5px;"></i>
+                    <i class="fas fa-comments fa-1x text-black-50" th:text="${post.commentsSize}" style="margin-left: 5px;"></i>
                 </td>
                 <td style="text-align: center" th:text="${post.author}"></td>
                 <td style="text-align: center" th:text="${post.modifiedDate}"></td>

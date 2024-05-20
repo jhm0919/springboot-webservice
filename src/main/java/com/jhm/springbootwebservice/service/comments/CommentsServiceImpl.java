@@ -21,16 +21,29 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     public Long save(Long userId, Long postId, CommentRequestDto dto) {
         User user = userRepository.findById(userId).orElseThrow(() ->
-            new IllegalArgumentException("댓글 쓰기 실패: 해당 사용자가 존재하지 않습니다."));
+                new IllegalArgumentException("댓글 쓰기 실패: 해당 사용자가 존재하지 않습니다."));
 
         Posts post = postsRepository.findById(postId).orElseThrow(() ->
-            new IllegalArgumentException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다."));
+                new IllegalArgumentException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다."));
 
         dto.setUser(user);
         dto.setPosts(post);
-        post.commentSizeUp(); // 해당 게시글 댓글 수 증가
 
         Comment comment = dto.toEntity();
+
+        Comment parentComment;
+        if (dto.getParentId() != null) { // 대댓글이면
+            parentComment = commentRepository.findById(dto.getParentId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 부모 댓글"));
+            comment.updateParent(parentComment);
+            comment.setIsParent("Y");
+        } else {
+            comment.setIsParent("N");
+        }
+
+        comment.updateAuthor(user);
+        comment.updatePosts(post);
+
         commentRepository.save(comment);
 
         return comment.getId();
@@ -47,11 +60,8 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     public Long delete(Long postId, Long commentId) {
-        Posts post = postsRepository.findById(postId).orElseThrow(() ->
-                new IllegalArgumentException("댓글 삭제 실패: 해당 게시글이 존재하지 않습니다."));
         Comment comment = commentRepository.findByPostsIdAndId(postId, commentId);
 
-        post.commentSizeDown(); // 해당 게시글 댓글 수 감소
         commentRepository.delete(comment);
 
         return commentId;

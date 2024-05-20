@@ -81,14 +81,6 @@ public class Posts extends BaseTimeEntity {
         this.author = author;
     }
 
-    public void commentSizeUp() {
-        this.commentSize++;
-    }
-
-    public void commentSizeDown() {
-        this.commentSize--;
-    }
-
     public void increaseView() {
         this.view++;
     }

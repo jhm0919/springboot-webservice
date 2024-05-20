@@ -66,15 +66,18 @@ var main = {
             _this.btnPasswordModify();
         });
 
-
-        // $('#btn-join').on('click', function() {
-        //     _this.join();
-        // });
         // 댓글 수정
         document.querySelectorAll('#btn-comment-update').forEach(function (item) {
             item.addEventListener('click', function () { // 버튼 클릭 이벤트 발생시
                 const form = this.closest('form'); // btn의 가장 가까운 조상의 Element(form)를 반환 (closest)
                 _this.commentUpdate(form); // 해당 form으로 업데이트 수행
+            });
+        });
+
+        document.querySelectorAll('#btn-ChildrenComment-save').forEach(function (item) {
+            item.addEventListener('click', function () { // 버튼 클릭 이벤트 발생시
+                const form = this.closest('form'); // btn의 가장 가까운 조상의 Element(form)를 반환 (closest)
+                _this.childrenCommentSave(form); // 해당 form으로 업데이트 수행
             });
         });
     },
@@ -187,6 +190,32 @@ var main = {
                 data: JSON.stringify(data)
             }).done(function () {
                 alert('댓글이 등록되었습니다.');
+                window.location.reload();
+            }).fail(function (error) {
+                alert(JSON.stringify(error));
+            });
+        }
+    },
+
+    childrenCommentSave : function (form) { //대댓글 작성
+        const data = {
+            parentId: form.querySelector('#parentId').value,
+            postsId: form.querySelector('#postsId').value,
+            comment: form.querySelector('#childrenComment').value,
+        }
+        // 공백 및 빈 문자열 체크
+        if (!data.comment || data.comment.trim() === "") {
+            alert("공백 또는 입력하지 않은 부분이 있습니다.");
+            return false;
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/api/posts/' + data.postsId + '/comments',
+                dataType: 'JSON',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(data)
+            }).done(function () {
+                alert('대댓글이 등록되었습니다.');
                 window.location.reload();
             }).fail(function (error) {
                 alert(JSON.stringify(error));

@@ -3,6 +3,8 @@ package com.jhm.springbootwebservice.web.dto.response;
 import com.jhm.springbootwebservice.domain.comments.Comment;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class CommentResponseDto {
     private Long id;
@@ -10,9 +12,11 @@ public class CommentResponseDto {
     private String author;
     private int recommendUp;
     private int recommendDown;
-    private String createdDate;
+    private List<Comment> childrenComment;
+    private String isParent;
     private Long userId;
     private Long postsId;
+    private String createdDate;
 
     /** Entity -> DTO */
     public CommentResponseDto(Comment entity) {
@@ -21,6 +25,8 @@ public class CommentResponseDto {
         this.author = entity.getUser().getName();
         this.recommendUp = entity.getRecommendUp();
         this.recommendDown = entity.getRecommendDown();
+        this.childrenComment = entity.getChildrenComment();
+        this.isParent = entity.getIsParent();
         this.userId = entity.getUser().getId();
         this.postsId = entity.getPosts().getId();
         this.createdDate = entity.getCreatedDate();

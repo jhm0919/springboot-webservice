@@ -4,13 +4,14 @@ import com.jhm.springbootwebservice.domain.BaseTimeEntity;
 import com.jhm.springbootwebservice.domain.posts.Posts;
 import com.jhm.springbootwebservice.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -28,6 +29,15 @@ public class Comment extends BaseTimeEntity {
 
     @Column(columnDefinition = "integer default 0")
     private int recommendDown;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parentComment; //부모 댓글
+
+    @OneToMany(mappedBy = "parentComment", orphanRemoval = true)
+    private List<Comment> childrenComment = new ArrayList<>(); //자식 댓글들(대댓글)
+
+    private String isParent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "posts_id")
@@ -55,5 +65,17 @@ public class Comment extends BaseTimeEntity {
 
     public void disRecommendDown() {
         this.recommendDown--;
+    }
+
+    public void updateAuthor(User user) {
+        this.user = user;
+    }
+
+    public void updatePosts(Posts post) {
+        this.posts = post;
+    }
+
+    public void updateParent(Comment comment) {
+        this.parentComment = comment;
     }
 }

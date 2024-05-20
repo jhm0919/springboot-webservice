@@ -7,12 +7,15 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Getter
 @NoArgsConstructor
 public class CommentRequestDto {
 
     private Long id;
+    private Long parentId;
     private String comment;
     private User user;
     private Posts posts;
