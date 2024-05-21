@@ -41,19 +41,7 @@
                   <h1 class="h4 text-gray-900 mb-4">아이디 찾기</h1>
                 </div>
                 <form>
-                    <span class="m-0 font-weight-bold text-black-50" th:text="'아이디 :' + ${param.username}"></span>
-
-<!--                  <button type="button" class="btn btn-info btn-user btn-block" id="btn-sendEmail">-->
-<!--                    인증번호 발송-->
-<!--                  </button>-->
-<!--                  <div class="form-group">-->
-<!--                    <span class="m-0 font-weight-bold text-primary">인증번호</span>-->
-<!--                    <input type="text" class="form-control form-control-user"-->
-<!--                           id="code"-->
-<!--                           th:value="${userDto != null ? userDto.code : ''}"-->
-<!--                           name="code" placeholder="인증번호를 입력하세요.">-->
-<!--                    <span class="m-0 font-weight-bold text-danger" th:if="${valid_code != null}" th:text="${valid_code}"></span>-->
-<!--                  </div>-->
+                    <span class="m-0 font-weight-bold text-black-50" th:text="'조회하신 아이디는 ' + ${param.username} + '입니다.'"></span>
                   <a href="/auth/login" class="btn btn-primary btn-user btn-block">
                     로그인 하러가기
                   </a>

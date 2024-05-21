@@ -4,30 +4,29 @@ import com.jhm.springbootwebservice.domain.comments.Comment;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
-public class CommentResponseDto {
+public class ReplyResponseDto {
     private Long id;
     private String comment;
     private String author;
     private int recommendUp;
     private int recommendDown;
-    private List<ReplyResponseDto> childrenComments;
-    private String isParent;
+//    private String isParent;
+//    private String parentName;
     private Long userId;
     private Long postsId;
     private String createdDate;
 
     /** Entity -> DTO */
-    public CommentResponseDto(Comment entity) {
+    public ReplyResponseDto(Comment entity) {
         this.id = entity.getId();
         this.comment = entity.getComment();
         this.author = entity.getUser().getName();
         this.recommendUp = entity.getRecommendUp();
         this.recommendDown = entity.getRecommendDown();
-        this.childrenComments = entity.getChildrenComment().stream().map(ReplyResponseDto::new).collect(Collectors.toList());
-        this.isParent = entity.getIsParent();
+//        this.isParent = entity.getIsParent();
+//        this.parentName = entity.getParentComment().getUser().getName();
         this.userId = entity.getUser().getId();
         this.postsId = entity.getPosts().getId();
         this.createdDate = entity.getCreatedDate();

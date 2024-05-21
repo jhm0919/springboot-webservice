@@ -18,7 +18,7 @@ function countdown(timeLeft, timerDisplay, sendEmailButton) {
         // 시간이 다 되면 타이머 중지
         if (timeLeft <= 0) {
             clearInterval(timer);
-            timerDisplay.textContent = '인증 시간이 만료되었습니다.';
+            timerDisplay.textContent = '인증 시간이 만료되었습니다. 인증코드를 재전송 해주세요.';
             sendEmailButton.disabled = false;
         }
 
@@ -406,7 +406,6 @@ var main = {
 
     sendEmail: function () {
         var email = $('#email').val();
-        // 타이머 표시할 요소 선택
 
         $.ajax({
             type: 'POST',
@@ -423,13 +422,13 @@ var main = {
 
             // 시작 시간 설정 (1분)
             let timeLeft = 60;
-
             var sendEmailButton = document.getElementById('btn-sendEmail');
 
             // 카운트다운 함수 호출
             countdown(timeLeft, timerDisplay, sendEmailButton);
 
             sendEmailButton.disabled = true;
+
 
         }).fail(function (error) {
             // 이메일 이상할때 예외 처리필요
@@ -457,7 +456,8 @@ var main = {
             inputCode.disabled = true;
             confirmButton.disabled = true;
             document.getElementById('timer').style.display = 'none';
-            submitButton.disabled = false;
+            submitButton.style.display = 'block';
+            // submitButton.disabled = false;
         })
         .fail(function (error) {
             // 이메일 이상할때 예외 처리필요

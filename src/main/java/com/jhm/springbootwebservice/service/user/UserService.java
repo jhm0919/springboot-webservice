@@ -41,16 +41,9 @@ public class UserService {
 
     @Transactional
     public void join(UserRequestDto dto) { // 사용자 비밀번호 해쉬 암호화 후 repository에 저장
-
-        String email = dto.getEmail();
-//        String requestCode = dto.getCode();
-//        String storageCode = redisUtil.getData(email);
-
-//        if (requestCode.equals(storageCode)) {
-            dto.setPassword(encoder.encode(dto.getPassword()));
-            userRepository.save(dto.toEntity());
-            redisUtil.deleteData(email);
-//        }
+        dto.setPassword(encoder.encode(dto.getPassword()));
+        userRepository.save(dto.toEntity());
+        redisUtil.deleteData(dto.getEmail());
     }
 
     @Transactional

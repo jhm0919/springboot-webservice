@@ -23,18 +23,18 @@ import java.util.Map;
 public class FindPasswordController {
 
     private final UserService userService;
-    private final CheckUsernameFindPasswordValidator checkUsernameFindPasswordValidator;
     private final CheckEmailFindPasswordValidator checkEmailFindPasswordValidator;
+    private final CheckFindPasswordValidator checkFindPasswordValidator;
 
     @InitBinder
     public void validatorBinder(WebDataBinder binder) {
-        binder.addValidators(checkUsernameFindPasswordValidator);
         binder.addValidators(checkEmailFindPasswordValidator);
+        binder.addValidators(checkFindPasswordValidator);
     }
 
-    @GetMapping("/auth/find-password")
-    public String findPassword() {
-        return "find-password";
+    @GetMapping("/auth/find-password1")
+    public String findPassword1() {
+        return "find-password1";
     }
 
     @PostMapping("/auth/findPassword")
@@ -48,11 +48,14 @@ public class FindPasswordController {
             for (String key : validatorResult.keySet()) {
                 model.addAttribute(key, validatorResult.get(key));
             }
-            return "find-password";
+            return "find-password1";
         }
 
         userService.findPassword(userDto);
+        model.addAttribute("message","임시 비밀번호가 이메일로 전송되었습니다.\n" +
+                "로그인 후 새로운 비밀번호로 변경해주세요.");
+        model.addAttribute("searchUrl","/");
 
-        return "redirect:/";
+        return "message";
     }
 }

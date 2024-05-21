@@ -45,7 +45,6 @@ public class FindUsernameController {
 
     @PostMapping("/auth/findUsername")
     public String findUsername(@Valid FindUsernameRequestDto userDto, Errors errors, Model model, RedirectAttributes redirectAttributes) {
-
         if (errors.hasErrors()) {
             // 회원가입 실패 시 입력 데이터값 유지
             model.addAttribute("userDto", userDto);

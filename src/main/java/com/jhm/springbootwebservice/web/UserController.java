@@ -8,6 +8,7 @@ import com.jhm.springbootwebservice.validation.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 public class UserController {
@@ -25,7 +27,7 @@ public class UserController {
     private final CheckUsernameValidator checkUsernameValidator;
     private final CheckNameValidator checkNameValidator;
     private final CheckEmailValidator checkEmailValidator;
-//    private final CheckConfirmValidator checkConfirmValidator;
+    private final CheckConfirmValidator checkConfirmValidator;
     private final CheckPasswordEqualValidator checkPasswordEqualValidator;
 
     @InitBinder
@@ -33,7 +35,7 @@ public class UserController {
         binder.addValidators(checkUsernameValidator);
         binder.addValidators(checkNameValidator);
         binder.addValidators(checkEmailValidator);
-//        binder.addValidators(checkConfirmValidator);
+        binder.addValidators(checkConfirmValidator);
         binder.addValidators(checkPasswordEqualValidator);
     }
 
@@ -45,7 +47,10 @@ public class UserController {
     @PostMapping("/auth/joinProc")
     public String joinProc(@Valid UserRequestDto userDto, Errors errors, Model model) {
 
+        log.info("userDto={}", userDto);
+
         if (errors.hasErrors()) {
+            System.out.println("에러 !");
             // 회원가입 실패 시 입력 데이터값 유지
             model.addAttribute("userDto", userDto);
 
@@ -60,7 +65,10 @@ public class UserController {
 
         userService.join(userDto);
 
-        return "redirect:/auth/login";
+        model.addAttribute("message","회원가입이 완료되었습니다. 로그인 해주세요.");
+        model.addAttribute("searchUrl","/auth/login");
+
+        return "message";
     }
 
     @GetMapping("/auth/login")
