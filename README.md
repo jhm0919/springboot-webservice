@@ -1,8 +1,5 @@
 # Springboot-Webservice
-  </br>  </br>
-
-## 개발 인원
-- 개인 프로젝트
+- 간단한 커뮤니티 개인 프로젝트
   </br>  </br>
 
 ## 개발 기간
