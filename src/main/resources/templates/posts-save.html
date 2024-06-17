@@ -22,6 +22,12 @@
                 <input style="width: 20%; margin-left: 10px;" type="text" class="form-control" id="author" th:value="${user.getName()}" readonly>
             </div>
         <label>내용</label>
+        <div>
+            <label>이미지 파일 한개 최대 용량 : 10MB</label>
+        </div>
+        <div>
+            <label>게시글 업로드 이미지 최대 용량 : 30MB</label>
+        </div>
             <div class="form-group">
                 <textarea id="content" th:value="${content}"></textarea>
             </div>
