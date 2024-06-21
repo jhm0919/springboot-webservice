@@ -1,6 +1,5 @@
 package com.jhm.springbootwebservice.domain.posts;
 
-import com.jhm.springbootwebservice.domain.comments.QComment;
 import com.jhm.springbootwebservice.web.dto.request.UserSearchDto;
 import com.jhm.springbootwebservice.web.dto.response.PostsListResponseDto;
 import com.querydsl.core.types.Projections;
