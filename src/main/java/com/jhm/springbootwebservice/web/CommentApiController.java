@@ -42,22 +42,22 @@ public class CommentApiController {
         return commentId;
     }
 
-    @PutMapping("/posts/{postId}/comments/{commentId}/recommend")
-    public RecommendResponseDto recommend(@PathVariable Long postId,
-                                          @PathVariable Long commentId,
-                                          @LoginUser SessionUser user) {
-        RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId(), commentId);
-        RecommendResponseDto recommend = commentsRecommendService.recommend(requestDto);
-        return recommend;
-    }
-
-    @PutMapping("/posts/{postId}/comments/{commentId}/disRecommend")
-    public RecommendResponseDto disRecommend(@PathVariable Long postId,
-                                             @PathVariable Long commentId,
-                                             @LoginUser SessionUser user) {
-        RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId(), commentId);
-        RecommendResponseDto recommend = commentsRecommendService.disRecommend(requestDto);
-        return recommend;
-    }
+//    @PutMapping("/posts/{postId}/comments/{commentId}/recommend")
+//    public RecommendResponseDto recommend(@PathVariable Long postId,
+//                                          @PathVariable Long commentId,
+//                                          @LoginUser SessionUser user) {
+//        RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId(), commentId);
+//        RecommendResponseDto recommend = commentsRecommendService.recommend(requestDto);
+//        return recommend;
+//    }
+//
+//    @PutMapping("/posts/{postId}/comments/{commentId}/disRecommend")
+//    public RecommendResponseDto disRecommend(@PathVariable Long postId,
+//                                             @PathVariable Long commentId,
+//                                             @LoginUser SessionUser user) {
+//        RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId(), commentId);
+//        RecommendResponseDto recommend = commentsRecommendService.disRecommend(requestDto);
+//        return recommend;
+//    }
 
 }

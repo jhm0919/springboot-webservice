@@ -264,6 +264,7 @@ var main = {
             });
         }
     },
+    /** 추천 */
     postRecommend: function (userId) {
         var id = $('#id').val();
         var postUserId = $('#postUserId').val();
@@ -279,6 +280,7 @@ var main = {
         }).done(function (response) {
             var recommendUpCount = response.recommendUpCount;
             $('#recommendUpCount').text(recommendUpCount);
+            // 새로고침 하면 될듯
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
@@ -327,6 +329,36 @@ var main = {
             // } else {
             //     alert("추천이 취소되었습니다.");
             // }
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+    },
+
+    recommend: function (postId, commentId, userId, commentUserId, recommendType) {
+        // if (isRecommend) {
+        //     alert("이미 추천 또는 비추천한 게시물입니다.");
+        //     return false;
+        // }
+        if (commentUserId == userId) {
+            confirm("본인 댓글은 추천할 수 없습니다.");
+            return false;
+        }
+        $.ajax({
+            type: 'PUT',
+            url: '/api/posts/' + postId + '/comments/' + commentId + '/recommend/' + recommendType,
+            dataType: 'JSON',
+            contentType: 'application/json'
+        }).done(function (response) {
+            // var recommendUpCount = response.recommendUpCount;
+            // // var isRecommend = response.recommend;
+            // $('#commentRecommendUpCount_' + commentId).text(recommendUpCount);
+            // if (isRecommend) {
+            //     alert("추천 되었습니다.");
+            // } else {
+            //     alert("추천이 취소되었습니다.");
+            // }
+
+            window.location.reload();
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });

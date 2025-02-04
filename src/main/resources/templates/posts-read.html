@@ -107,8 +107,8 @@
                         <div class="text-right">
                             <button type="button"
                                     th:if="${user != null}"
-                                    th:onclick="'main.commentRecommend(' + ${comment.postsId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ')'"
-                                    class="badge bi bi-x-square">추천
+                                    th:onclick="'main.recommend(' + ${comment.postsId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ', 0)'"
+                            class="badge bi bi-x-square">추천
                             </button>
                             <button type="button"
                                     th:unless="${user != null}"
