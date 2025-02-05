@@ -334,30 +334,37 @@ var main = {
         });
     },
 
-    recommend: function (postId, commentId, userId, commentUserId, recommendType) {
-        // if (isRecommend) {
-        //     alert("이미 추천 또는 비추천한 게시물입니다.");
-        //     return false;
-        // }
+    recommend: function (postId, postUserId, commentId, userId, commentUserId, recommendType) {
+        let requestData = {
+            postId: postId,  // 기본적으로 postId 포함
+            userId: userId,
+            recommendType: recommendType
+        };
+        console.log("추천타입 : ",recommendType)
+
+        // 댓글 추천이면 commentId 추가
+        if (commentId) {
+            requestData.commentId = commentId;
+        }
+
+        if (postUserId == userId) {
+            confirm("본인 게시글은 추천할 수 없습니다.");
+            return false;
+        }
+
         if (commentUserId == userId) {
             confirm("본인 댓글은 추천할 수 없습니다.");
             return false;
         }
+
         $.ajax({
             type: 'PUT',
-            url: '/api/posts/' + postId + '/comments/' + commentId + '/recommend/' + recommendType,
+            url: '/api/recommend',
+            data: JSON.stringify(requestData),
             dataType: 'JSON',
             contentType: 'application/json'
         }).done(function (response) {
-            // var recommendUpCount = response.recommendUpCount;
-            // // var isRecommend = response.recommend;
-            // $('#commentRecommendUpCount_' + commentId).text(recommendUpCount);
-            // if (isRecommend) {
-            //     alert("추천 되었습니다.");
-            // } else {
-            //     alert("추천이 취소되었습니다.");
-            // }
-
+            alert(response.message);
             window.location.reload();
         }).fail(function (error) {
             alert(JSON.stringify(error));

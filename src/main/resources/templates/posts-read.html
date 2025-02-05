@@ -46,7 +46,7 @@
         <div class="text-center">
             <button type="button"
                     th:if="${user != null}"
-                    th:onclick="'main.postRecommend(' + ${user.id} + ')'"
+                    th:onclick="'main.recommend(' + ${post.id} + ',' + ${post.userId} + ', null, ' + ${user.id} + ', null, 0)'"
                     class="badge bi bi-x-square">추천
             </button>
             <button type="button"
@@ -58,8 +58,8 @@
             <span id="recommendDownCount" th:text="${post.recommendDown}"></span>
             <button type="button"
                     th:if="${user != null}"
-                    th:onclick="'main.postDisRecommend('+ ${user.id} + ')'"
-            class="badge bi bi-x-square">비추천
+                    th:onclick="'main.recommend(' + ${post.id} + ',' + ${post.userId} + ', null, ' + ${user.id} + ', null, 1)'"
+                    class="badge bi bi-x-square">비추천
             </button>
             <button type="button"
                     th:unless="${user != null}"
@@ -107,7 +107,7 @@
                         <div class="text-right">
                             <button type="button"
                                     th:if="${user != null}"
-                                    th:onclick="'main.recommend(' + ${comment.postsId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ', 0)'"
+                                    th:onclick="'main.recommend(' + ${comment.postsId} + ',' + ${post.userId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ', 0)'"
                             class="badge bi bi-x-square">추천
                             </button>
                             <button type="button"
@@ -118,7 +118,7 @@
                             <span th:id="'commentRecommendUpCount_' + ${comment.id}" th:text="${comment.recommendUp}"></span>
                             <button type="button"
                                     th:if="${user != null}"
-                                    th:onclick="'main.commentDisRecommend(' + ${comment.postsId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ')'"
+                                    th:onclick="'main.recommend(' + ${comment.postsId} + ',' + ${post.userId} + ',' + ${comment.id} + ',' + ${user.id} + ',' + ${comment.userId} + ', 1)'"
                                     class="badge bi bi-x-square">비추천
                             </button>
                             <button type="button"

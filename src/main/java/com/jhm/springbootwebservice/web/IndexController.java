@@ -4,6 +4,7 @@ import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.domain.posts.PostType;
 import com.jhm.springbootwebservice.service.posts.PostsService;
+import com.jhm.springbootwebservice.service.recommend.RecommendService;
 import com.jhm.springbootwebservice.web.dto.request.UserSearchDto;
 import com.jhm.springbootwebservice.web.dto.response.*;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import java.util.List;
 public class IndexController {
 
     private final PostsService postsService;
+    private final RecommendService recommendService;
 
     @GetMapping("/")
     public String index(@RequestParam(defaultValue = "0") int page,
@@ -77,6 +79,7 @@ public class IndexController {
 
         model.addAttribute("postTypes", PostType.values());
         model.addAttribute("post", post);
+
 
         return "posts-read";
     }
