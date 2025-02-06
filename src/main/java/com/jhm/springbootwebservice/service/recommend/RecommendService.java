@@ -43,15 +43,64 @@ public class RecommendService {
 
     }
 
+    private ResponseEntity<String> postRecommend(RecommendRequestDto dto, Posts post, User user) {
+
+        PostRecommend recommend = postRecommendRepository.findByUserIdAndPostId(dto.getUserId(), dto.getPostId());
+        if (recommend != null) { // 이미 추천 테이블에 있다면
+            if (dto.getRecommendType() == recommend.getRecommendType()) { // 이 경우 추천or비추천 취소
+                return postRecommendCancelLogic(dto, post ,recommend); // 취소
+            } else { // 이 경우 추천or비추천을 취소하는게 아닌 다른걸 누름
+                return ResponseEntity.badRequest().body("이미 추천/비추천을 누른 게시글 입니다. 취소 후 다시시도하세요.");
+            }
+        } else { // 추천이 없으면 (추천)
+            return postRecommendLogic(dto, user, post);
+        }
+    }
+
+    private ResponseEntity<String> postRecommendLogic(RecommendRequestDto dto, User user, Posts post) {
+        log.info("추천 로직 실행");
+        PostRecommend recommend = PostRecommend.builder()
+                .posts(post)
+                .user(user)
+                .recommendType(dto.getRecommendType())
+                .build();
+
+        postRecommendRepository.save(recommend);
+        if (dto.getRecommendType() == 0) { // 추천
+            post.recommendUp();
+            return ResponseEntity.ok("추천하였습니다.");
+        } else { // 비추천
+            post.disRecommendUp();
+            return ResponseEntity.ok("비추천하였습니다.");
+        }
+    }
+
+    private ResponseEntity<String> postRecommendCancelLogic(RecommendRequestDto dto, Posts post ,PostRecommend recommend) {
+        log.info("추천 취소 로직 실행");
+        postRecommendRepository.delete(recommend);
+        if (dto.getRecommendType() == 0) {// 추천 취소
+            post.recommendDown();
+            return ResponseEntity.ok("추천이 취소되었습니다.");
+        } else { // 비추천 취소
+            post.disRecommendDown();
+            return ResponseEntity.ok("비추천이 취소되었습니다.");
+        }
+    }
+
     private ResponseEntity<String> commentRecommend(RecommendRequestDto dto, Posts post, User user) {
         Comment comment = commentRepository.findById(dto.getCommentId()).orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다."));
 
-        // 추천 중복 확인 (userId, postId, commentId 조합으로)
-        if (commentRecommendRepository.existsByUserIdAndPostIdAndCommentId(dto.getUserId(), dto.getPostId(), dto.getCommentId())) { // 댓글 추천이 있으면
-            return commentRecommendCancelLogic(dto, comment);
-        } else { // 댓글 추천이 없으면 (추천)
+        CommentRecommend recommend = commentRecommendRepository.findByUserIdAndPostIdAndCommentId(dto.getUserId(), dto.getPostId(), dto.getCommentId());
+        if (recommend != null) { // 이미 추천 테이블에 있다면
+            if (dto.getRecommendType() == recommend.getRecommendType()) { // 이 경우 추천or비추천 취소
+                return commentRecommendCancelLogic(dto, comment ,recommend); // 취소
+            } else { // 이 경우 추천or비추천을 취소하는게 아닌 다른걸 누름
+                return ResponseEntity.badRequest().body("이미 추천/비추천을 누른 댓글 입니다. 취소 후 다시시도하세요.");
+            }
+        } else { // 추천이 없으면 (추천)
             return commentRecommendLogic(dto, user, post, comment);
         }
+
     }
 
     private ResponseEntity<String> commentRecommendLogic(RecommendRequestDto dto, User user, Posts post, Comment comment) {
@@ -74,8 +123,7 @@ public class RecommendService {
 
     }
 
-    private ResponseEntity<String> commentRecommendCancelLogic(RecommendRequestDto dto, Comment comment) {
-        CommentRecommend recommend = commentRecommendRepository.findByUserIdAndPostIdAndCommentId(dto.getUserId(), dto.getPostId(), dto.getCommentId());
+    private ResponseEntity<String> commentRecommendCancelLogic(RecommendRequestDto dto, Comment comment, CommentRecommend recommend) {
         commentRecommendRepository.delete(recommend);
         if (dto.getRecommendType() == 0) { // 추천 취소
             comment.recommendDown();
@@ -86,45 +134,5 @@ public class RecommendService {
         }
     }
 
-    private ResponseEntity<String> postRecommend(RecommendRequestDto dto, Posts post, User user) {
-
-        if (postRecommendRepository.existsByUserIdAndPostIdAnd(dto.getUserId(), dto.getPostId())) { // 추천이 이미 있으면 (추천 취소)
-            return postRecommendCancelLogic(dto, post);
-        } else { // 추천이 없으면 (추천)
-            return postRecommendLogic(dto, user, post);
-        }
-    }
-
-    private ResponseEntity<String> postRecommendLogic(RecommendRequestDto dto, User user, Posts post) {
-        log.info("추천 로직 실행");
-
-        PostRecommend recommend = PostRecommend.builder()
-                .posts(post)
-                .user(user)
-                .recommendType(dto.getRecommendType())
-                .build();
-
-        postRecommendRepository.save(recommend);
-        if (dto.getRecommendType() == 0) { // 추천
-            post.recommendUp();
-            return ResponseEntity.ok("추천하였습니다.");
-        } else { // 비추천
-            post.disRecommendUp();
-            return ResponseEntity.ok("비추천하였습니다.");
-        }
-    }
-
-    private ResponseEntity<String> postRecommendCancelLogic(RecommendRequestDto dto, Posts post) {
-        log.info("추천 취소 로직 실행");
-        PostRecommend recommend = postRecommendRepository.findByUserIdAndPostId(dto.getUserId(), dto.getPostId());
-        postRecommendRepository.delete(recommend);
-        if (dto.getRecommendType() == 0) {// 추천 취소
-            post.recommendDown();
-            return ResponseEntity.ok("추천이 취소되었습니다.");
-        } else { // 비추천 취소
-            post.disRecommendDown();
-            return ResponseEntity.ok("비추천이 취소되었습니다.");
-        }
-    }
 
 }

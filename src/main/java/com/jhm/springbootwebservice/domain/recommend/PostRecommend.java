@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(
         uniqueConstraints = {
-                @UniqueConstraint(name = "unique_post_recommend", columnNames = {"post_id", "user_id", "recommendType"}),
+                @UniqueConstraint(name = "unique_post_recommend", columnNames = {"post_id", "user_id"}),
         }
 )
 public class PostRecommend extends BaseTimeEntity {
@@ -28,10 +28,6 @@ public class PostRecommend extends BaseTimeEntity {
     @JoinColumn(name = "post_id") // 게시글 추천이면 값이 있음
     private Posts post;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "comment_id") // 댓글 추천이면 값이 있음
-//    private Comment comment;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -40,20 +36,12 @@ public class PostRecommend extends BaseTimeEntity {
     private int recommendType;
 
     @Builder // 빌더 패턴으로만 객체 생성하도록 유도
-    public PostRecommend(Posts posts, Comment comment, User user, int recommendType) {
+    public PostRecommend(Posts posts, User user, int recommendType) {
         this.post = posts;
-//        this.comment = comment;
         this.user = user;
         this.recommendType = recommendType;
     }
-//
-//    public void recommendTypeToOne() {
-//        this.recommendType = 1;
-//    }
-//
-//    public void recommendTypeToZero() {
-//        this.recommendType = 0;
-//    }
+
 
 }
 

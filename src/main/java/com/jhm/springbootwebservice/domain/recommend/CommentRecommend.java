@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(
         uniqueConstraints = {
-                @UniqueConstraint(name = "unique_comment_recommend", columnNames = {"comment_id", "user_id", "post_id", "recommendType"})
+                @UniqueConstraint(name = "unique_comment_recommend", columnNames = {"comment_id", "user_id", "post_id"})
         }
 )
 public class CommentRecommend extends BaseTimeEntity {
@@ -46,14 +46,6 @@ public class CommentRecommend extends BaseTimeEntity {
         this.user = user;
         this.recommendType = recommendType;
     }
-//
-//    public void recommendTypeToOne() {
-//        this.recommendType = 1;
-//    }
-//
-//    public void recommendTypeToZero() {
-//        this.recommendType = 0;
-//    }
 
 }
 
