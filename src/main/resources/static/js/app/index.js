@@ -264,7 +264,7 @@ var main = {
             });
         }
     },
-    /** 추천 */
+    /** 게시글 추천 */
     postRecommend: function (userId) {
         var id = $('#id').val();
         var postUserId = $('#postUserId').val();
@@ -361,13 +361,14 @@ var main = {
             type: 'PUT',
             url: '/api/recommend',
             data: JSON.stringify(requestData),
-            dataType: 'JSON',
-            contentType: 'application/json'
+            // dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
         }).done(function (response) {
-            alert(response.message);
-            window.location.reload();
+            console.log("응답받음:", response);  // 응답 내용 콘솔에 출력
+            alert(response);
+            window.location.reload(true);
         }).fail(function (error) {
-            alert(JSON.stringify(error));
+            alert(error.responseText);
         });
     },
 
