@@ -2,17 +2,13 @@ package com.jhm.springbootwebservice.web;
 
 import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
-import com.jhm.springbootwebservice.domain.posts.PostType;
-import com.jhm.springbootwebservice.service.posts.PostsService;
-import com.jhm.springbootwebservice.service.recommend.RecommendService;
+import com.jhm.springbootwebservice.domain.post.PostType;
+import com.jhm.springbootwebservice.service.post.PostService;
 import com.jhm.springbootwebservice.web.dto.request.UserSearchDto;
 import com.jhm.springbootwebservice.web.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +23,7 @@ import java.util.List;
 @Controller
 public class IndexController {
 
-    private final PostsService postsService;
-    private final RecommendService recommendService;
+    private final PostService postService;
 
     @GetMapping("/")
     public String index(@RequestParam(defaultValue = "0") int page,
@@ -42,7 +37,7 @@ public class IndexController {
             model.addAttribute("user", user);
             userId = user.getId();
         }
-        Page<PostsListResponseDto> posts = postsService.findAll(postType, searchDto, page, myPost, userId);
+        Page<PostListResponseDto> posts = postService.findAll(postType, searchDto, page, myPost, userId);
 
         model.addAttribute("postTypes", PostType.values());
         model.addAttribute("posts", posts);
@@ -50,19 +45,19 @@ public class IndexController {
         return "index";
     }
 
-    @GetMapping("/posts/save")
-    public String postsSave(Model model, @LoginUser SessionUser user) {
+    @GetMapping("/post/save")
+    public String postSave(Model model, @LoginUser SessionUser user) {
         addSessionUserToModel(user, model);
         model.addAttribute("postTypes", PostType.values());
-        return "posts-save";
+        return "post-save";
     }
 
-    @GetMapping("/posts/read/{postId}")
-    public String postsRead(@PathVariable Long postId, @LoginUser SessionUser user, Model model) {
-        PostsResponseDto post = postsService.findById(postId);
-        List<CommentResponseDto> comments = post.getComments();
+    @GetMapping("/post/read/{postId}")
+    public String postRead(@PathVariable Long postId, @LoginUser SessionUser user, Model model) {
+        PostResponseDto post = postService.findById(postId);
+        List<CommentResponseDtoV2> comments = post.getComments();
 
-        postsService.updateView(postId);
+        postService.updateView(postId);
 
         if (user != null) {
             model.addAttribute("user", user);
@@ -81,20 +76,20 @@ public class IndexController {
         model.addAttribute("post", post);
 
 
-        return "posts-read";
+        return "post-read";
     }
 
-    @GetMapping("/posts/update/{postId}")
-    public String postsUpdate(@PathVariable Long postId, @LoginUser SessionUser user, Model model) {
+    @GetMapping("/post/update/{postId}")
+    public String postUpdate(@PathVariable Long postId, @LoginUser SessionUser user, Model model) {
 
-        PostsResponseDto post = postsService.findById(postId);
-        List<PostsImageResponseDto> postsImages = post.getPostsImages();
+        PostResponseDto post = postService.findById(postId);
+        List<PostImageResponseDto> postImages = post.getPostImages();
 
         addSessionUserToModel(user, model);
-        model.addAttribute("postsImages", postsImages);
+        model.addAttribute("postImages", postImages);
         model.addAttribute("post", post);
 
-        return "posts-update";
+        return "post-update";
     }
 
     private void addSessionUserToModel(SessionUser user, Model model) {

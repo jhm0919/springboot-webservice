@@ -1,6 +1,6 @@
 package com.jhm.springbootwebservice.web.dto.response;
 
-import com.jhm.springbootwebservice.domain.comments.Comment;
+import com.jhm.springbootwebservice.domain.comment.Comment;
 import lombok.Getter;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class CommentResponseDto {
     private List<ReplyResponseDto> childrenComments;
     private String isParent;
     private Long userId;
-    private Long postsId;
+    private Long postId;
     private String createdDate;
 
     /** Entity -> DTO */
@@ -29,7 +29,7 @@ public class CommentResponseDto {
         this.childrenComments = entity.getChildrenComment().stream().map(ReplyResponseDto::new).collect(Collectors.toList());
         this.isParent = entity.getIsParent();
         this.userId = entity.getUser().getId();
-        this.postsId = entity.getPosts().getId();
+        this.postId = entity.getPost().getId();
         this.createdDate = entity.getCreatedDate();
     }
 }

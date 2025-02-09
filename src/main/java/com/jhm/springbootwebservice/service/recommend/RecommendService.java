@@ -1,9 +1,9 @@
 package com.jhm.springbootwebservice.service.recommend;
 
-import com.jhm.springbootwebservice.domain.comments.Comment;
-import com.jhm.springbootwebservice.domain.comments.CommentRepository;
-import com.jhm.springbootwebservice.domain.posts.Posts;
-import com.jhm.springbootwebservice.domain.posts.PostsRepository;
+import com.jhm.springbootwebservice.domain.comment.Comment;
+import com.jhm.springbootwebservice.domain.comment.CommentRepository;
+import com.jhm.springbootwebservice.domain.post.Post;
+import com.jhm.springbootwebservice.domain.post.PostRepository;
 import com.jhm.springbootwebservice.domain.recommend.CommentRecommend;
 import com.jhm.springbootwebservice.domain.recommend.CommentRecommendRepository;
 import com.jhm.springbootwebservice.domain.recommend.PostRecommend;
@@ -25,7 +25,7 @@ public class RecommendService {
 
     private final PostRecommendRepository postRecommendRepository;
     private final CommentRecommendRepository commentRecommendRepository;
-    private final PostsRepository postsRepository;
+    private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
 
@@ -33,7 +33,7 @@ public class RecommendService {
     public ResponseEntity<String> recommend(RecommendRequestDto dto) {
 
         User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
-        Posts post = postsRepository.findById(dto.getPostId()).orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다."));
+        Post post = postRepository.findById(dto.getPostId()).orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다."));
 
         if (dto.getCommentId() == null) { // 게시물 추천 or 비추천
             return postRecommend(dto, post, user);
@@ -43,7 +43,7 @@ public class RecommendService {
 
     }
 
-    private ResponseEntity<String> postRecommend(RecommendRequestDto dto, Posts post, User user) {
+    private ResponseEntity<String> postRecommend(RecommendRequestDto dto, Post post, User user) {
 
         PostRecommend recommend = postRecommendRepository.findByUserIdAndPostId(dto.getUserId(), dto.getPostId());
         if (recommend != null) { // 이미 추천 테이블에 있다면
@@ -57,10 +57,10 @@ public class RecommendService {
         }
     }
 
-    private ResponseEntity<String> postRecommendLogic(RecommendRequestDto dto, User user, Posts post) {
+    private ResponseEntity<String> postRecommendLogic(RecommendRequestDto dto, User user, Post post) {
         log.info("추천 로직 실행");
         PostRecommend recommend = PostRecommend.builder()
-                .posts(post)
+                .post(post)
                 .user(user)
                 .recommendType(dto.getRecommendType())
                 .build();
@@ -75,7 +75,7 @@ public class RecommendService {
         }
     }
 
-    private ResponseEntity<String> postRecommendCancelLogic(RecommendRequestDto dto, Posts post ,PostRecommend recommend) {
+    private ResponseEntity<String> postRecommendCancelLogic(RecommendRequestDto dto, Post post , PostRecommend recommend) {
         log.info("추천 취소 로직 실행");
         postRecommendRepository.delete(recommend);
         if (dto.getRecommendType() == 0) {// 추천 취소
@@ -87,7 +87,7 @@ public class RecommendService {
         }
     }
 
-    private ResponseEntity<String> commentRecommend(RecommendRequestDto dto, Posts post, User user) {
+    private ResponseEntity<String> commentRecommend(RecommendRequestDto dto, Post post, User user) {
         Comment comment = commentRepository.findById(dto.getCommentId()).orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다."));
 
         CommentRecommend recommend = commentRecommendRepository.findByUserIdAndPostIdAndCommentId(dto.getUserId(), dto.getPostId(), dto.getCommentId());
@@ -103,7 +103,7 @@ public class RecommendService {
 
     }
 
-    private ResponseEntity<String> commentRecommendLogic(RecommendRequestDto dto, User user, Posts post, Comment comment) {
+    private ResponseEntity<String> commentRecommendLogic(RecommendRequestDto dto, User user, Post post, Comment comment) {
 
         CommentRecommend recommend = CommentRecommend.builder()
                 .user(user)

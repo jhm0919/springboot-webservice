@@ -53,7 +53,7 @@
             <tr th:each="post : ${posts}">
                 <td style="text-align: center" th:text="${post.postType}"></td>
                 <td>
-                    <a th:href="@{'/posts/read/' + ${post.id}}" th:text="${post.title}"></a>
+                    <a th:href="@{'/post/read/' + ${post.id}}" th:text="${post.title}"></a>
                     <i class="fas fa-comments fa-1x text-black-50" th:text="${post.commentsSize}" style="margin-left: 5px;"></i>
                 </td>
                 <td style="text-align: center" th:text="${post.author}"></td>
@@ -134,7 +134,7 @@
                 </li>
             </ul>
         </div>
-            <a href="/posts/save" role="button"
+            <a href="/post/save" role="button"
                class="btn btn-primary float-right">글 등록</a>
     </nav>
 

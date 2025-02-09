@@ -1,8 +1,7 @@
 package com.jhm.springbootwebservice.domain.recommend;
 
 import com.jhm.springbootwebservice.domain.BaseTimeEntity;
-import com.jhm.springbootwebservice.domain.comments.Comment;
-import com.jhm.springbootwebservice.domain.posts.Posts;
+import com.jhm.springbootwebservice.domain.post.Post;
 import com.jhm.springbootwebservice.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -26,7 +25,7 @@ public class PostRecommend extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id") // 게시글 추천이면 값이 있음
-    private Posts post;
+    private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -36,8 +35,8 @@ public class PostRecommend extends BaseTimeEntity {
     private int recommendType;
 
     @Builder // 빌더 패턴으로만 객체 생성하도록 유도
-    public PostRecommend(Posts posts, User user, int recommendType) {
-        this.post = posts;
+    public PostRecommend(Post post, User user, int recommendType) {
+        this.post = post;
         this.user = user;
         this.recommendType = recommendType;
     }

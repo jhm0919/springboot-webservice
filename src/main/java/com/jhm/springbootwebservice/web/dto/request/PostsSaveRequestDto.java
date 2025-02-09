@@ -1,11 +1,9 @@
 package com.jhm.springbootwebservice.web.dto.request;
 
-import com.jhm.springbootwebservice.domain.posts.PostType;
-import com.jhm.springbootwebservice.domain.posts.Posts;
+import com.jhm.springbootwebservice.domain.post.Post;
+import com.jhm.springbootwebservice.domain.post.PostType;
 import com.jhm.springbootwebservice.domain.user.User;
 import lombok.*;
-
-import java.util.List;
 
 @Data
 @Getter
@@ -21,8 +19,8 @@ public class PostsSaveRequestDto {
     private int view;
     private User user;
 
-    public Posts toEntity() {
-        return Posts.builder()
+    public Post toEntity() {
+        return com.jhm.springbootwebservice.domain.post.Post.builder()
                 .title(title)
                 .content(content)
                 .pureContent(pureContent)

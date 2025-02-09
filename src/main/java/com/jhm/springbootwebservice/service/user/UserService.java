@@ -2,8 +2,8 @@ package com.jhm.springbootwebservice.service.user;
 
 import com.jhm.springbootwebservice.config.auth.dto.FindPasswordRequestDto;
 import com.jhm.springbootwebservice.config.auth.dto.UserRequestDto;
-import com.jhm.springbootwebservice.domain.posts.Posts;
-import com.jhm.springbootwebservice.domain.posts.PostsRepository;
+import com.jhm.springbootwebservice.domain.post.Post;
+import com.jhm.springbootwebservice.domain.post.PostRepository;
 import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
 import com.jhm.springbootwebservice.util.RedisUtil;
@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +34,7 @@ public class UserService {
 
     private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
-    private final PostsRepository postsRepository;
+    private final PostRepository postRepository;
     private final RedisUtil redisUtil;
     private final BCryptPasswordEncoder encoder;
 
@@ -123,11 +122,11 @@ public class UserService {
 
     private void updateName(UserModifyDto dto, User user) {
         user.updateName(dto.getName());
-        List<Posts> posts = postsRepository.findAllByUserId(user.getId());
+        List<Post> posts = postRepository.findAllByUserId(user.getId());
 
         log.info(posts.toString());
 
-        for (Posts post : posts) {
+        for (Post post : posts) {
             post.update(dto.getName());
         }
     }
