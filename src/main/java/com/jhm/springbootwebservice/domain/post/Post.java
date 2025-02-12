@@ -2,7 +2,6 @@ package com.jhm.springbootwebservice.domain.post;
 
 import com.jhm.springbootwebservice.domain.BaseTimeEntity;
 import com.jhm.springbootwebservice.domain.comment.Comment;
-import com.jhm.springbootwebservice.domain.comment.CommentV2;
 import com.jhm.springbootwebservice.domain.postimage.PostImage;
 import com.jhm.springbootwebservice.domain.user.User;
 import jakarta.persistence.*;
@@ -60,7 +59,7 @@ public class Post extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @OrderBy("id asc") // 댓글 정렬
-    private List<CommentV2> comments;
+    private List<Comment> comments;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<PostImage> PostImages;

@@ -180,11 +180,21 @@ var main = {
         }
     },
     commentSave : function () {
+        console.log("댓글 작성 호출")
         const data = {
-            parentId: $('#parentId').val(),
             postId: $('#postId').val(),
-            comment: $('#comment').val()
+            // parentId: $('#parentId2').val(),
+            // hasParent: $('#hasParent2').val(),
+            comment: $('#comment').val(),
+            userId: $('#userId').val(),
+            // groupNo: $('#groupNo').val(),
+            // depthNo: $('#depthNo').val(),
+            // level: $('#level').val(),
         }
+        console.log("postId", data.postId)
+        console.log("parentId", data.parentId)
+        console.log("comment", data.comment)
+
         // 공백 및 빈 문자열 체크
         if (!data.comment || data.comment.trim() === "") {
             alert("공백 또는 입력하지 않은 부분이 있습니다.");
@@ -205,16 +215,31 @@ var main = {
         }
     },
 
-    replySave : function () {
+    replySave : function (form) {
         const data = {
-            parentId: $('#parentId').val(),
-            postId: $('#postId').val(),
-            comment: $('#comment').val()
+            id: form.querySelector('#id').value,
+            postId: form.querySelector('#postId').value,
+            parentId: form.querySelector('#parentId').value,
+            hasParent: form.querySelector('#hasParent').value,
+            comment: form.querySelector('#reply').value,
+            userId: form.querySelector('#userId').value,
+            groupNo: form.querySelector('#groupNo').value,
+            depthNo: form.querySelector('#depthNo').value,
+            level: form.querySelector('#level').value,
         }
+        console.log("대댓글 동작")
+        console.log("부모id", data.parentId)
+        console.log("hasParent", data.hasParent)
+        console.log("postId", data.postId)
+        console.log("내용", data.comment)
+        console.log("userId", data.userId)
+        console.log("groupNo", data.groupNo)
+        console.log("depthNo", data.depthNo)
+        console.log("level", data.level)
         // 공백 및 빈 문자열 체크
         if (!data.comment || data.comment.trim() === "") {
             alert("공백 또는 입력하지 않은 부분이 있습니다.");
-            return false;
+            // return false;
         } else {
             $.ajax({
                 type: 'POST',
@@ -223,7 +248,7 @@ var main = {
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify(data)
             }).done(function () {
-                alert('댓글이 등록되었습니다.');
+                alert('답글이 등록되었습니다.');
                 window.location.reload();
             }).fail(function (error) {
                 alert(JSON.stringify(error));

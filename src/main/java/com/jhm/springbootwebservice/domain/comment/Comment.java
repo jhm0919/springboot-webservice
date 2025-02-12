@@ -6,12 +6,8 @@ import com.jhm.springbootwebservice.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Builder
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -30,14 +26,17 @@ public class Comment extends BaseTimeEntity {
     @Column(columnDefinition = "integer default 0")
     private int recommendDown;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // 부모 댓글 (대댓글인 경우)
     @JoinColumn(name = "parent_id")
-    private Comment parentComment; //부모 댓글
+    private Comment parent;
 
-    @OneToMany(mappedBy = "parentComment", orphanRemoval = true)
-    private List<Comment> childrenComment = new ArrayList<>(); //자식 댓글들(대댓글)
+    private Long groupNo;
 
-    private String isParent;
+    @Column(columnDefinition = "integer default 0")
+    private int depthNo;
+
+    @Column(columnDefinition = "integer default 0")
+    private int level;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
@@ -75,7 +74,10 @@ public class Comment extends BaseTimeEntity {
         this.post = post;
     }
 
-    public void updateParent(Comment comment) {
-        this.parentComment = comment;
+    // **groupNo를 업데이트하는 메서드**
+    public void updateGroupNo(Long groupNo) {
+        if (this.groupNo == null) { // 한 번만 설정되도록
+            this.groupNo = groupNo;
+        }
     }
 }

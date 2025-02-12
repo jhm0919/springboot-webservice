@@ -1,11 +1,14 @@
 package com.jhm.springbootwebservice.service.post;
 
+import com.jhm.springbootwebservice.domain.comment.CommentRepository;
 import com.jhm.springbootwebservice.domain.post.Post;
 import com.jhm.springbootwebservice.domain.post.PostType;
 import com.jhm.springbootwebservice.domain.post.PostRepository;
 import com.jhm.springbootwebservice.domain.user.User;
 import com.jhm.springbootwebservice.domain.user.UserRepository;
+import com.jhm.springbootwebservice.service.comment.CommentService;
 import com.jhm.springbootwebservice.web.dto.request.UserSearchDto;
+import com.jhm.springbootwebservice.web.dto.response.CommentResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostListResponseDto;
 import com.jhm.springbootwebservice.web.dto.response.PostResponseDto;
 import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
@@ -36,6 +39,7 @@ import java.util.regex.Pattern;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
+    private final CommentService commentService;
     private final UserRepository userRepository;
 
     @Value("${imageUrl.tempLocation}")
@@ -166,9 +170,10 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostResponseDto findById(Long id) {
-        Post posts = postRepository.findById(id)
+        Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-        return new PostResponseDto(posts);
+        List<CommentResponseDto> comments = commentService.getSortedCommentsByPostId(id);
+        return new PostResponseDto(post, comments);
     }
 
     @Override

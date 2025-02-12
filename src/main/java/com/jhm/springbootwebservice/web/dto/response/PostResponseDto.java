@@ -1,6 +1,5 @@
 package com.jhm.springbootwebservice.web.dto.response;
 
-import com.jhm.springbootwebservice.domain.comment.CommentV2;
 import com.jhm.springbootwebservice.domain.post.Post;
 import com.jhm.springbootwebservice.domain.post.PostType;
 import lombok.Getter;
@@ -23,12 +22,10 @@ public class PostResponseDto {
     private String createdDate;
     private String modifiedDate;
     private Long userId;
-//    private List<CommentResponseDto> comments;
-//    private List<CommentResponseDtoV2> comments;
-    private List<CommentResponseDtoV2> comments;
+    private List<CommentResponseDto> comments;
     private List<PostImageResponseDto> postImages;
 
-    public PostResponseDto(Post entity) {
+    public PostResponseDto(Post entity, List<CommentResponseDto> comments) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();
@@ -41,9 +38,7 @@ public class PostResponseDto {
         this.createdDate = entity.getCreatedDate();
         this.modifiedDate = entity.getModifiedDate();
         this.userId = entity.getUser().getId();
-//        this.comments = entity.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
-        this.comments = entity.getComments().stream().map(CommentResponseDtoV2::new).collect(Collectors.toList());
-//        this.comments = entity.getComments();
+        this.comments = comments;
 //        this.imageUrls = entity.getPostsImages().stream().map(PostsImage::getUrl).collect(Collectors.toList());
         this.postImages = entity.getPostImages().stream().map(PostImageResponseDto::new).collect(Collectors.toList());
     }

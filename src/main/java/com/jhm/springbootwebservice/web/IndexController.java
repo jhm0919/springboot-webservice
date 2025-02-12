@@ -3,6 +3,7 @@ package com.jhm.springbootwebservice.web;
 import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.domain.post.PostType;
+import com.jhm.springbootwebservice.service.comment.CommentService;
 import com.jhm.springbootwebservice.service.post.PostService;
 import com.jhm.springbootwebservice.web.dto.request.UserSearchDto;
 import com.jhm.springbootwebservice.web.dto.response.*;
@@ -55,7 +56,7 @@ public class IndexController {
     @GetMapping("/post/read/{postId}")
     public String postRead(@PathVariable Long postId, @LoginUser SessionUser user, Model model) {
         PostResponseDto post = postService.findById(postId);
-        List<CommentResponseDtoV2> comments = post.getComments();
+        List<CommentResponseDto> comments = post.getComments();
 
         postService.updateView(postId);
 
