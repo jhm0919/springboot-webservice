@@ -16,6 +16,7 @@ public class CommentResponseDto {
     private Long groupNo;
     private int depthNo;
     private int level;
+    private int isDeleted;
     private String createdDate;
 
     /** Entity -> DTO */
@@ -31,6 +32,7 @@ public class CommentResponseDto {
         this.groupNo = entity.getGroupNo();
         this.depthNo = entity.getDepthNo();
         this.level = entity.getLevel();
+        this.isDeleted = entity.getIsDeleted();
         this.createdDate = entity.getCreatedDate();
     }
 }

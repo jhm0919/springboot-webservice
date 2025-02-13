@@ -107,11 +107,16 @@ public class CommentService {
     }
 
     public Long update(Long postId, Long id, CommentRequestDto dto) {
-        return null;
+        Comment comment = commentRepository.findByPostIdAndId(postId, id);
+        comment.update(dto.getComment());
+        return comment.getId();
     }
 
     public Long delete(Long postId, Long id) {
-        return null;
+        Comment comment = commentRepository.findByPostIdAndId(postId, id);
+        comment.updateIsDeleted();
+//        commentRepository.delete(comment);
+        return comment.getId();
     }
 
     public List<CommentResponseDto> getSortedCommentsByPostId(Long postId) {

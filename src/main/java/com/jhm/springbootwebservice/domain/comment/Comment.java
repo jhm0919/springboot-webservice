@@ -30,6 +30,9 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
+    @Column(columnDefinition = "integer default 0")
+    private int isDeleted;
+
     private Long groupNo;
 
     @Column(columnDefinition = "integer default 0")
@@ -72,6 +75,10 @@ public class Comment extends BaseTimeEntity {
 
     public void updatePost(Post post) {
         this.post = post;
+    }
+
+    public void updateIsDeleted() {
+        this.isDeleted = 1;
     }
 
     // **groupNo를 업데이트하는 메서드**

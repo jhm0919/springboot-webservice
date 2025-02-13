@@ -81,12 +81,6 @@ var main = {
             });
         });
 
-        document.querySelectorAll('#btn-ChildrenComment-save').forEach(function (item) {
-            item.addEventListener('click', function () { // 버튼 클릭 이벤트 발생시
-                const form = this.closest('form'); // btn의 가장 가까운 조상의 Element(form)를 반환 (closest)
-                _this.childrenCommentSave(form); // 해당 form으로 업데이트 수행
-            });
-        });
     },
     save : function () {
         var content = editor.getData()
@@ -183,13 +177,8 @@ var main = {
         console.log("댓글 작성 호출")
         const data = {
             postId: $('#postId').val(),
-            // parentId: $('#parentId2').val(),
-            // hasParent: $('#hasParent2').val(),
             comment: $('#comment').val(),
             userId: $('#userId').val(),
-            // groupNo: $('#groupNo').val(),
-            // depthNo: $('#depthNo').val(),
-            // level: $('#level').val(),
         }
         console.log("postId", data.postId)
         console.log("parentId", data.parentId)
@@ -227,15 +216,6 @@ var main = {
             depthNo: form.querySelector('#depthNo').value,
             level: form.querySelector('#level').value,
         }
-        console.log("대댓글 동작")
-        console.log("부모id", data.parentId)
-        console.log("hasParent", data.hasParent)
-        console.log("postId", data.postId)
-        console.log("내용", data.comment)
-        console.log("userId", data.userId)
-        console.log("groupNo", data.groupNo)
-        console.log("depthNo", data.depthNo)
-        console.log("level", data.level)
         // 공백 및 빈 문자열 체크
         if (!data.comment || data.comment.trim() === "") {
             alert("공백 또는 입력하지 않은 부분이 있습니다.");
@@ -256,31 +236,6 @@ var main = {
         }
     },
 
-    childrenCommentSave : function (form) { //대댓글 작성
-        const data = {
-            parentId: form.querySelector('#parentId').value,
-            postId: form.querySelector('#postId').value,
-            comment: form.querySelector('#childrenComment').value,
-        }
-        // 공백 및 빈 문자열 체크
-        if (!data.comment || data.comment.trim() === "") {
-            alert("공백 또는 입력하지 않은 부분이 있습니다.");
-            return false;
-        } else {
-            $.ajax({
-                type: 'POST',
-                url: '/api/post/' + data.postId + '/comment',
-                dataType: 'JSON',
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify(data)
-            }).done(function () {
-                alert('대댓글이 등록되었습니다.');
-                window.location.reload();
-            }).fail(function (error) {
-                alert(JSON.stringify(error));
-            });
-        }
-    },
     /** 댓글 수정 */
     commentUpdate : function (form) {
         const data = {
@@ -301,98 +256,30 @@ var main = {
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify(data)
             }).done(function () {
+                alert('댓글이 수정되었습니다.');
                 window.location.reload();
             }).fail(function (error) {
                 alert(JSON.stringify(error));
             });
         }
     },
-    /** 댓글 삭제 */
-    commentDelete : function (postId, commentId) {
-        const con_check = confirm("삭제하시겠습니까?");
-        if (con_check === true) {
-            $.ajax({
-                type: 'DELETE',
-                url: '/api/post/' + postId + '/comment/' + commentId,
-                dataType: 'JSON',
-            }).done(function () {
-                alert('댓글이 삭제되었습니다.');
-                window.location.reload();
-            }).fail(function (error) {
-                alert(JSON.stringify(error));
-            });
-        }
-    },
-    /** 게시글 추천 */
-    // postRecommend: function (userId) {
-    //     var id = $('#id').val();
-    //     var postUserId = $('#postUserId').val();
-    //     if (userId == postUserId) {
-    //         confirm("본인의 게시글은 추천할 수 없습니다.");
-    //         return false;
+    // /** 댓글 삭제 */
+    // commentDelete : function (postId, commentId) {
+    //     const con_check = confirm("삭제하시겠습니까?");
+    //     if (con_check === true) {
+    //         $.ajax({
+    //             type: 'DELETE',
+    //             url: '/api/post/' + postId + '/comment/' + commentId,
+    //             dataType: 'JSON',
+    //         }).done(function () {
+    //             alert('댓글이 삭제되었습니다.');
+    //             window.location.reload();
+    //         }).fail(function (error) {
+    //             alert(JSON.stringify(error));
+    //         });
     //     }
-    //     $.ajax({
-    //         type: 'PUT',
-    //         url: '/api/posts/' + id + '/recommend',
-    //         dataType: 'JSON',
-    //         contentType: 'application/json'
-    //     }).done(function (response) {
-    //         var recommendUpCount = response.recommendUpCount;
-    //         $('#recommendUpCount').text(recommendUpCount);
-    //         // 새로고침 하면 될듯
-    //     }).fail(function (error) {
-    //         alert(JSON.stringify(error));
-    //     });
     // },
-    //
-    // postDisRecommend: function (userId) {
-    //     var id = $('#id').val();
-    //     var postUserId = $('#postUserId').val();
-    //     if (userId == postUserId) {
-    //         confirm("본인의 게시글은 비추천할 수 없습니다.");
-    //         return false;
-    //     }
-    //     $.ajax({
-    //         type: 'PUT',
-    //         url: '/api/posts/' + id + '/disRecommend',
-    //         dataType: 'JSON',
-    //         contentType: 'application/json'
-    //     }).done(function (response) {
-    //         var recommendDownCount = response.recommendDownCount;
-    //         $('#recommendDownCount').text(recommendDownCount);
-    //     }).fail(function (error) {
-    //         alert(JSON.stringify(error));
-    //     });
-    // },
-    //
-    // commentRecommend: function (postId, commentId, userId, commentUserId) {
-    //     // if (isRecommend) {
-    //     //     alert("이미 추천 또는 비추천한 게시물입니다.");
-    //     //     return false;
-    //     // }
-    //     if (commentUserId == userId) {
-    //         confirm("본인 댓글은 추천할 수 없습니다.");
-    //         return false;
-    //     }
-    //     $.ajax({
-    //         type: 'PUT',
-    //         url: '/api/posts/' + postId + '/comments/' + commentId + '/recommend',
-    //         dataType: 'JSON',
-    //         contentType: 'application/json'
-    //     }).done(function (response) {
-    //         var recommendUpCount = response.recommendUpCount;
-    //         // var isRecommend = response.recommend;
-    //         $('#commentRecommendUpCount_' + commentId).text(recommendUpCount);
-    //         // if (isRecommend) {
-    //         //     alert("추천 되었습니다.");
-    //         // } else {
-    //         //     alert("추천이 취소되었습니다.");
-    //         // }
-    //     }).fail(function (error) {
-    //         alert(JSON.stringify(error));
-    //     });
-    // },
-
+    /** 게시글 or 댓글 추천 */
     recommend: function (postId, postUserId, commentId, userId, commentUserId, recommendType) {
         let requestData = {
             postId: postId,  // 기본적으로 postId 포함
@@ -430,34 +317,6 @@ var main = {
             alert(error.responseText);
         });
     },
-
-    // commentDisRecommend: function (postId, commentId, userId, commentUserId) {
-    //     // if (isRecommend) {
-    //     //     alert("이미 추천 또는 비추천한 게시물입니다.");
-    //     //     return false;
-    //     // }
-    //     if (commentUserId == userId) {
-    //         confirm("본인 댓글은 비추천할 수 없습니다.");
-    //         return false;
-    //     }
-    //     $.ajax({
-    //         type: 'PUT',
-    //         url: '/api/posts/' + postId + '/comments/' + commentId + '/disRecommend',
-    //         dataType: 'JSON',
-    //         contentType: 'application/json'
-    //     }).done(function (response) {
-    //         // var isRecommend = response.recommend;
-    //         var recommendDownCount = response.recommendDownCount;
-    //         // if (isRecommend) {
-    //         //     alert("비추천 되었습니다.");
-    //         // } else {
-    //         //     alert("비추천이 취소되었습니다.");
-    //         // }
-    //         $('#commentRecommendDownCount_' + commentId).text(recommendDownCount);
-    //     }).fail(function (error) {
-    //         alert(JSON.stringify(error));
-    //     });
-    // },
 
     modify: function () {
         const data = {
