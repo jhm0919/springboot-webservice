@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostsImageRequestDto {
+public class PostImageRequestDto {
 
     private List<MultipartFile> files;
 }

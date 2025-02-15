@@ -20,8 +20,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("UPDATE Comment c SET c.depthNo = c.depthNo + 1 WHERE c.groupNo = :groupNo AND c.depthNo >= :depthNo")
     void incrementDepthNoByGroupNo(@Param("groupNo") Long groupNo, @Param("depthNo") int depthNo);
 
-    @Query("SELECT c FROM Comment c WHERE c.post.id = :postId ORDER BY c.groupNo ASC, c.depthNo ASC")
-    List<Comment> findCommentsByPostIdSorted(@Param("postId") Long postId);
+    @Query("SELECT c FROM Comment c JOIN FETCH c.user WHERE c.post.id = :postId ORDER BY c.groupNo ASC, c.depthNo ASC")
+    List<Comment> findCommentsWithUserByPostIdSorted(@Param("postId") Long postId);
 
     Comment findByPostIdAndId(Long postId, Long id);
 }

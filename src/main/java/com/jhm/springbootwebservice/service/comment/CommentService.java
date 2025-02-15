@@ -121,7 +121,7 @@ public class CommentService {
     }
 
     public List<CommentResponseDto> getSortedCommentsByPostId(Long postId) {
-        List<Comment> comments = commentRepository.findCommentsByPostIdSorted(postId);
+        List<Comment> comments = commentRepository.findCommentsWithUserByPostIdSorted(postId);
         return comments.stream()
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());

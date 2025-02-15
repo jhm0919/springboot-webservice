@@ -2,9 +2,12 @@ package com.jhm.springbootwebservice.domain.comment;
 
 import com.jhm.springbootwebservice.domain.BaseTimeEntity;
 import com.jhm.springbootwebservice.domain.post.Post;
+import com.jhm.springbootwebservice.domain.recommend.CommentRecommend;
 import com.jhm.springbootwebservice.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Builder
 @Getter
@@ -48,6 +51,9 @@ public class Comment extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<CommentRecommend> commentRecommends;
 
     public void update(String content) {
         this.content = content;

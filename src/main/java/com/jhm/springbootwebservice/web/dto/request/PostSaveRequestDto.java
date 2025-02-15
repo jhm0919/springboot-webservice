@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostsSaveRequestDto {
+public class PostSaveRequestDto {
     private String title;
     private String content;
     private String pureContent;
@@ -20,7 +20,7 @@ public class PostsSaveRequestDto {
     private User user;
 
     public Post toEntity() {
-        return com.jhm.springbootwebservice.domain.post.Post.builder()
+        return Post.builder()
                 .title(title)
                 .content(content)
                 .pureContent(pureContent)

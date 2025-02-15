@@ -1,6 +1,8 @@
 package com.jhm.springbootwebservice.domain.post;
 
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -12,4 +14,5 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
 
     List<Post> findAllByUserId(Long userId);
+
 }

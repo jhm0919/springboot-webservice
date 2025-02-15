@@ -3,7 +3,7 @@ package com.jhm.springbootwebservice.web;
 import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.service.post.PostService;
-import com.jhm.springbootwebservice.web.dto.request.PostsSaveRequestDto;
+import com.jhm.springbootwebservice.web.dto.request.PostSaveRequestDto;
 import com.jhm.springbootwebservice.web.dto.request.PostUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class PostApiController {
     private final PostService postService;
 
     @PostMapping(value = "/post")
-    public Long save(@RequestBody PostsSaveRequestDto postsSaveRequestDto,
+    public Long save(@RequestBody PostSaveRequestDto postsSaveRequestDto,
                      @LoginUser SessionUser user) throws Exception {
         Long postId = postService.save(user.getId(), postsSaveRequestDto);
 

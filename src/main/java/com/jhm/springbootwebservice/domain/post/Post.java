@@ -3,6 +3,7 @@ package com.jhm.springbootwebservice.domain.post;
 import com.jhm.springbootwebservice.domain.BaseTimeEntity;
 import com.jhm.springbootwebservice.domain.comment.Comment;
 import com.jhm.springbootwebservice.domain.postImage.PostImage;
+import com.jhm.springbootwebservice.domain.recommend.PostRecommend;
 import com.jhm.springbootwebservice.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -63,6 +64,9 @@ public class Post extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<PostImage> PostImages;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<PostRecommend> postRecommends;
 
     public void update(String title, String content, String pureContent, PostType postType) {
         this.title = title;

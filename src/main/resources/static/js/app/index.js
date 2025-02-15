@@ -180,7 +180,7 @@ var main = {
             content: $('#comment-content').val(),
             userId: $('#userId').val(),
         }
-
+        console.log("내용", data.content)
         // 공백 및 빈 문자열 체크
         if (!data.content || data.content.trim() === "") {
             alert("공백 또는 입력하지 않은 부분이 있습니다.");
@@ -213,6 +213,7 @@ var main = {
             depthNo: form.querySelector('#depthNo').value,
             level: form.querySelector('#level').value,
         }
+        console.log("내용", data.content)
         // 공백 및 빈 문자열 체크
         if (!data.content || data.content.trim() === "") {
             alert("공백 또는 입력하지 않은 부분이 있습니다.");
@@ -238,8 +239,9 @@ var main = {
         const data = {
             id: form.querySelector('#id').value,
             postId: form.querySelector('#postId').value,
-            content: form.querySelector('#comment-content').value,
+            content: form.querySelector('#comment-update-content').value,
         }
+
         if (!data.content || data.content.trim() === "") {
             alert("공백 또는 입력하지 않은 부분이 있습니다.");
             return false;
@@ -285,19 +287,17 @@ var main = {
         };
         console.log("추천타입 : ",recommendType)
 
-        // 댓글 추천이면 commentId 추가
-        if (commentId) {
+        if (commentId) { // 댓글 추천이면 commentId 추가
             requestData.commentId = commentId;
-        }
-
-        if (postUserId == userId) {
-            confirm("본인 게시글은 추천할 수 없습니다.");
-            return false;
-        }
-
-        if (commentUserId == userId) {
-            confirm("본인 댓글은 추천할 수 없습니다.");
-            return false;
+            if (commentUserId == userId) {
+                confirm("본인 댓글은 추천할 수 없습니다.");
+                return false;
+            }
+        } else {
+            if (postUserId == userId) {
+                confirm("본인 게시글은 추천할 수 없습니다.");
+                return false;
+            }
         }
 
         $.ajax({
