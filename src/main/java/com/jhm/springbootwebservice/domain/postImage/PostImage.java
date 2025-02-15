@@ -1,4 +1,4 @@
-package com.jhm.springbootwebservice.domain.postimage;
+package com.jhm.springbootwebservice.domain.postImage;
 
 import com.jhm.springbootwebservice.domain.post.Post;
 import jakarta.persistence.*;

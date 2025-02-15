@@ -18,7 +18,7 @@ public class Comment extends BaseTimeEntity {
     private Long id;
 
     @Column(columnDefinition = "TEXT", nullable = false)
-    private String comment;
+    private String content;
 
     @Column(columnDefinition = "integer default 0")
     private int recommendUp;
@@ -49,8 +49,8 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void update(String comment) {
-        this.comment = comment;
+    public void update(String content) {
+        this.content = content;
     }
 
     public void recommendUp() {

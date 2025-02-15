@@ -22,7 +22,7 @@ public class CommentApiController {
         return commentService.save(user.getId(), postId, commentRequestDto);
     }
 
-    @PutMapping("/post/{postId}/comment/{commentId}")
+    @PutMapping("/post/{postId}/comment/{commentId}/update")
     public Long update(@PathVariable Long postId,
                        @PathVariable Long commentId,
                        @RequestBody CommentRequestDto dto) {
@@ -30,7 +30,7 @@ public class CommentApiController {
         return commentService.update(postId, commentId, dto);
     }
 
-    @DeleteMapping("/post/{postId}/comment/{commentId}")
+    @PutMapping("/post/{postId}/comment/{commentId}/delete")
     public Long delete(@PathVariable Long postId,
                        @PathVariable Long commentId) {
         commentService.delete(postId, commentId); // 댓글 삭제

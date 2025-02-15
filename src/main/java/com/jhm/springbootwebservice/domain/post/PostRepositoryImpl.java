@@ -1,9 +1,11 @@
 package com.jhm.springbootwebservice.domain.post;
 
+import com.jhm.springbootwebservice.domain.comment.QComment;
 import com.jhm.springbootwebservice.web.dto.request.UserSearchDto;
 import com.jhm.springbootwebservice.web.dto.response.PostListResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +25,20 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private final EntityManager em;
 
     QPost post = QPost.post;
+    QComment comment = QComment.comment;
 
     @Override
-
     public Page<PostListResponseDto> findPageDynamicQuery(PostType postType, UserSearchDto searchDto, Pageable pageable, int myPost, Long userId) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
         List<PostListResponseDto> content = queryFactory
-                .select(Projections.constructor(PostListResponseDto.class, post))
+                .select(Projections.constructor(
+                        PostListResponseDto.class, post,
+                        JPAExpressions
+                                .select(comment.count()) // 댓글 개수 서브쿼리
+                                .from(comment)
+                                .where(comment.post.eq(post))
+                ))
                 .from(post)
                 .where(postTypeEq(postType), userEq(myPost, userId), searchDtoEq(searchDto))
                 .offset(pageable.getOffset())

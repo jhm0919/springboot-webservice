@@ -1,4 +1,4 @@
-package com.jhm.springbootwebservice.domain.postimage;
+package com.jhm.springbootwebservice.domain.postImage;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

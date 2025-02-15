@@ -42,4 +42,20 @@ public class PostResponseDto {
 //        this.imageUrls = entity.getPostsImages().stream().map(PostsImage::getUrl).collect(Collectors.toList());
         this.postImages = entity.getPostImages().stream().map(PostImageResponseDto::new).collect(Collectors.toList());
     }
+
+    public PostResponseDto(Post entity) {
+        this.id = entity.getId();
+        this.title = entity.getTitle();
+        this.content = entity.getContent();
+        this.author = entity.getAuthor();
+        this.view = entity.getView();
+        this.commentSize = entity.getCommentSize();
+        this.postType = entity.getPostType();
+        this.recommendUp = entity.getRecommendUp();
+        this.recommendDown = entity.getRecommendDown();
+        this.createdDate = entity.getCreatedDate();
+        this.modifiedDate = entity.getModifiedDate();
+        this.userId = entity.getUser().getId();
+        this.postImages = entity.getPostImages().stream().map(PostImageResponseDto::new).collect(Collectors.toList());
+    }
 }

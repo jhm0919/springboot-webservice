@@ -12,10 +12,10 @@ import lombok.*;
 @AllArgsConstructor
 public class CommentRequestDto {
 
-    private Long id;
+    private Long id; // 댓글 id
     private Long hasParent;
     private Long parentId;
-    private String comment;
+    private String content;
     private Long groupNo;
     private int depthNo;
     private int level;
@@ -26,7 +26,7 @@ public class CommentRequestDto {
     public Comment toEntity() {
         return Comment.builder()
             .id(id)
-            .comment(comment)
+            .content(content)
             .user(user)
             .post(post)
             .build();

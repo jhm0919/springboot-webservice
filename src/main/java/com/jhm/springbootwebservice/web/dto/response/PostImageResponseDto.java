@@ -1,6 +1,6 @@
 package com.jhm.springbootwebservice.web.dto.response;
 
-import com.jhm.springbootwebservice.domain.postimage.PostImage;
+import com.jhm.springbootwebservice.domain.postImage.PostImage;
 import lombok.Getter;
 
 @Getter

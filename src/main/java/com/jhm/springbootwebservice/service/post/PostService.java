@@ -20,6 +20,8 @@ public interface PostService {
 
     PostResponseDto findById(Long id);
 
+    PostResponseDto findPostAndCommentsById(Long id);
+
     Page<PostListResponseDto> findAll(PostType postType, UserSearchDto userSearchDto, int page, int myPost, Long userId);
 
     void delete(Long id) throws IOException;

@@ -180,7 +180,7 @@
                             <input type="hidden" th:id="'level'" th:value="${comment.level}">
                             <div class="row">
                                 <div class="form-group col-10">
-                                    <textarea th:id="'reply'" class="form-control" rows="3" placeholder="댓글을 입력하세요"></textarea>
+                                    <textarea th:id="'reply-content'" class="form-control" rows="3" placeholder="댓글을 입력하세요"></textarea>
                                 </div>
                                 <div class="col-2">
                                     <button type="button" th:id="'btn-reply-save'" class="btn btn-primary">등록</button>
@@ -203,12 +203,10 @@
     <!-- 댓글작성 부분 -->
     <form>
         <input type="hidden" th:id="'postId'" th:value="${post.id}">
-<!--        <input type="hidden" th:id="'parentId'" th:value="null">-->
-<!--        <input type="hidden" th:id="'hasParent2'" th:value="0">-->
         <div class="card-body" th:if="${user}">
             <div class="row">
                 <div class="col-10">
-                    <textarea id="comment" class="form-control" rows="3" placeholder="댓글을 입력하세요"></textarea>
+                    <textarea id="comment-content" class="form-control" rows="3" placeholder="댓글을 입력하세요"></textarea>
                 </div>
                 <div class="col-2 ">
                     <button type="button" id="btn-comment-save" class="btn btn-primary btn"> 등록</button>

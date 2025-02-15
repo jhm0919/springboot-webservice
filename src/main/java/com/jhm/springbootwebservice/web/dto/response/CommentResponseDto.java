@@ -22,7 +22,7 @@ public class CommentResponseDto {
     /** Entity -> DTO */
     public CommentResponseDto(Comment entity) {
         this.id = entity.getId();
-        this.comment = entity.getComment();
+        this.comment = entity.getContent();
         this.author = entity.getUser().getName();
         this.recommendUp = entity.getRecommendUp();
         this.recommendDown = entity.getRecommendDown();

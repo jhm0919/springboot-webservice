@@ -39,20 +39,4 @@ public class PostApiController {
         return postId;
     }
 
-//    @PutMapping("/posts/{postId}/recommend")
-//    public RecommendResponseDto recommend(@PathVariable Long postId, @LoginUser SessionUser user) {
-//        RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId());
-//
-//        ResponseEntity<String> recommend1 = recommendService.recommend(requestDto);
-////        RecommendResponseDto recommend = postsRecommendService.recommend(requestDto);
-//        return recommend;
-//    }
-
-//    @PutMapping("/posts/{postId}/disRecommend")
-//    public RecommendResponseDto disRecommend(@PathVariable Long postId, @LoginUser SessionUser user) {
-//        RecommendRequestDto requestDto = new RecommendRequestDto(postId, user.getId());
-//
-//        RecommendResponseDto recommend = postsRecommendService.disRecommend(requestDto);
-//        return recommend;
-//    }
 }

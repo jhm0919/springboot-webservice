@@ -177,15 +177,12 @@ var main = {
         console.log("댓글 작성 호출")
         const data = {
             postId: $('#postId').val(),
-            comment: $('#comment').val(),
+            content: $('#comment-content').val(),
             userId: $('#userId').val(),
         }
-        console.log("postId", data.postId)
-        console.log("parentId", data.parentId)
-        console.log("comment", data.comment)
 
         // 공백 및 빈 문자열 체크
-        if (!data.comment || data.comment.trim() === "") {
+        if (!data.content || data.content.trim() === "") {
             alert("공백 또는 입력하지 않은 부분이 있습니다.");
             return false;
         } else {
@@ -210,14 +207,14 @@ var main = {
             postId: form.querySelector('#postId').value,
             parentId: form.querySelector('#parentId').value,
             hasParent: form.querySelector('#hasParent').value,
-            comment: form.querySelector('#reply').value,
+            content: form.querySelector('#reply-content').value,
             userId: form.querySelector('#userId').value,
             groupNo: form.querySelector('#groupNo').value,
             depthNo: form.querySelector('#depthNo').value,
             level: form.querySelector('#level').value,
         }
         // 공백 및 빈 문자열 체크
-        if (!data.comment || data.comment.trim() === "") {
+        if (!data.content || data.content.trim() === "") {
             alert("공백 또는 입력하지 않은 부분이 있습니다.");
             // return false;
         } else {
@@ -241,9 +238,9 @@ var main = {
         const data = {
             id: form.querySelector('#id').value,
             postId: form.querySelector('#postId').value,
-            comment: form.querySelector('#comment-content').value,
+            content: form.querySelector('#comment-content').value,
         }
-        if (!data.comment || data.comment.trim() === "") {
+        if (!data.content || data.content.trim() === "") {
             alert("공백 또는 입력하지 않은 부분이 있습니다.");
             return false;
         }
@@ -251,7 +248,7 @@ var main = {
         if (con_check === true) {
             $.ajax({
                 type: 'PUT',
-                url: '/api/post/' + data.postId + '/comment/' + data.id,
+                url: '/api/post/' + data.postId + '/comment/' + data.id + '/update',
                 dataType: 'JSON',
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify(data)
@@ -263,22 +260,22 @@ var main = {
             });
         }
     },
-    // /** 댓글 삭제 */
-    // commentDelete : function (postId, commentId) {
-    //     const con_check = confirm("삭제하시겠습니까?");
-    //     if (con_check === true) {
-    //         $.ajax({
-    //             type: 'DELETE',
-    //             url: '/api/post/' + postId + '/comment/' + commentId,
-    //             dataType: 'JSON',
-    //         }).done(function () {
-    //             alert('댓글이 삭제되었습니다.');
-    //             window.location.reload();
-    //         }).fail(function (error) {
-    //             alert(JSON.stringify(error));
-    //         });
-    //     }
-    // },
+    /** 댓글 삭제 */
+    commentDelete : function (postId, commentId) {
+        const con_check = confirm("삭제하시겠습니까?");
+        if (con_check === true) {
+            $.ajax({
+                type: 'PUT',
+                url: '/api/post/' + postId + '/comment/' + commentId + '/delete',
+                dataType: 'JSON',
+            }).done(function () {
+                alert('댓글이 삭제되었습니다.');
+                window.location.reload();
+            }).fail(function (error) {
+                alert(JSON.stringify(error));
+            });
+        }
+    },
     /** 게시글 or 댓글 추천 */
     recommend: function (postId, postUserId, commentId, userId, commentUserId, recommendType) {
         let requestData = {

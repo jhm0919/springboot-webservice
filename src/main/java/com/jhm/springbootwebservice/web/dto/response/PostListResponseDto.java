@@ -10,17 +10,18 @@ public class PostListResponseDto {
     private String title;
     private String author;
     private String postType;
-    private int commentsSize;
+    private int commentSize;
     private int view;
     private int recommendUp;
     private String modifiedDate;
 
-    public PostListResponseDto(Post entity) {
+    public PostListResponseDto(Post entity, Long commentSize) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.author = entity.getAuthor();
         this.postType = entity.getPostType().getTitle();
-        this.commentsSize = entity.getComments().size();
+//        this.commentSize = entity.getComments().size();
+        this.commentSize = commentSize.intValue();
         this.view = entity.getView();
         this.recommendUp = entity.getRecommendUp();
         this.modifiedDate = entity.getModifiedDate();

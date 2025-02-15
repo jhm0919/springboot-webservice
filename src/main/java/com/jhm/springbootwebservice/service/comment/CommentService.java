@@ -73,7 +73,7 @@ public class CommentService {
         }
 
         Comment comment = Comment.builder()
-            .comment(dto.getComment())
+            .content(dto.getContent())
             .groupNo(groupNo)
             .depthNo(maxDepth)
             .level(level + 1)
@@ -108,7 +108,8 @@ public class CommentService {
 
     public Long update(Long postId, Long id, CommentRequestDto dto) {
         Comment comment = commentRepository.findByPostIdAndId(postId, id);
-        comment.update(dto.getComment());
+        log.info("내용={}", dto.getContent());
+        comment.update(dto.getContent());
         return comment.getId();
     }
 

@@ -55,10 +55,10 @@ public class IndexController {
 
     @GetMapping("/post/read/{postId}")
     public String postRead(@PathVariable Long postId, @LoginUser SessionUser user, Model model) {
-        PostResponseDto post = postService.findById(postId);
+        PostResponseDto post = postService.findPostAndCommentsById(postId);
         List<CommentResponseDto> comments = post.getComments();
 
-        postService.updateView(postId);
+        postService.updateView(postId); // 조회수 증가 redis로 캐시해야함
 
         if (user != null) {
             model.addAttribute("user", user);
@@ -82,6 +82,7 @@ public class IndexController {
 
     @GetMapping("/post/update/{postId}")
     public String postUpdate(@PathVariable Long postId, @LoginUser SessionUser user, Model model) {
+
 
         PostResponseDto post = postService.findById(postId);
         List<PostImageResponseDto> postImages = post.getPostImages();

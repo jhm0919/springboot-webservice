@@ -109,12 +109,12 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public Long update(Long postId, PostUpdateRequestDto requestDto) {
-        Post posts = postRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. postId=" + postId));
 
         String content = getUpdateContent(requestDto.getContent(), postId); // update할 content get
         String pureContent = getPureContent(content); // content에서 사진 제외
-        posts.update(requestDto.getTitle(), content, pureContent, requestDto.getPostType()); // 게시글 수정
+        post.update(requestDto.getTitle(), content, pureContent, requestDto.getPostType()); // 게시글 수정
 
         return postId;
     }
@@ -168,8 +168,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public PostResponseDto findById(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+        return new PostResponseDto(post);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PostResponseDto findPostAndCommentsById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
         List<CommentResponseDto> comments = commentService.getSortedCommentsByPostId(id);
@@ -180,7 +187,8 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public Page<PostListResponseDto> findAll(PostType postType, UserSearchDto userSearchDto, int page, int myPost, Long userId) {
         PageRequest pageRequest = createPageRequest(page);
-        return postRepository.findPageDynamicQuery(postType, userSearchDto, pageRequest, myPost, userId);
+        Page<PostListResponseDto> pageDynamicQuery = postRepository.findPageDynamicQuery(postType, userSearchDto, pageRequest, myPost, userId);
+        return pageDynamicQuery;
     }
 
     private PageRequest createPageRequest(int page) {
