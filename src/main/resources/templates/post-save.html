@@ -11,7 +11,7 @@
                 <th:block th:each="postType : ${postTypes}">
                     <option th:value="${postType.name()}"
                             th:text="${postType.title}"
-                            >
+                            th:if="${postType.name() != 'NOTICE' or (user != null and user.role.name == 'ADMIN')}">
                     </option>
                 </th:block>
             </select>

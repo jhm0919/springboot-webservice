@@ -14,26 +14,45 @@
                            th:classappend="${postType.key == postTypeString} ? 'active' : ''"
                            th:text="${postType.title}"
                            th:value="${postType}"
-                           th:href="@{/(postType= ${postType}
-                                , searchType = ${param.searchType}
-                                , searchKeyword = ${param.searchKeyword})}"></a>
+                           th:href="@{/(postType = ${postType},
+                            searchType = ${param.searchType},
+                             searchKeyword = ${param.searchKeyword})}">
+                        </a>
                     </li>
                 </th:block>
             </ul>
             <!--검색 영역-->
-            <form class="form-inline my-2 my-lg-0" action="/" method="GET" role="search">
-                <select class="form-control mr-sm-2" name="searchType" id="searchType" th:with="searchTypeString=${#strings.toString(param.searchType)}">
-                    <option value="title_content" th:selected="${searchTypeString == 'title_content'}">제목 + 내용</option>
-                    <option value="title" th:selected="${searchTypeString == 'title'}">제목</option>
-                    <option value="content" th:selected="${searchTypeString == 'content'}">내용</option>
-                    <option value="author" th:selected="${searchTypeString == 'author'}">작성자</option>
+<!--            <form class="form-inline my-2 my-lg-0" action="/" method="GET" role="search">-->
+<!--                <select class="form-control mr-sm-2" name="searchType" id="searchType" th:with="searchTypeString=${#strings.toString(param.searchType)}">-->
+<!--                    <option value="title_content" th:selected="${searchTypeString == 'title_content'}">제목 + 내용</option>-->
+<!--                    <option value="title" th:selected="${searchTypeString == 'title'}">제목</option>-->
+<!--                    <option value="content" th:selected="${searchTypeString == 'content'}">내용</option>-->
+<!--                    <option value="author" th:selected="${searchTypeString == 'author'}">작성자</option>-->
+<!--                </select>-->
+<!--                <input class="form-control mr-sm-2" type="text" name="searchKeyword" id="search" placeholder="검색어를 입력하세요."-->
+<!--                       required th:value="${param.searchKeyword}"/>-->
+<!--                <input type="hidden" name="postType" th:value="${param.postType}" />-->
+<!--                <input type="hidden" name="myPost" th:value="${param.myPost}" />-->
+<!--                <button class="btn btn-primary">검색</button>-->
+<!--            </form>-->
+
+            <form class="form-inline my-2 my-lg-0" method="GET" role="search" th:action="@{'/'}">
+                <select class="form-control mr-sm-2" name="searchType" id="searchType">
+                    <option value="title_content" th:selected="${param.searchType == 'title_content'}">제목 + 내용</option>
+                    <option value="title" th:selected="${param.searchType == 'title'}">제목</option>
+                    <option value="content" th:selected="${param.searchType == 'content'}">내용</option>
+                    <option value="author" th:selected="${param.searchType == 'author'}">작성자</option>
                 </select>
                 <input class="form-control mr-sm-2" type="text" name="searchKeyword" id="search" placeholder="검색어를 입력하세요."
                        th:value="${param.searchKeyword}"/>
-                <input type="hidden" name="postType" th:value="${param.postType}" />
-                <input type="hidden" name="myPost" th:value="${param.myPost}" />
+                <!-- postType과 myPost가 있을 때만 URL에 포함되도록 -->
+                <input type="hidden" name="postType" th:if="${param.postType != null}" th:value="${param.postType}" />
+                <input type="hidden" name="myPost" th:if="${param.myPost != null}" th:value="${param.myPost}" />
+
                 <button class="btn btn-primary">검색</button>
             </form>
+
+
         </div>
     </nav>
 

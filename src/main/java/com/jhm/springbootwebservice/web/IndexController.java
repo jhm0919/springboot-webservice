@@ -3,6 +3,7 @@ package com.jhm.springbootwebservice.web;
 import com.jhm.springbootwebservice.config.auth.LoginUser;
 import com.jhm.springbootwebservice.config.auth.dto.SessionUser;
 import com.jhm.springbootwebservice.domain.post.PostType;
+import com.jhm.springbootwebservice.domain.user.Role;
 import com.jhm.springbootwebservice.service.post.PostService;
 import com.jhm.springbootwebservice.web.dto.request.UserSearchDto;
 import com.jhm.springbootwebservice.web.dto.response.*;
